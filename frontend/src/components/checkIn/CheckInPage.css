@@ -1,0 +1,40 @@
+.app {
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #0f62fe;
+  }
+  
+  .title {
+    color: white;
+  }
+  
+  .location {
+    color: white;
+  }
+  
+  .checkin-button {
+    padding: 10px 20px;
+    margin: 20px 0;
+    font-size: 16px;
+    background-color: #008CBA; /* Blue */
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .checkin-button:hover {
+    background-color: #007B9A; /* Darker blue */
+  }
+  
+  .status {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+  }

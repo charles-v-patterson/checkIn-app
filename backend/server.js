@@ -1,0 +1,39 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv'); 
+
+// Import Routes
+const authRoutes = require('./routes/authRoutes'); 
+const checkinRoutes = require('./routes/checkinRoutes');
+
+// Configure Environment Variables
+dotenv.config();
+
+// Express App Initialization
+const app = express();
+const port = process.env.PORT || 5000; 
+
+// Middleware
+app.use(cors());  // Enable CORS
+app.use(express.json()); // Parse incoming JSON payloads
+
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Could not connect to MongoDB', err));
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/checkin', checkinRoutes);
+
+// Basic Route for Testing 
+app.get('/', (req, res) => {
+  res.send('Employee Check-In Backend');
+});
+
+// Start Server
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
