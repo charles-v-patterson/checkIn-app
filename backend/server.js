@@ -25,13 +25,15 @@ mongoose
   .catch(err => console.error('Could not connect to MongoDB', err));
 
 // API Routes
-app.use('/api/auth', authRoutes);
+app.use('/', checkinRoutes);
+/* app.use('/api/auth', authRoutes);
 app.use('/api/checkin', checkinRoutes);
+app.use('/api/check-network', checkinRoutes); */
 
 // Basic Route for Testing 
-app.get('/', (req, res) => {
+/* app.get('/', (req, res) => {
   res.send('Employee Check-In Backend');
-});
+}); */
 
 // Start Server
 app.listen(port, () => {

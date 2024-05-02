@@ -1,14 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RegistrationForm from "./components/auth/RegistrationForm";
 import LoginForm from "./components/auth/LoginForm";
 import CheckInPage from "./components/checkIn/CheckInPage";
 import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // Use named import
+import axios from 'axios';
 
 import Navbar from "./components/common/Navbar";
 
 const App = () => {
+
+  const [isOnNetwork, setIsOnNetwork] = useState(null);
+
+  useEffect(() => {
+
+    axios.get('/api/check-network')
+      .then(response => {
+        const { onSpecificNetwork } = response.data;
+        setIsOnNetwork(onSpecificNetwork);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setIsOnNetwork(false);
+      });
+
+  }, [])
   // Function to check if a user is logged in
   const isLoggedIn = () => {
     const token = localStorage.getItem("token");
