@@ -26,6 +26,7 @@ const App = () => {
       });
 
   }, [])
+  
   // Function to check if a user is logged in
   const isLoggedIn = () => {
     const token = localStorage.getItem("token");
