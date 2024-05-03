@@ -11,22 +11,6 @@ import Navbar from "./components/common/Navbar";
 
 const App = () => {
 
-  const [isOnNetwork, setIsOnNetwork] = useState(null);
-
-  useEffect(() => {
-
-    axios.get('/api/check-network')
-      .then(response => {
-        const { onSpecificNetwork } = response.data;
-        setIsOnNetwork(onSpecificNetwork);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setIsOnNetwork(false);
-      });
-
-  }, [])
-  
   // Function to check if a user is logged in
   const isLoggedIn = () => {
     const token = localStorage.getItem("token");

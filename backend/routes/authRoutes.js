@@ -5,12 +5,13 @@ const authMiddleware = require("../middleware/authMiddleware");
 const checkInController = require("../controllers/checkinController")
 
 // Registration Route
-router.post("/register", authController.register);
+router.post("/api/register", authController.register);
 
 // Login Route
-router.post("/login", authController.login);
+router.post("/api/login", authController.login);
 
 // Test route (protected)
 router.get("/check-token", authMiddleware, authController.checkToken);
 router.get("/status", authMiddleware, checkInController.getCheckInStatus);
+
 module.exports = router;

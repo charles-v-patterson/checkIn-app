@@ -13,7 +13,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post("/api/login", { email, password });
-
+      console.log(response);
       // Store token
       localStorage.setItem("token", response.data.token);
 

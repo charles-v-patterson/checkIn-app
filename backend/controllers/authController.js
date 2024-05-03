@@ -42,7 +42,7 @@ exports.login = async (req, res) => {
   try {
     // 1. Destructure email and password from request body
     const { email, password } = req.body;
-
+    
     // 2. Find user by email
     const user = await User.findOne({ email });
     if (!user) {
@@ -51,6 +51,7 @@ exports.login = async (req, res) => {
 
     // 3. Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid email or password" });
     }

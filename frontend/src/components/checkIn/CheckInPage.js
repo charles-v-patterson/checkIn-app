@@ -12,8 +12,21 @@ const CheckInPage = () => {
   const [location, setLocation] = useState(null);
   const [workLocation, setWorkLocation] = useState(null);
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
+  const [isOnNetwork, setIsOnNetwork] = useState(null);
+
 
   useEffect(() => {
+
+    axios.get('/check-network')
+      .then(response => {
+        const { onSpecificNetwork } = response.data;
+        setIsOnNetwork(onSpecificNetwork);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setIsOnNetwork(false);
+      });
+
     const fetchCheckInStatus = async () => {
       setIsLoading(true);
       try {
@@ -22,7 +35,7 @@ const CheckInPage = () => {
           headers: { Authorization: `Bearer ${token}` },
         };
 
-        const response = await axios.get("/api/checkin/status", config);
+        const response = await axios.get("/checkin/status", config);
         setCheckInStatus(response.data.status); // Adjust based on your API response
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -82,7 +95,7 @@ const CheckInPage = () => {
         headers: { Authorization: `Bearer ${token}` },
       };
 
-      const response = await axios.post("/api/checkin", {}, config);
+      const response = await axios.post("/checkin", {}, config);
       setCheckInStatus("Checked In!");
       setIsLoading(false);
       if (location && workLocation) {
@@ -152,6 +165,11 @@ const CheckInPage = () => {
             You have been checked in and logged as working remotely today.
           </p>
         ))}
+      <hr></hr>
+      <h2>Connection: </h2>
+      {isOnNetwork === null && <p>Checking network status...</p>}
+      {isOnNetwork === true && <p>User is on the specific network.</p>}
+      {isOnNetwork === false && <p>User is not on the specific network.</p>}
     </div>
   );
 };
