@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./CheckInPage.css";
+import ibmLogo from "../../img/IBM-Logo.jpg"
 
 const CheckInPage = () => {
   const [checkInStatus, setCheckInStatus] = useState("Not Checked In");
@@ -143,18 +144,21 @@ const CheckInPage = () => {
 
   return (
     <div className="checkin-page-container">
-      <h1 className="title">IBM Monroe CIC Work Check-in App</h1>
-      {isLoading && <p>Checking in...</p>}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <p className="location">Current Location: {JSON.stringify(location)}</p>
-      <p>{checkInStatus}</p>
+      <div className="check-in-title">
+      <h1 className="title">Punch Card</h1>
+      </div>
+      <hr className="check-in-hr"></hr>
       <button
         className="checkin-button"
         onClick={handleCheckIn}
         disabled={isLoading}
       >
-        Check In Now
+        Check In
       </button>
+      {isLoading && <p>Checking in...</p>}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      <p className="location">Current Location: {JSON.stringify(location)}</p>
+      <p>{checkInStatus}</p>
       {hasCheckedIn &&
         (isAtWork ? (
           <p className="status">
@@ -165,6 +169,7 @@ const CheckInPage = () => {
             You have been checked in and logged as working remotely today.
           </p>
         ))}
+        <img src={ibmLogo}/>
       <hr></hr>
       <h2>Connection: </h2>
       {isOnNetwork === null && <p>Checking network status...</p>}

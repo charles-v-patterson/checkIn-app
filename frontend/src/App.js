@@ -39,7 +39,6 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Navbar /> {/* Navbar component to display navigation links */}
       <div className="container">
         {" "}
         {/* Container for the main content of the app */}
