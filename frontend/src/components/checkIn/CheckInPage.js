@@ -17,7 +17,7 @@ const CheckInPage = () => {
 
   useEffect(() => {
 
-    axios.get('/check-network')
+    axios.get('/api/check-network')
       .then(response => {
         const { onSpecificNetwork } = response.data;
         setIsOnNetwork(onSpecificNetwork);

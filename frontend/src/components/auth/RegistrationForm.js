@@ -18,7 +18,6 @@ const RegistrationForm = () => {
 
     try {
       const response = await axios.post('/register', { email, password });
-      console.log(response); 
 
       // On success, redirect to login or check-in:
       // window.location.href = '/login'; 
