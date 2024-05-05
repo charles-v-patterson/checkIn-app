@@ -2,35 +2,45 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
-import ibmEye from "../../img/ibm eye.png"
-import ibmLogo from "../../img/IBM-Logo.jpg"
-import {Link} from "react-router-dom";
+import ibmEye from "../../img/ibm eye.png";
+import ibmLogo from "../../img/IBM-Logo.jpg";
+import { Link } from "react-router-dom";
 
+// LoginForm component
 const LoginForm = () => {
+  // State for form inputs
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // State for error message
   const [errorMessage, setErrorMessage] = useState("");
+  // Hook for navigation
   const navigate = useNavigate();
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
+    // Prevent default form submission
     e.preventDefault();
 
     try {
+      // Send a POST request to the server
       const response = await axios.post("/api/login", { email, password });
-      // Store token
+      // Store token in local storage
       localStorage.setItem("token", response.data.token);
 
       // Redirect to check-in page
       navigate("/checkin");
     } catch (error) {
+      // If there is an error with the request, set the error message
       if (error.response) {
         setErrorMessage(error.response.data.error);
       } else {
+        // If there is no response, set a generic error message
         setErrorMessage("Login failed. Please try again.");
       }
     }
   };
 
+  // Function to toggle password visibility
   function passToggle() {
     var x = document.getElementById("password");
     if (x.type === "password") {
@@ -40,50 +50,54 @@ const LoginForm = () => {
     }
   }
 
+  // Render the login form
   return (
     <div className="login-form-container">
       <div className="login-header">
-      <h1 className="header-title">Punch Card</h1>
-      <hr className="signin-hr"></hr>
-      <img height="45px" src={ibmLogo}/>
-      </div>
-      
-      {" "}
+        <h1 className="header-title">Punch Card</h1>
+        <hr className="signin-hr"></hr>
+        <img height="45px" alt="" src={ibmLogo} />
+      </div>{" "}
       {/* Add styling */}
       <div className="login-form-box">
-      <h1 className="login-title">Sign In</h1>
-      <h2 className="login-subtitle">Sign in to check into your CIC</h2>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <form className="login-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <input
-            type="email"
-            id="email"
-            value={email}
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div id="password-div" className="form-group">
-          <input
-            type="password"
-            id="password"
-            value={password}
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button className="eye-button" onClick={passToggle}>
-            <img width="24px" src={ibmEye}/>
+        <h1 className="login-title">Sign In</h1>
+        <h2 className="login-subtitle">Sign in to check into your CIC</h2>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        <form className="login-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <input
+              type="email"
+              id="email"
+              value={email}
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div id="password-div" className="form-group">
+            <input
+              type="password"
+              id="password"
+              value={password}
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button className="eye-button" onClick={passToggle}>
+              <img width="24px" alt="" src={ibmEye} />
+            </button>
+          </div>
+          <Link to="" style={{ textDecoration: "none", color: "#0199EF" }}>
+            Forgot password?
+          </Link>
+          <button className="signin-button" type="submit">
+            Login
           </button>
-        </div>
-        <Link to="" style={{ textDecoration: "none", color: "#0199EF"}}>Forgot password?</Link>
-        <button className="signin-button" type="submit">Login</button>
-      </form>
+        </form>
       </div>
     </div>
   );
 };
 
+// Export the LoginForm component
 export default LoginForm;

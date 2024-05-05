@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import RegistrationForm from "./components/auth/RegistrationForm";
-import LoginForm from "./components/auth/LoginForm";
-import CheckInPage from "./components/checkIn/CheckInPage";
-import { Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // Use named import
-import axios from 'axios';
+/*
+  App.js is the main component of the application. It is responsible for routing the user to the 
+  correct page based on the URL path. The App component uses the BrowserRouter component from the 
+  react-router-dom library to enable routing in the application. The Routes component is used to 
+  define the different routes in the application, and the Route component is used to specify the path 
+  and the component to render for each route.
+*/
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import Login from "./components/auth/LoginForm";
+import CheckIn from "./components/checkIn/CheckInPage";
 
-import Navbar from "./components/common/Navbar";
-
+// Main App component
 const App = () => {
-
   // Function to check if a user is logged in
   const isLoggedIn = () => {
     const token = localStorage.getItem("token");
@@ -37,32 +39,19 @@ const App = () => {
     }
   };
 
+  // Render the app component
   return (
-    <BrowserRouter>
-      <div className="container">
-        {" "}
-        {/* Container for the main content of the app */}
-        <Routes>
-          <Route
-            path="/"
-            element={
-              isLoggedIn() ? (
-                <Navigate to="/checkin" />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route
-            path="/checkin"
-            element={isLoggedIn() ? <CheckInPage /> : <Navigate to="/login" />}
-          />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route
+          path="/checkIn"
+          element={isLoggedIn() ? <CheckIn /> : <Login />}
+        />
+      </Routes>
+    </Router>
   );
 };
 
+// Export the App component
 export default App;
