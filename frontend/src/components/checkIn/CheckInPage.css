@@ -1,35 +1,71 @@
-.app {
-  text-align: center;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: #0f62fe;
+.checkin-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #ffffff;
 }
 
-.title {
-  color: white;
+.checkin-form-box {
+  display: flex;
+  flex-direction: column;
+  background-color: #eeeeee;
+  padding: 40px;
+  gap: 20px;
+  box-shadow: 10px 10px black;
+  align-items: center;
+}
+
+.checkin-title {
+  justify-content: center;
+  margin: 20px;
+  font-size: 40px;
+  color: #0199ef;
+  padding: 10px;
+  font-weight: 500;
+
 }
 
 .location {
-  color: white;
+  margin: 10px;
+  font-size: 20px;
+  font-weight: 400;
+  color: #000000;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 .checkin-button {
-  padding: 10px 20px;
-  margin: 20px 0;
-  font-size: 16px;
-  background-color: #008CBA; /* Blue */
-  color: white;
+  border-radius: 10px;
   border: none;
+  padding: 10px 15px;
+  font-weight: 300;
+  font-size: 18px;
   cursor: pointer;
+  background-color: #0199ef;
+  color: #ffffff;
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 }
 
 .checkin-button:hover {
-  background-color: #007B9A; /* Darker blue */
+  background-color: #7ac2eb; /* Darker blue */
+}
+
+.checkin-hr {
+  margin: 5px;
+  border: 1px solid #000000;
 }
 
 .status {
   font-size: 20px;
   font-weight: bold;
+  color: #000000;
 }
 
 .logo {
@@ -37,4 +73,19 @@
   top: 0;
   left: 0;
   width: 100px;
+}
+
+.checkin-header {
+  position: absolute;
+  gap: 10px;
+  top: 10px;
+  left: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.checkin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
