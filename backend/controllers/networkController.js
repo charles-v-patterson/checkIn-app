@@ -4,7 +4,7 @@ const { promisify } = require('util');
 //const { parseCIDR } = require('ip');
 const dnsLookup = promisify(lookup);
 
-const isOnSpecificNetwork = async (userIPAddress, networkCIDR) => {
+const isOnNetwork = async (userIPAddress, networkCIDR) => {
     try {
         const userIPInfo = await dnsLookup(userIPAddress);
         const userIP = userIPInfo.address;
@@ -17,7 +17,6 @@ const isOnSpecificNetwork = async (userIPAddress, networkCIDR) => {
         const networkEndNumeric = ipToNumeric(networkEnd);
 
         if (userIPNumeric >= networkStartNumeric && userIPNumeric <= networkEndNumeric) {
-            console.log("Made it!");
             return true;
         } else {
             return false;
@@ -68,5 +67,5 @@ const numericToIp = (numeric) => {
 }
 
 module.exports = {
-    isOnSpecificNetwork
+    isOnNetwork
 };

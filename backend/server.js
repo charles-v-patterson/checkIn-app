@@ -26,8 +26,8 @@ mongoose
 
 // API Routes
 app.post('/api/login', authRoutes);
-app.post('/api/checkin', checkinRoutes);
-app.use('/api/check-network', checkinRoutes);
+//app.post('/api/checkin', checkinRoutes);
+app.get('/api/check-network', checkinRoutes);
 
 // Basic Route for Testing 
  app.get('/', (req, res) => {

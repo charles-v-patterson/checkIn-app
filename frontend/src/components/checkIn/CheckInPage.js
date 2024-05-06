@@ -8,10 +8,12 @@
 import React, { useState, useEffect } from "react";
 import "./CheckInPage.css"; // Import the CSS file
 import ibmLogo from "../../img/IBM-Logo.jpg";
+import axios from 'axios';
 
 // CheckInPage component
 const CheckInPage = () => {
   const [isAtWork, setIsAtWork] = useState(false);
+  const [isOnNetwork, setIsOnNetwork] = useState(false);
   const [location, setLocation] = useState(null);
   const [workLocation, setWorkLocation] = useState(null);
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -40,6 +42,17 @@ const CheckInPage = () => {
         address: address,
       });
     });
+
+    axios.get('/api/check-network')
+    .then(response => {
+      const { onNetwork } = response.data;
+      setIsOnNetwork(onNetwork);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      setIsOnNetwork(false);
+    });
+
   }, []);
 
   // Function to handle the check-in button click
@@ -110,7 +123,14 @@ const CheckInPage = () => {
                 Thanks! You have been checked in and logged as working in the
                 office today.
               </p>
-            ) : (
+            ) 
+            : isOnNetwork ? (
+              <p className="status">
+                Thanks! You have been checked in and logged as working in the
+                office today.
+              </p>
+            )
+            : (
               <p className="status">
                 Thanks! You have been checked in and logged as working remotely
                 today.
