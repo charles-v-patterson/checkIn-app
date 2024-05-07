@@ -4,8 +4,11 @@ const authController = require("../controllers/authController");
 const authMiddleware = require("../middleware/authMiddleware");
 const checkInController = require("../controllers/checkinController")
 
-// Registration Route
+// Register Route
 router.post("/api/register", authController.register);
+
+// Password Reset Route
+router.post("/api/passwordReset", authController.passwordReset);
 
 // Login Route
 router.post("/api/login", authController.login);
