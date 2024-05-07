@@ -9,6 +9,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Login from "./components/auth/LoginForm";
+import PasswordReset from "./components/auth/PasswordReset";
 import CheckIn from "./components/checkIn/CheckInPage";
 
 // Main App component
@@ -47,6 +48,10 @@ const App = () => {
         <Route
           path="/checkIn"
           element={isLoggedIn() ? <CheckIn /> : <Login />}
+        />
+        <Route
+          path="/passwordreset"
+          element={<PasswordReset />}
         />
       </Routes>
     </Router>

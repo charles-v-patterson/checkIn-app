@@ -12,6 +12,20 @@ exports.register = async (req, res) => {
     // 1. Destructure email and password from request body
     const { email, password } = req.body;
 
+    const emailregex = /^[a-zA-Z0-9.]+@(?:[a-zA-Z.]{3})?ibm\.com$/;
+    const passregex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/;
+
+    const passMatch = passregex.test(password);
+    const emailMatch = emailregex.test(email);
+
+    if (!emailMatch) {
+      res.status(400).json({ error: "Email does not meet requirements" });
+    }
+
+    if (!passMatch) {
+      res.status(400).json({ error: "Password does not meet requirements" });
+    }
+
     // 2. Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -42,7 +56,14 @@ exports.passwordReset = async (req, res) => {
     // 2. Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      
+      const regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/;
+
+      const isMatch = regex.test(password);
+
+      if (!isMatch) {
+        res.status(400).json({ error: "Password does not meet requirements" });
+      }
+
       const salt = await bcrypt.genSalt(10);
 
       // Hash the password using the generated salt
