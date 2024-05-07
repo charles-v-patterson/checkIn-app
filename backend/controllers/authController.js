@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
   try {
     // 1. Destructure email and password from request body
     const { email, password } = req.body;
-    
+
     // 2. Find user by email
     const user = await User.findOne({ email: email });
     if (!user) {
