@@ -8,8 +8,10 @@ import { Link } from "react-router-dom";
 
 // LoginForm component
 const LoginForm = ({ updateFormData }) => {
-  // State for form inputs
-  const [formData, setFormData] = useState({ email: '', password: '', location: false});
+  // State for email and location 
+  const [formData, setFormData] = useState({ email: '', location: false});
+  // State for password
+  const [password, setPassword] = useState("");
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
   // Hook for navigation
@@ -22,7 +24,7 @@ const LoginForm = ({ updateFormData }) => {
 
     try {
       // Send a POST request to the server
-      const response = await axios.post("/api/login", { email: formData.email, password: formData.password });
+      const response = await axios.post("/api/login", { email: formData.email, password: password });
       // Store token in local storage
       localStorage.setItem("token", response.data.token);
 
@@ -42,12 +44,12 @@ const LoginForm = ({ updateFormData }) => {
   };
 
   const handleEmailChange = (e) => {
-    setFormData({ ...formData, email: e.target.value });
-};
+      setFormData({ ...formData, email: e.target.value });
+  };
 
-const handlePasswordChange = (e) => {
-    setFormData({ ...formData, password: e.target.value });
-};
+  const handlePasswordChange = (e) => {
+      setPassword(e.target.value);
+  };
 
   // Function to toggle password visibility
   function passToggle() {
