@@ -5,7 +5,7 @@
   define the different routes in the application, and the Route component is used to specify the path 
   and the component to render for each route.
 */
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Login from "./components/auth/LoginForm";
@@ -14,6 +14,17 @@ import CheckIn from "./components/checkIn/CheckInPage";
 
 // Main App component
 const App = () => {
+
+  const [formData, setFormData] = useState({
+        username: '',
+        password: '',
+        location: false,
+    });
+
+    const updateFormData = (newData) => {
+        setFormData(newData);
+    };
+
   // Function to check if a user is logged in
   const isLoggedIn = () => {
     const token = localStorage.getItem("token");
@@ -44,10 +55,10 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Login updateFormData={ updateFormData } />} />
         <Route
           path="/checkIn"
-          element={isLoggedIn() ? <CheckIn /> : <Login />}
+          element={isLoggedIn() ? <CheckIn formData={ formData } updateFormData={ updateFormData } /> : <Login updateFormData={ updateFormData } />}
         />
         <Route
           path="/passwordreset/:auth?"

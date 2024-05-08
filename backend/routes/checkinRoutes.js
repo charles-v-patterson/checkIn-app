@@ -2,8 +2,9 @@ const express = require('express')
 const axios = require('axios');
 const router = express.Router()
 const { isOnNetwork } = require('../controllers/networkController.js');
+const checkInController = require("../controllers/checkinController")
 
-//router.get('/checkin')
+router.post('/api/checkin', checkInController.checkin);
 
 // endpoint to check if user is on a specific network
 router.get('/api/check-network', async (req, res) => {
