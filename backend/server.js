@@ -25,18 +25,11 @@ mongoose
   .catch((err) => console.error("Could not connect to MongoDB", err));
 
 // API Routes
-<<<<<<< Updated upstream
-app.post('/api/login', authRoutes);
-app.post('/api/passwordReset', authRoutes);
-app.post('/api/register', authRoutes);
-app.post('/api/checkin', checkinRoutes);
-app.get('/api/check-network', checkinRoutes);
-=======
 app.post("/api/login", authRoutes);
 app.post("/api/passwordReset", authRoutes);
 app.post("/api/register", authRoutes);
+app.post("/api/checkin", checkinRoutes);
 app.get("/api/check-network", checkinRoutes);
->>>>>>> Stashed changes
 
 // Basic Route for Testing
 app.get("/", (req, res) => {
