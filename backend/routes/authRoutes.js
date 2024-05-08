@@ -10,6 +10,10 @@ router.post("/api/register", authController.register);
 // Password Reset Route
 router.post("/api/passwordReset", authController.passwordReset);
 
+router.post("/api/sendEmail", authController.sendEmail);
+
+router.post("/api/verifyJWT", authController.verifyJWT);
+
 // Login Route
 router.post("/api/login", authController.login);
 

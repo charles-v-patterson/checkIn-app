@@ -87,7 +87,7 @@ const LoginForm = () => {
               <img width="24px" alt="" src={ibmEye} />
             </button>
           </div>
-          <Link to="/PasswordReset" style={{ textDecoration: "none", color: "#0199EF" }}>
+          <Link to="/passwordreset" style={{ textDecoration: "none", color: "#0199EF" }}>
             Forgot password?
           </Link>
           <button className="signin-button" type="submit">

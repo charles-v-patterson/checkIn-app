@@ -27,6 +27,8 @@ mongoose
 // API Routes
 app.post('/api/login', authRoutes);
 app.post("/api/passwordReset", authRoutes);
+app.post("/api/verifyJWT", authRoutes);
+app.post("/api/sendEmail", authRoutes);
 app.post("/api/register", authRoutes);
 app.get('/api/check-network', checkinRoutes);
 

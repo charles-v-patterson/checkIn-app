@@ -3,8 +3,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 // Helper function to create JWTs
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "3d" });
+const createLongToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "3h" });
+};
+
+const createShortToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "15m" });
 };
 
 exports.register = async (req, res) => {
@@ -41,7 +45,7 @@ exports.register = async (req, res) => {
     await newUser.save();
 
     // 4. Generate and send JWT
-    const token = createToken(newUser._id);
+    const token = createLongToken(newUser._id);
     res.status(201).json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -78,7 +82,26 @@ exports.passwordReset = async (req, res) => {
   }
 };
 
-//"$2y$10$ES9rB18FUUttOARnXnC7aeGUQcTbA5K4uIuMAB4bFrNK9/gCIENci"
+exports.sendEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const token = createShortToken(email);
+    res.status(200).json({ token });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.verifyJWT = async (req, res) => {
+    jwt.verify(req.body.auth, process.env.JWT_SECRET, function(err, decoded) {
+      if (err) {
+        res.status(401);
+      }
+      else {
+        res.status(200).json({ decoded });
+      }
+    });
+};
 
 exports.login = async (req, res) => {
   try {
@@ -99,7 +122,7 @@ exports.login = async (req, res) => {
     }
 
     // 4. Generate and send JWT
-    const token = createToken(user._id);
+    const token = createLongToken(user._id);
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });

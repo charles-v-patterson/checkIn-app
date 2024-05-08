@@ -50,7 +50,7 @@ const App = () => {
           element={isLoggedIn() ? <CheckIn /> : <Login />}
         />
         <Route
-          path="/passwordreset"
+          path="/passwordreset/:auth?"
           element={<PasswordReset />}
         />
       </Routes>
