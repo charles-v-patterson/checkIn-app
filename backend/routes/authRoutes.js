@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
 const authMiddleware = require("../middleware/authMiddleware");
-const checkInController = require("../controllers/checkinController")
+const checkInController = require("../controllers/checkinController");
 
 // Register Route
 router.post("/api/register", authController.register);

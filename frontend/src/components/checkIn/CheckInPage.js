@@ -11,12 +11,15 @@ import ibmLogo from "../../img/IBM-Logo.jpg";
 import axios from 'axios';
 
 // CheckInPage component
-const CheckInPage = () => {
+const CheckInPage = ({ formData, updateFormData }) => {
   const [isAtWork, setIsAtWork] = useState(false);
   const [isOnNetwork, setIsOnNetwork] = useState(false);
   const [location, setLocation] = useState(null);
   const [workLocation, setWorkLocation] = useState(null);
   const [buttonClicked, setButtonClicked] = useState(false);
+  // State for error message
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   // Fetch the work location and user's current location
   useEffect(() => {
@@ -47,6 +50,8 @@ const CheckInPage = () => {
     .then(response => {
       const { onNetwork } = response.data;
       setIsOnNetwork(onNetwork);
+      //formData.location = onNetwork;
+      updateFormData({ ...formData, location: onNetwork });
     })
     .catch(error => {
       console.error('Error:', error);
@@ -56,7 +61,7 @@ const CheckInPage = () => {
   }, []);
 
   // Function to handle the check-in button click
-  const handleCheckIn = () => {
+  const handleCheckIn = async () => {
     if (location && workLocation) {
       const distance = getDistanceFromLatLonInKm(
         location.lat,
@@ -67,7 +72,24 @@ const CheckInPage = () => {
 
       // Check if the user is at work based on the distance
       setIsAtWork(distance < 1); // Consider user to be at work if they are less than 0.3 km away
+      updateFormData({ ...formData, location: distance < 1 });
+      //formData.location = distance < 1;
+      
+      try {
+        // Send a POST request to the server
+        await axios.post("/api/checkin", { formData });
+      } catch (error) {
+        // If there is an error with the request, set the error message
+        if (error.response) {
+          setErrorMessage(error.response.data.error);
+        } else {
+          // If there is no response, set a generic error message
+          setErrorMessage("Check in failed. Please try again.");
+        }
+      }
+
     }
+
     // Set the button clicked state to true
     setButtonClicked(true);
   };
