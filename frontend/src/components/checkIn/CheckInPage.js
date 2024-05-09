@@ -127,13 +127,12 @@ const CheckInPage = ({ formData, updateFormData }) => {
   return (
     <div className="checkin-page-container">
       <div className="checkin-header">
-        <h1 className="header-title">Punch Card</h1>
-        <hr className="checkin-hr"></hr>
-        <img height="45px" alt="" src={ibmLogo} />
-      </div>{" "}
+        <h1 className="title">Punch Card</h1>
+      </div>
+      <hr className="checkin-hr"></hr>
+      {" "}
       {/* Add styling */}
       <div className="checkin-form-box">
-        <h1 className="checkin-title">IBM Monroe CIC </h1>
         {buttonClicked && (
           <>
             <p className="location">
@@ -145,14 +144,7 @@ const CheckInPage = ({ formData, updateFormData }) => {
                 Thanks! You have been checked in and logged as working in the
                 office today.
               </p>
-            ) 
-            : isOnNetwork ? (
-              <p className="status">
-                Thanks! You have been checked in and logged as working in the
-                office today.
-              </p>
-            )
-            : (
+            ) : (
               <p className="status">
                 Thanks! You have been checked in and logged as working remotely
                 today.
@@ -162,9 +154,10 @@ const CheckInPage = ({ formData, updateFormData }) => {
         )}
         {!buttonClicked && (
           <button className="checkin-button" onClick={handleCheckIn}>
-            Check In Now
+            Check In
           </button>
         )}
+        <img  alt="" src={ibmLogo} />
       </div>
     </div>
   );
@@ -172,3 +165,4 @@ const CheckInPage = ({ formData, updateFormData }) => {
 
 // Export the CheckInPage component
 export default CheckInPage;
+

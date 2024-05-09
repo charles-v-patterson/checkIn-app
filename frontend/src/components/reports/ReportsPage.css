@@ -112,10 +112,6 @@
     background-color: #FFFFFF;
     min-height: 250px;
 }
-
-.calendar-body{
-    min-height: 250px;
-}
  
 th {
     font-size: 20px;
@@ -179,7 +175,7 @@ header .calendar-current-date {
  
 .calendar-body {
     
-    min-height: 490px;
+    min-height: 410px;
     padding: 20px;
 }
  
