@@ -50,7 +50,6 @@ const CheckInPage = ({ formData, updateFormData }) => {
     .then(response => {
       const { onNetwork } = response.data;
       setIsOnNetwork(onNetwork);
-      //formData.location = onNetwork;
       updateFormData({ ...formData, location: onNetwork });
     })
     .catch(error => {
@@ -73,7 +72,6 @@ const CheckInPage = ({ formData, updateFormData }) => {
       // Check if the user is at work based on the distance
       setIsAtWork(distance < 1); // Consider user to be at work if they are less than 0.3 km away
       updateFormData({ ...formData, location: distance < 1 });
-      //formData.location = distance < 1;
       
       try {
         // Send a POST request to the server
@@ -144,7 +142,12 @@ const CheckInPage = ({ formData, updateFormData }) => {
                 Thanks! You have been checked in and logged as working in the
                 office today.
               </p>
-            ) : (
+            ) : isOnNetwork ? (
+              <p className="status">
+                Thanks! You have been checked in and logged as working in the
+                office today.
+              </p>
+            ): (
               <p className="status">
                 Thanks! You have been checked in and logged as working remotely
                 today.

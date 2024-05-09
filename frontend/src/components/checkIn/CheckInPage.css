@@ -22,7 +22,7 @@
 }
 
 .location {
-  color: white;
+  color: #000000;
 }
 
 .checkin-button {
@@ -58,6 +58,7 @@
 }
 
 .status {
+  color: #000000;
   font-size: 20px;
   font-weight: bold;
 }
