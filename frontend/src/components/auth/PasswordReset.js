@@ -25,7 +25,6 @@ const EmailForm = () => {
       axios.post('/api/verifyJWT', { auth })
       .then(response => {
         const id = response.data.decoded.id;
-        console.log(id);
         setEmail(id)
         setAuthorized(true);
       })
@@ -43,7 +42,6 @@ const EmailForm = () => {
     try {
       const response = await axios.post("/api/sendEmail", { email });
       // Store token in local storage
-      console.log(response.data.token);
       setSubmitted(true);
     } catch (error) {
       // If there is an error with the request, set the error message
@@ -59,7 +57,6 @@ const EmailForm = () => {
   const handlePasswordSubmit = async (e) => {
     // Prevent default form submission
     e.preventDefault();
-
     try {
       if (password === cpassword){
         const regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/;

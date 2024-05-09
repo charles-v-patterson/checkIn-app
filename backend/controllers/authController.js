@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require('nodemailer');
 
 // Helper function to create JWTs
 const createLongToken = (id) => {
@@ -83,13 +84,31 @@ exports.passwordReset = async (req, res) => {
 };
 
 exports.sendEmail = async (req, res) => {
-  try {
-    const { email } = req.body;
-    const token = createShortToken(email);
-    res.status(200).json({ token });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  const { email } = req.body;
+  const token = createShortToken(email);
+  const link = `localhost:3000/passwordreset/${token}`
+  const transporter = nodemailer.createTransport({
+    service: 'gmail', // Example using Gmail
+    auth: {
+        user: process.env.SERVICE_EMAIL_NAME,
+        pass: process.env.SERVICE_EMAIL_PASSWORD
+    }
+  });
+
+  const mailOptions = {
+      from: process.env.SERVICE_EMAIL_NAME,
+      to: email,
+      subject: 'Test email from Nodemailer',
+      text: link
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          res.status(500).json({ error: error.message });
+      } else {
+          res.status(200).json({ token });
+      }
+  });
 };
 
 exports.verifyJWT = async (req, res) => {
