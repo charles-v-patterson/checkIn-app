@@ -174,7 +174,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     // 2. Find user by email
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: new RegExp(email, "i") });
     if (!user) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
@@ -183,7 +183,7 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ error: "Invalid password or password" });
+      return res.status(400).json({ error: "Invalid email or password" });
     }
 
     // 4. Generate and send JWT

@@ -1,19 +1,23 @@
+const User = require("../models/User");
 const CheckIn = require("../models/CheckIn");
 const moment = require("moment"); // If you want to include timestamps
 
 exports.checkin = async (req, res) => {
   try {
+    
+    const user = await User.findOne({ email : new RegExp(req.body.formData.email, "i") });
+
     const checkIn = new CheckIn({
-      user: req.body.formData.email,
+      user: req.body.formData.email === user.email ? req.body.formData.email : user.email,
       date: moment().format("MM-DD-YYYY"), // Using moment.js for formatted timestamp
       location: req.body.formData.location ? "In Office" : "Remote",
     });
-    
+  
     const result = await checkIn.save();
     console.log(`Check in documents were inserted with the _id: ${checkIn._id}.`);
     res
       .status(201)
-      .json({ message: "Check-in successful", checkIn: savedCheckIn });
+      .json({ message: "Check-in successful", checkIn: result });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

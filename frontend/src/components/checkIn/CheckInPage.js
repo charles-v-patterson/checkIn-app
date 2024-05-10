@@ -100,6 +100,21 @@ const CheckInPage = ({ formData, updateFormData }) => {
 
     }
 
+    else if (isOnNetwork) {
+      try {
+        // Send a POST request to the server
+        await axios.post("/api/checkin", { formData });
+      } catch (error) {
+        // If there is an error with the request, set the error message
+        if (error.response) {
+          setErrorMessage(error.response.data.error);
+        } else {
+          // If there is no response, set a generic error message
+          setErrorMessage("Check in failed. Please try again.");
+        }
+      }
+    }
+
     // Set the button clicked state to true
     setButtonClicked(true);
   };
