@@ -143,6 +143,31 @@ exports.verifyJWT = async (req, res) => {
     });
 };
 
+exports.getEmployees = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const response =  await User.aggregate([{
+      '$match': {
+        'email': new RegExp(email, "i")
+      }
+    },
+    {
+        '$graphLookup': {
+            'from': 'users',
+            'startWith': '$email',
+            'connectFromField': 'email',
+            'connectToField': 'manager',
+            'as': 'employees'
+      }
+    }]);
+    const employees = response[0].employees.map(employee => employee.email);
+    const numemployees = employees.length;
+    res.status(200).json({ employees: employees, numemployees: numemployees });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+};
+
 exports.login = async (req, res) => {
   try {
     // 1. Destructure email and password from request body
