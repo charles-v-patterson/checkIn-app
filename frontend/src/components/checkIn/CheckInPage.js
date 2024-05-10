@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from "react";
 import "./CheckInPage.css"; // Import the CSS file
 import ibmLogo from "../../img/IBM-Logo.jpg";
+import { Link } from "react-router-dom";
 import axios from 'axios';
 
 // CheckInPage component
@@ -160,6 +161,11 @@ const CheckInPage = ({ formData, updateFormData }) => {
             Check In
           </button>
         )}
+        <Link to="/ReportsPage" style={{ display: "flex", justifyContent: "center", textDecoration: "none"}}>
+        <button className="reports-button" >
+            Reports
+          </button>
+          </Link>
         <img  alt="" src={ibmLogo} />
       </div>
     </div>
