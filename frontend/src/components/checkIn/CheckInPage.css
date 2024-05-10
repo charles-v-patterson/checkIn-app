@@ -1,71 +1,66 @@
-.checkin-page-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  color: #ffffff;
+.app {
+  text-align: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #0f62fe;
 }
 
-.checkin-form-box {
+.title {
+  margin: 0px;
+  width: auto;
+  font-family: 'Codystar';
+  font-size: 80px;
+  color: #000000;
+}
+.checkin-header {
+  margin-top: 3%;
   display: flex;
   flex-direction: column;
-  background-color: #eeeeee;
-  padding: 40px;
-  gap: 20px;
-  box-shadow: 10px 10px black;
-  align-items: center;
-}
-
-.checkin-title {
-  justify-content: center;
-  margin: 20px;
-  font-size: 40px;
-  color: #0199ef;
-  padding: 10px;
-  font-weight: 500;
-
+  background-color: #EEEEEE;
+  padding: 15px 40px;
+  box-shadow: 10px 8px black;
 }
 
 .location {
-  margin: 10px;
-  font-size: 20px;
-  font-weight: 400;
   color: #000000;
-  justify-content: center;
-  align-items: center;
-  display: flex;
 }
 
 .checkin-button {
+  margin-bottom: 60px;;
+  justify-self: center;
+  width: max-content;
   border-radius: 10px;
   border: none;
-  padding: 10px 15px;
-  font-weight: 300;
-  font-size: 18px;
+  padding: 10px 30px;
+  font-weight: 500;
+  font-size: 24px;
   cursor: pointer;
-  background-color: #0199ef;
-  color: #ffffff;
-  width: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
+  background-color: #0199EF;
+  color: #FFFFFF;
 }
 
 .checkin-button:hover {
   background-color: #7ac2eb; /* Darker blue */
 }
 
+.checkin-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top;
+  height: 100vh;
+  color: #FFFFFF;
+}
 .checkin-hr {
-  margin: 5px;
-  border: 1px solid #000000;
+  margin: 0px;
+  width: 55%;
+  border: 4px solid #000000;
 }
 
 .status {
+  color: #000000;
   font-size: 20px;
   font-weight: bold;
-  color: #000000;
 }
 
 .logo {
@@ -75,17 +70,7 @@
   width: 100px;
 }
 
-.checkin-header {
-  position: absolute;
-  gap: 10px;
-  top: 10px;
-  left: 20px;
-  display: flex;
-  flex-direction: row;
-}
-
-.checkin-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+.checkin-form-box {
+  margin-top: 60px;
+  display: grid;
 }

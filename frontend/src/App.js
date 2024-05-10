@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Login from "./components/auth/LoginForm";
+import Reports from "./components/reports/ReportsPage";
 import PasswordReset from "./components/auth/PasswordReset";
 import CheckIn from "./components/checkIn/CheckInPage";
 
@@ -56,6 +57,8 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Login updateFormData={ updateFormData } />} />
+        {/* currently no check for if manager */}
+        <Route path="/ReportsPage" element={<Reports />} />
         <Route
           path="/checkIn"
           element={isLoggedIn() ? <CheckIn formData={ formData } updateFormData={ updateFormData } /> : <Login updateFormData={ updateFormData } />}
