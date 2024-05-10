@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
 const checkinRoutes = require("./routes/checkinRoutes");
+const reportRoutes = require("./routes/reportRoutes");
 
 // Configure Environment Variables
 dotenv.config();
@@ -32,6 +33,7 @@ app.post("/api/sendEmail", authRoutes);
 app.post("/api/register", authRoutes);
 app.post("/api/checkin", checkinRoutes);
 app.get("/api/check-network", checkinRoutes);
+app.get("/api/reports", reportRoutes);
 
 // Basic Route for Testing
 app.get("/", (req, res) => {

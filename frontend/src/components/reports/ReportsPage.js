@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ReportsPage.css";
 import ibmLogo from "../../img/IBM-Logo.jpg";
 import check from "../../img/check_icon.png";
 import arrowBack from "../../img/arrow-back-ios.png";
 import arrowForward from "../../img/arrow-forward-ios.png";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 const data = [
   { name: "Anom", inOffice: 2, remote: 3 },
@@ -50,12 +51,16 @@ const data2 = [
     total: 2,
   },
 ];
+
 // reportsForm component
 const ReportsPage = () => {
+  const [dbData, setDbData] = useState({});
   const [selectedUser, setSelectedUser] = useState("");
   const [view, setView] = useState("Sum");
   const [lit, setLit] = useState("<tr>");
   const [currentD, setcurrentD] = useState();
+  // State for error message
+  const [errorMessage, setErrorMessage] = useState("");
   let date = new Date();
   let monthT = date.getMonth();
   let year = date.getFullYear();
@@ -77,6 +82,28 @@ const ReportsPage = () => {
     "November",
     "December",
   ];
+
+  // Function to handle form submission
+  const handleData = async () => {
+    try {
+      // Send a POST request to the server
+      const response = await axios.get("/api/reports");
+      
+      setDbData(response);
+
+      console.log("Hello there");
+      console.log(dbData);
+
+    } catch (error) {
+      // If there is an error with the request, set the error message
+      if (error.response) {
+        setErrorMessage(error.response.data.error);
+      } else {
+        // If there is no response, set a generic error message
+        setErrorMessage("Data error.");
+      }
+    }
+  };
 
   // Function to generate the calendar
   const manipulate = () => {
