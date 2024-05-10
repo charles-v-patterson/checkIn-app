@@ -283,6 +283,11 @@ const ReportsPage = () => {
                 })}
               </table>
             </div>
+            <Link to="/checkin" style={{display: "flex", justifyContent: "end"}}>
+              <button className="back-button" >
+                Back
+              </button>
+              </Link>
           </>
         ) : view === "Mon" ? (
           <>
@@ -337,6 +342,9 @@ const ReportsPage = () => {
                 </table>
               </div>
             </div>
+            <button className="back-button" onClick={() => setView("Sum")}>
+          Back
+        </button>
           </>
         ) : (
           <>
@@ -413,11 +421,12 @@ const ReportsPage = () => {
                 })}
               </table>
             </div>
-          </>
-        )}
-        <button className="back-button" onClick={() => setView("Sum")}>
+            <button className="back-button" onClick={() => setView("Sum")}>
           Back
         </button>
+          </>
+        )}
+        
       </div>
     </div>
   );

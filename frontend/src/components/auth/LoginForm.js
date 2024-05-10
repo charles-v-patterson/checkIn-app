@@ -74,7 +74,7 @@ const LoginForm = ({ updateFormData }) => {
         <h1 className="login-title">Sign In</h1>
         <h2 className="login-subtitle">Sign in to check into your CIC</h2>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
-        <form className="login-form" onSubmit={handleSubmit}>
+        <div className="login-form" >
           <div className="form-group">
             <input
               type="email"
@@ -93,6 +93,9 @@ const LoginForm = ({ updateFormData }) => {
               placeholder="Password"
               onChange={handlePasswordChange}
               required
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSubmit(e);
+              }}
             />
             <button className="eye-button" onClick={passToggle}>
               <img width="24px" alt="" src={ibmEye} />
@@ -101,10 +104,10 @@ const LoginForm = ({ updateFormData }) => {
           <Link to="/passwordreset" style={{ textDecoration: "none", color: "#0199EF" }}>
             Forgot password?
           </Link>
-          <button className="signin-button" type="submit">
+          <button className="signin-button" onClick={handleSubmit}>
             Login
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );
