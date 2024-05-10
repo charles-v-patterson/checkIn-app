@@ -15,7 +15,7 @@ const createShortToken = (id) => {
 exports.register = async (req, res) => {
   try {
     // 1. Destructure email and password from request body
-    const { email, password } = req.body;
+    const { email, password, name, manager } = req.body;
 
     const emailregex = /^[a-zA-Z0-9.]+@(?:[a-zA-Z.]{3})?ibm\.com$/;
     const passregex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/;
@@ -37,12 +37,8 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: "Email already in use" });
     }
 
-    // 3. Create new user
-    const newUser = new User({
-      email,
-      password
-    });
-
+    const newUser = manager ? new User({email, password, name, manager}) : new User({email, password,  name});
+    
     await newUser.save();
 
     // 4. Generate and send JWT
@@ -86,12 +82,28 @@ exports.passwordReset = async (req, res) => {
 exports.sendEmail = async (req, res) => {
   const { email } = req.body;
   const token = createShortToken(email);
-  const html = `<a href=http://localhost:3000/passwordreset/${token}>
-                  <button style="background-color: blue; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                    Reset Password
-                  </button>
-                </a>
-                <p> If the button is not working, paste this link into your browser: http://localhost:3000/passwordreset/${token} </p>`
+  const html = `<head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <style>
+                    body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
+                    .email-container { max-width: 600px; margin: 20px auto; padding: 20px; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; word-break: break-word;}
+                    .button { background-color: #007bff; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
+                    .footer { margin-top: 20px; text-align: center; font-size: 0.8em; color: #777; }
+                  </style>
+                </head>
+                <body>
+                  <div class="email-container">
+                    <h2>Reset Your Password</h2>
+                    <p> A request was made to reset the password for your account. Click the button below or navigate to the link to reset it. This request will expire in 15 minutes</p>
+                    <a href=http://localhost:3000/passwordreset/${token} class="button">
+                        Reset Password
+                    </a>
+                    <p> If the button is not working, paste this link into your browser: </p>
+                    <p> http://localhost:3000/passwordreset/${token} </p>
+                    <p>If you did not request a password reset, please ignore this email</p>
+                  </div>
+                </body>`
 
   const transporter = nodemailer.createTransport( {
     host: "nomail.relay.ibm.com", // hostname
@@ -106,7 +118,7 @@ exports.sendEmail = async (req, res) => {
   const mailOptions = {
       from: process.env.SERVICE_EMAIL_NAME,
       to: email,
-      subject: 'Test email from Nodemailer',
+      subject: 'Password Reset Request',
       html: html
   };
 
