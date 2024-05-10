@@ -15,6 +15,7 @@ import axios from 'axios';
 const CheckInPage = ({ formData, updateFormData }) => {
   const [isAtWork, setIsAtWork] = useState(false);
   const [isOnNetwork, setIsOnNetwork] = useState(false);
+  const [isManager, setIsManager] = useState(false);
   const [location, setLocation] = useState(null);
   const [workLocation, setWorkLocation] = useState(null);
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -45,6 +46,16 @@ const CheckInPage = ({ formData, updateFormData }) => {
         lng: lng,
         address: address,
       });
+    });
+
+    axios.get('/api/getEmployees')
+    .then(response => {
+      const { numemployees } = response.data.numemployees;
+      setIsManager(numemployees !== 0);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      setIsManager(false);
     });
 
     axios.get('/api/check-network')
