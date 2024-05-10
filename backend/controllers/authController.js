@@ -86,24 +86,33 @@ exports.passwordReset = async (req, res) => {
 exports.sendEmail = async (req, res) => {
   const { email } = req.body;
   const token = createShortToken(email);
-  const link = `localhost:3000/passwordreset/${token}`
-  const transporter = nodemailer.createTransport({
-    service: 'gmail', // Example using Gmail
+  const html = `<a href=http://localhost:3000/passwordreset/${token}>
+                  <button style="background-color: blue; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                    Reset Password
+                  </button>
+                </a>
+                <p> If the button is not working, paste this link into your browser: http://localhost:3000/passwordreset/${token} </p>`
+
+  const transporter = nodemailer.createTransport( {
+    host: "nomail.relay.ibm.com", // hostname
+    port: 25, // port for secure SMTP
     auth: {
-        user: process.env.SERVICE_EMAIL_NAME,
-        pass: process.env.SERVICE_EMAIL_PASSWORD
-    }
-  });
+      user: process.env.SERVICE_EMAIL_NAME,
+      pass: process.env.SERVICE_EMAIL_PASSWORD
+    },
+    tls: { rejectUnauthorized: false }
+});
 
   const mailOptions = {
       from: process.env.SERVICE_EMAIL_NAME,
       to: email,
       subject: 'Test email from Nodemailer',
-      text: link
+      html: html
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
+          console.log(error)
           res.status(500).json({ error: error.message });
       } else {
           res.status(200).json({ token });
