@@ -1,7 +1,6 @@
 const { lookup } = require("dns");
 const { mask } = require("ip");
 const { promisify } = require("util");
-//const { parseCIDR } = require('ip');
 const dnsLookup = promisify(lookup);
 
 const isOnNetwork = async (userIPAddress, networkCIDR) => {

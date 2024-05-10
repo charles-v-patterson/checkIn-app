@@ -5,10 +5,10 @@ exports.checkin = async (req, res) => {
   try {
     const checkIn = new CheckIn({
       user: req.body.formData.email,
-      date: moment().format("MMM Do YY"), // Using moment.js for formatted timestamp
+      date: moment().format("MM-DD-YYYY"), // Using moment.js for formatted timestamp
       location: req.body.formData.location ? "In Office" : "Remote",
     });
-
+    
     const result = await checkIn.save();
     console.log(`Check in documents were inserted with the _id: ${checkIn._id}.`);
     res
