@@ -47,11 +47,11 @@ const CheckInPage = ({ formData, updateFormData }) => {
         address: address,
       });
     });
-
-    axios.get('/api/getEmployees')
+    
+    axios.post('/api/getEmployees', { email: formData.email })
     .then(response => {
-      const { numemployees } = response.data.numemployees;
-      setIsManager(numemployees !== 0);
+      console.log(response)
+      setIsManager(response.data.numemployees !== 0);
     })
     .catch(error => {
       console.error('Error:', error);
@@ -172,11 +172,12 @@ const CheckInPage = ({ formData, updateFormData }) => {
             Check In
           </button>
         )}
-        <Link to="/ReportsPage" style={{ display: "flex", justifyContent: "center", textDecoration: "none"}}>
+        {isManager && (<Link to="/ReportsPage" style={{ display: "flex", justifyContent: "center", textDecoration: "none"}}>
         <button className="reports-button" >
             Reports
           </button>
-          </Link>
+          </Link>)
+        }
         <img  alt="" src={ibmLogo} />
       </div>
     </div>

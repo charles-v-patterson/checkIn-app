@@ -17,7 +17,7 @@ router.post("/api/verifyJWT", authController.verifyJWT);
 // Login Route
 router.post("/api/login", authController.login);
 
-router.get("/api/getEmployees", authController.getEmployees);
+router.post("/api/getEmployees", authController.getEmployees);
 
 // Test route (protected)
 router.get("/check-token", authMiddleware, authController.checkToken);
