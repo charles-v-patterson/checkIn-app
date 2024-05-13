@@ -61,7 +61,7 @@ const App = () => {
         <Route path="/" element={<Login updateFormData={ updateFormData } />} />
         {/* currently no check for if manager */}
         <Route 
-          path="/ReportsPage" 
+          path="/reports" 
           element={isLoggedIn() ? <Reports /> : <Login updateFormData={ updateFormData } />}
         />
         <Route
