@@ -2,6 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const CheckIn = require("./models/CheckIn");
+const moment = require("moment");
+const cron = require("node-cron");
+const startNotificationScheduler = require("./notificationScheduler");
 
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
@@ -45,3 +49,21 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
+// Start the notification scheduler
+startNotificationScheduler();
+
+// Function to delete old data
+async function deleteOldData() {
+  const sixMonthsAgo = moment().subtract(6, "months").toDate();
+
+  try {
+    await CheckIn.deleteMany({ date: { $lt: sixMonthsAgo } });
+    console.log("Old data deleted successfully");
+  } catch (error) {
+    console.error("Error deleting old data:", error);
+  }
+}
+
+// Schedule the function to run at 00:00 on the last day of every month
+cron.schedule("0 0 L * *", deleteOldData);
