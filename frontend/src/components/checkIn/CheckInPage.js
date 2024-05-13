@@ -187,7 +187,7 @@ const CheckInPage = ({ formData, updateFormData }) => {
             Check In
           </button>
         )}
-        {isManager && (<Link to="/ReportsPage" style={{ display: "flex", justifyContent: "center", textDecoration: "none"}}>
+        {isManager && (<Link to="/reports" style={{ display: "flex", justifyContent: "center", textDecoration: "none"}}>
         <button className="reports-button" >
             Reports
           </button>

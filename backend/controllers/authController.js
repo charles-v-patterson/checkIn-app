@@ -55,7 +55,7 @@ exports.passwordReset = async (req, res) => {
     const { email, password } = req.body;
 
     // 2. Check if user exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: new RegExp(email, "i") });
     if (existingUser) {
       const regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/;
 
@@ -82,7 +82,6 @@ exports.passwordReset = async (req, res) => {
 exports.sendEmail = async (req, res) => {
   const { email, message } = req.body;
   const token = createShortToken(email);
-  console.log(message);
   let content;
   let subject;
   if (!message) {

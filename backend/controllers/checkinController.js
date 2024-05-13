@@ -4,20 +4,24 @@ const moment = require("moment"); // If you want to include timestamps
 
 exports.checkin = async (req, res) => {
   try {
-    
-    const user = await User.findOne({ email : new RegExp(req.body.formData.email, "i") });
-
-    const checkIn = new CheckIn({
-      user: req.body.formData.email === user.email ? req.body.formData.email : user.email,
-      date: moment().format("MM-DD-YYYY"), // Using moment.js for formatted timestamp
-      location: req.body.formData.location ? "In Office" : "Remote",
-    });
-  
-    const result = await checkIn.save();
-    console.log(`Check in documents were inserted with the _id: ${checkIn._id}.`);
-    res
-      .status(201)
-      .json({ message: "Check-in successful", checkIn: result });
+    const currentDate = moment().format("MM-DD-YYYY");
+    const user = await User.findOne({ email: new RegExp(req.body.formData.email, "i")});
+    const existingCheckin = await CheckIn.findOne({ user: new RegExp(req.body.formData.email, "i"), date: currentDate });
+    if (existingCheckin && existingCheckin.location === "In Office") { }
+    else if (existingCheckin && existingCheckin.location === "Remote") {
+      await CheckIn.updateOne({_id: existingCheckin._id}, {location: req.body.formData.location ? "In Office" : "Remote"} );
+    }
+    else {
+      console.log(req.body.formData)
+      req.body.formData
+      const checkIn = new CheckIn({
+        user: req.body.formData.email === user.email ? req.body.formData.email : user.email,
+        date: currentDate, // Using moment.js for formatted timestamp
+        location: req.body.formData.location ? "In Office" : "Remote",
+      });
+      await checkIn.save();
+    }
+    res.sendStatus(201);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
