@@ -80,8 +80,26 @@ exports.passwordReset = async (req, res) => {
 };
 
 exports.sendEmail = async (req, res) => {
-  const { email } = req.body;
+  const { email, message } = req.body;
   const token = createShortToken(email);
+  console.log(message);
+  let content;
+  let subject;
+  if (!message) {
+    content = `<h2>Reset Your Password</h2>
+               <p> A request was made to reset the password for your account. Click the button below or navigate to the link to reset it. This request will expire in 15 minutes</p>
+               <a href=http://localhost:3000/passwordreset/${token} class="button">
+                   Reset Password
+               </a>
+               <p> If the button is not working, paste this link into your browser: </p>
+               <p> http://localhost:3000/passwordreset/${token} </p>
+               <p>If you did not request a password reset, please ignore this email</p>`;
+    subject = 'Password Reset Request';
+  }
+  else {
+    content = `<p>${message}</p>`;
+    subject = 'Notification from IBM Punch Card';
+  }
   const html = `<head>
                   <meta charset="UTF-8">
                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -94,14 +112,7 @@ exports.sendEmail = async (req, res) => {
                 </head>
                 <body>
                   <div class="email-container">
-                    <h2>Reset Your Password</h2>
-                    <p> A request was made to reset the password for your account. Click the button below or navigate to the link to reset it. This request will expire in 15 minutes</p>
-                    <a href=http://localhost:3000/passwordreset/${token} class="button">
-                        Reset Password
-                    </a>
-                    <p> If the button is not working, paste this link into your browser: </p>
-                    <p> http://localhost:3000/passwordreset/${token} </p>
-                    <p>If you did not request a password reset, please ignore this email</p>
+                    ${content}
                   </div>
                 </body>`
 
@@ -118,7 +129,7 @@ exports.sendEmail = async (req, res) => {
   const mailOptions = {
       from: process.env.SERVICE_EMAIL_NAME,
       to: email,
-      subject: 'Password Reset Request',
+      subject: subject,
       html: html
   };
 
