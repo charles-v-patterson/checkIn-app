@@ -20,7 +20,7 @@ router.post("/api/login", authController.login);
 router.post("/api/getEmployees", authController.getEmployees);
 
 // Test route (protected)
-router.get("/check-token", authMiddleware, authController.checkToken);
-router.get("/status", authMiddleware, checkInController.getCheckInStatus);
+router.get("/api/check-token", authMiddleware, authController.checkToken);
+router.get("/api/status", authMiddleware, checkInController.getCheckInStatus);
 
 module.exports = router;

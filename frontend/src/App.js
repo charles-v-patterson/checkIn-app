@@ -17,7 +17,7 @@ import CheckIn from "./components/checkIn/CheckInPage";
 const App = () => {
 
   const [formData, setFormData] = useState({
-        username: '',
+        email: '',
         password: '',
         location: false,
     });
@@ -45,6 +45,8 @@ const App = () => {
         return false;
       }
 
+      formData.email = decodedToken.id;
+
       // Token seems valid
       return true;
     } catch (error) {
@@ -58,7 +60,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login updateFormData={ updateFormData } />} />
         {/* currently no check for if manager */}
-        <Route path="/ReportsPage" element={<Reports />} />
+        <Route 
+          path="/ReportsPage" 
+          element={isLoggedIn() ? <Reports /> : <Login updateFormData={ updateFormData } />}
+        />
         <Route
           path="/checkIn"
           element={isLoggedIn() ? <CheckIn formData={ formData } updateFormData={ updateFormData } /> : <Login updateFormData={ updateFormData } />}

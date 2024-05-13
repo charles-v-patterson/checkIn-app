@@ -9,7 +9,7 @@ const createLongToken = (id) => {
 };
 
 const createShortToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: 300 });
 };
 
 exports.register = async (req, res) => {
@@ -42,7 +42,7 @@ exports.register = async (req, res) => {
     await newUser.save();
 
     // 4. Generate and send JWT
-    const token = createLongToken(newUser._id);
+    const token = createShortToken(newUser._id);
     res.status(201).json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -198,7 +198,7 @@ exports.login = async (req, res) => {
     }
 
     // 4. Generate and send JWT
-    const token = createLongToken(user._id);
+    const token = createShortToken(user.email);
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -207,5 +207,5 @@ exports.login = async (req, res) => {
 
 // Basic function to check token validity
 exports.checkToken = async (req, res) => {
-  res.status(200).json({ message: "Token is valid" });
+  res.status(200).json({ validToken: true });
 };

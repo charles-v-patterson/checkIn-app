@@ -25,7 +25,6 @@ exports.generateReport = async (req, res) => {
       };
     });
 
-    console.log(JSON.stringify(extractedReports, null, 2));
     // Send the report
     res.json(report);
   } catch (error) {
