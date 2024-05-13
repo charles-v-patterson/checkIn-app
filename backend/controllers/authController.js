@@ -138,7 +138,7 @@ exports.sendEmail = async (req, res) => {
           console.log(error)
           res.status(500).json({ error: error.message });
       } else {
-          res.status(200).json({ token });
+          res.sendStatus(200);
       }
   });
 };
