@@ -16,11 +16,7 @@ import CheckIn from "./components/checkIn/CheckInPage";
 // Main App component
 const App = () => {
 
-  const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-        location: false,
-    });
+  const [formData, setFormData] = useState({});
 
     const updateFormData = (newData) => {
         setFormData(newData);
@@ -44,6 +40,7 @@ const App = () => {
         return false;
       }
 
+      // set the users email to the email in the token to ensure persistence
       formData.email = decodedToken.id;
 
       // Token seems valid

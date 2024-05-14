@@ -12,7 +12,6 @@ exports.checkin = async (req, res) => {
       await CheckIn.updateOne({_id: existingCheckin._id}, {location: req.body.formData.location ? "In Office" : "Remote"} );
     }
     else {
-      req.body.formData
       const checkIn = new CheckIn({
         user: req.body.formData.email === user.email ? req.body.formData.email : user.email,
         date: currentDate, // Using moment.js for formatted timestamp
