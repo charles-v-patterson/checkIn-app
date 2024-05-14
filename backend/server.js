@@ -37,7 +37,7 @@ app.post("/api/sendEmail", authRoutes);
 app.post("/api/register", authRoutes);
 app.post("/api/checkin", checkinRoutes);
 app.get("/api/check-network", checkinRoutes);
-app.get("/api/reports", reportRoutes);
+app.post("/api/reports", reportRoutes);
 app.post("/api/getEmployees", authRoutes);
 app.get("/api/check-token", authRoutes);
 

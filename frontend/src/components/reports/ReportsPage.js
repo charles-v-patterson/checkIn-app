@@ -6,6 +6,7 @@ import arrowBack from "../../img/arrow-back-ios.png";
 import arrowForward from "../../img/arrow-forward-ios.png";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const data = [
   { name: "Anom", inOffice: 2, remote: 3 },
@@ -53,9 +54,10 @@ const data2 = [
 ];
 
 // reportsForm component
-const ReportsPage = () => {
-  const [dbData, setDbData] = useState({});
+const ReportsPage = ({formData}) => {
+  const [dbData, setDbData] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
+  const [employees, setEmployees] = useState([]);
   const [view, setView] = useState("Sum");
   const [lit, setLit] = useState("<tr>");
   const [currentD, setcurrentD] = useState();
@@ -65,7 +67,25 @@ const ReportsPage = () => {
   let monthT = date.getMonth();
   let year = date.getFullYear();
   const [month, setMonth] = useState(date.getMonth());
+  const navigate = useNavigate();
   // const prenexIcons = document.querySelectorAll(".calendar-navigation span");
+
+  useEffect(() => {
+    console.log(dbData);
+    axios.post('/api/getEmployees', { email: formData.email })
+    .then(response => {
+      if (response.data.numemployees === 0) {
+        navigate("/checkin");
+      }
+      else {
+        setEmployees(response.data.employees);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      navigate("/checkin");
+    });
+  }, []);
 
   // Array of month names
   const months = [
@@ -86,14 +106,12 @@ const ReportsPage = () => {
   // Function to handle form submission
   const handleData = async () => {
     try {
+
       // Send a POST request to the server
-      const response = await axios.get("/api/reports");
+      const response = await axios.post("/api/reports", {employees: employees});
       
-      setDbData(response);
-
-      console.log("Hello there");
-      console.log(dbData);
-
+      console.log(response.data);
+      setDbData(response.data);
     } catch (error) {
       // If there is an error with the request, set the error message
       if (error.response) {
@@ -230,7 +248,7 @@ const ReportsPage = () => {
                   ? `Monthly Summary (${selectedUser})`
                   : `Detailed Report (${selectedUser})`}
               </h1>
-              <button className="arrow-button">
+              <button className="arrow-button" onClick={handleData}>
                 <img alt="" width="30px" src={arrowBack} />
               </button>
               <h2 className="reports-date">04/29/24 - 05/03/24</h2>

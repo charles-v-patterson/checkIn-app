@@ -5,6 +5,8 @@ import "./LoginForm.css";
 import ibmEye from "../../img/ibm eye.png";
 import ibmLogo from "../../img/IBM-Logo.jpg";
 import { Link } from "react-router-dom";
+import ReportsPage from "../reports/ReportsPage";
+import { jwtDecode } from "jwt-decode";
 
 // LoginForm component
 const LoginForm = ({ updateFormData }) => {
@@ -28,6 +30,9 @@ const LoginForm = ({ updateFormData }) => {
       // Store token in local storage
       localStorage.setItem("token", response.data.token);
 
+      const decodedToken = jwtDecode(response.data.token);
+
+      setFormData({...formData, email: decodedToken.id});
       updateFormData(formData);
 
       // Redirect to check-in page
