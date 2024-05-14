@@ -42,7 +42,6 @@ async function checkUsersAndSendNotifications() {
   // Check if today is a holiday
   const isHoliday = hd.isHoliday(new Date());
   if (isHoliday && isCompanyHoliday(isHoliday)) {
-    console.log("Today is a holiday, not sending notifications.");
     return;
   }
 
@@ -63,7 +62,7 @@ async function checkUsersAndSendNotifications() {
   usersNotCheckedIn.forEach(async (user) => {
     await sendEmail({body: {
                       email : user.email,
-                      message : "Reminder: You have not checked in today. </p> <p>Please remember to check in today."
+                      message : `Reminder: You have not checked in today.</p> <a href=http://localhost:3000/ class="button">Check In</a><p>Check in to set your location for the day.`
                     }});
   });
 }

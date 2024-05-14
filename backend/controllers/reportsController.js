@@ -11,14 +11,6 @@ exports.generateReport = async (req, res) => {
       [
         {
           $lookup:
-            /**
-             * from: The target collection.
-             * localField: The local join field.
-             * foreignField: The target join field.
-             * as: The name for the results.
-             * pipeline: Optional pipeline to run on the foreign collection.
-             * let: Optional variables to use in the pipeline field stages.
-             */
             {
               from: "users",
               localField: "user",
@@ -28,9 +20,6 @@ exports.generateReport = async (req, res) => {
         },
         {
           $set:
-            /**
-             * query: The query in MQL.
-             */
             {
               name: "$user.name",
               email: "$user.email",
@@ -38,32 +27,18 @@ exports.generateReport = async (req, res) => {
         },
         {
           $unset:
-            /**
-             * Provide the field name to exclude.
-             * To exclude multiple fields, pass the field names in an array.
-             */
             "user",
         },
         {
           $match:
-            /**
-             * query: The query in MQL.
-             */
             {
               email: {
-                $in: [
-                  "manager@ibm.com",
-                  "Fred.Smith@ibm.com",
-                ],
+                $in: req.body.employees,
               },
             },
         },
         {
           $group:
-            /**
-             * _id: The id of the group.
-             * fieldN: The first field name.
-             */
             {
               _id: "$email",
               checkins: {

@@ -106,7 +106,6 @@ exports.sendEmail = async (req, res) => {
                     body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
                     .email-container { max-width: 600px; margin: 20px auto; padding: 20px; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; word-break: break-word;}
                     .button { background-color: #007bff; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
-                    .footer { margin-top: 20px; text-align: center; font-size: 0.8em; color: #777; }
                   </style>
                 </head>
                 <body>
@@ -134,7 +133,6 @@ exports.sendEmail = async (req, res) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-          console.log(error)
           res.status(500).json({ error: error.message });
       } else {
           res.sendStatus(200);

@@ -71,7 +71,6 @@ const ReportsPage = ({formData}) => {
   // const prenexIcons = document.querySelectorAll(".calendar-navigation span");
 
   useEffect(() => {
-    console.log(dbData);
     axios.post('/api/getEmployees', { email: formData.email })
     .then(response => {
       if (response.data.numemployees === 0) {
@@ -110,7 +109,6 @@ const ReportsPage = ({formData}) => {
       // Send a POST request to the server
       const response = await axios.post("/api/reports", {employees: employees});
       
-      console.log(response.data);
       setDbData(response.data);
     } catch (error) {
       // If there is an error with the request, set the error message
@@ -161,7 +159,6 @@ const ReportsPage = ({formData}) => {
       if (seperator % 7 === 0) {
         litTemp += `</tr><tr>`;
       }
-      console.log(date.getDate)
     }
 
     // Loop to add the first dates of the next month
@@ -199,7 +196,6 @@ const ReportsPage = ({formData}) => {
 
     // Call the manipulate function to
     // update the calendar display
-    console.log(month);
     manipulate();
   };
 
@@ -223,7 +219,6 @@ const ReportsPage = ({formData}) => {
 
     // Call the manipulate function to
     // update the calendar display
-    console.log(month);
     manipulate();
   };
 
@@ -248,7 +243,7 @@ const ReportsPage = ({formData}) => {
                   ? `Monthly Summary (${selectedUser})`
                   : `Detailed Report (${selectedUser})`}
               </h1>
-              <button className="arrow-button" onClick={handleData}>
+              <button className="arrow-button">
                 <img alt="" width="30px" src={arrowBack} />
               </button>
               <h2 className="reports-date">04/29/24 - 05/03/24</h2>

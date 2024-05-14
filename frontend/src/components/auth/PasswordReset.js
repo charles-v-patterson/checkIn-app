@@ -66,12 +66,10 @@ const EmailForm = () => {
           setSubmitted(true);
         }
         else {
-          console.log("Password must contain uppercase, lowercase, numbers, special characters, and be at least 12 characters long.")
           setErrorMessage("Password must contain uppercase, lowercase, numbers, special characters, and be at least 12 characters long.");
         }
       }
       else {
-        console.log("Passwords do not match.")
         setErrorMessage("Passwords do not match");
       }
     } catch (error) {
