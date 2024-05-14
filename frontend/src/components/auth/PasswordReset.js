@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ibmLogo from "../../img/IBM-Logo.jpg";
+import "./PasswordReset.css";
 import { useParams } from 'react-router';
 
 // LoginForm component
@@ -66,10 +67,12 @@ const EmailForm = () => {
           setSubmitted(true);
         }
         else {
+          console.log("Password must contain uppercase, lowercase, numbers, special characters, and be at least 12 characters long.")
           setErrorMessage("Password must contain uppercase, lowercase, numbers, special characters, and be at least 12 characters long.");
         }
       }
       else {
+        console.log("Passwords do not match.")
         setErrorMessage("Passwords do not match");
       }
     } catch (error) {
@@ -91,7 +94,7 @@ const EmailForm = () => {
         <hr className="signin-hr"></hr>
         <img height="45px" alt="" src={ibmLogo} />
       </div>{" "}
-      <div className="login-form-box">
+      <div className="reset-form-box">
         {authorized && submitted &&
           <h2 className="login-subtitle"> Password reset</h2>
         }
@@ -124,18 +127,20 @@ const EmailForm = () => {
           </div>
         }
         {!authorized && 
-        <div>
+        <div className="email-form-box">
           <h1 className="login-title">Password Reset</h1>
-          <h2 className="login-subtitle">Enter the email for your account</h2>
+          
+          
           {errorMessage && <p className="error-message">{errorMessage}</p>}
           {submitted ? 
             <h1 className="login-subtitle"> Password reset request sent </h1>
             : 
             <form className="login-form" onSubmit={handleEmailSubmit}>
+              <h2 className="login-subtitle">Enter the email address associated with your accountand we'll<br/>send you a link to reset your password</h2>
               <div className="form-group">
                 <input
                   type="email"
-                  id="textbox"
+                  id="email"
                   value={email}
                   placeholder="Email"
                   onChange={(e) => setEmail(e.target.value)}

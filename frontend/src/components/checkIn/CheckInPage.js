@@ -7,7 +7,7 @@
 */
 import React, { useState, useEffect } from "react";
 import "./CheckInPage.css"; // Import the CSS file
-import ibmLogo from "../../img/IBM-Logo.jpg";
+import ibmLogoPNG from "../../img/ibm-logo-transparent.png";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
@@ -151,7 +151,9 @@ const CheckInPage = ({ formData, updateFormData }) => {
   return (
     <div className="checkin-page-container">
       <div className="checkin-header">
-        <h1 className="title">Punch Card</h1>
+      <h1 className="title">Punch Card</h1>
+        <hr className="signin-hr"></hr>
+        <img height="90x" alt="" src={ibmLogoPNG} />
       </div>
       <hr className="checkin-hr"></hr>
       {" "}
@@ -192,7 +194,6 @@ const CheckInPage = ({ formData, updateFormData }) => {
           </button>
           </Link>)
         }
-        <img  alt="" src={ibmLogo} />
       </div>
     </div>
   );

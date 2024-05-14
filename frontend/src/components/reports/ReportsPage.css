@@ -228,6 +228,13 @@ header .calendar-current-date {
 /* .calendar-dates td.active::before {
     background:#0199EF;
 } */
+
+.calendar-dates td h2{
+    font-size: 16px;
+    color:#0199EF;
+    text-align:center;
+    margin: 0px;
+  }
 .calendar-dates td.inactive {
     color: #aaa;
 }
