@@ -50,7 +50,6 @@ const CheckInPage = ({ formData, updateFormData }) => {
     
     axios.post('/api/getEmployees', { email: formData.email })
     .then(response => {
-      console.log(response)
       setIsManager(response.data.numemployees !== 0);
     })
     .catch(error => {
