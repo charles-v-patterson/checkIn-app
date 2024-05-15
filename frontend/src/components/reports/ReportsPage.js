@@ -82,6 +82,11 @@ const ReportsPage = ({formData}) => {
   const [currentD, setcurrentD] = useState();
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [startOfWeek, setStartOfWeek] = useState();
+  const [endOfWeek, setEndOfWeek] = useState();
+  const [weeksBack, setWeeksBack] = useState(0);
+  const [weeksForward, setWeeksForward] = useState(0);
   let date = new Date();
   let monthT = date.getMonth();
   let year = date.getFullYear();
@@ -108,6 +113,10 @@ const ReportsPage = ({formData}) => {
   useEffect(() => {
     handleData(); 
   }, [employees]); 
+
+  useEffect(() => {
+    getWeek(currentDate)
+  }, [currentDate]); 
 
   // Array of month names
   const months = [
@@ -143,6 +152,15 @@ const ReportsPage = ({formData}) => {
       }
     }
   };
+
+  const getWeek = ( curr ) => {
+    var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+    let first_formatted_date = firstday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
+    var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
+    let last_formatted_date = lastday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
+    setStartOfWeek(first_formatted_date);
+    setEndOfWeek(last_formatted_date);
+  }
   
   const weeklyCounter = (name, type, startdate, enddate)=>{
     let curr = new Date;
@@ -267,7 +285,24 @@ const ReportsPage = ({formData}) => {
     manipulate();
   };
 
-  
+  const prevWeek = () => {
+    if(weeksBack<8){
+    let lastWeekDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+    setCurrentDate(lastWeekDate)
+    setWeeksBack(weeksBack+1)
+    setWeeksForward(weeksForward-1)
+    }
+  };
+
+  const nextWeek = () => {
+    if(weeksForward<0){
+    let nextWeekDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    setCurrentDate(nextWeekDate)
+    setWeeksBack(weeksBack-1)
+    setWeeksForward(weeksForward+1)
+    }
+  };
+
   // Render the reports form
   return (
     <div className="reports-form-container">
@@ -284,11 +319,17 @@ const ReportsPage = ({formData}) => {
               <h1 className="reports-title">
               Summary Report
               </h1>
-              <button className="arrow-button">
+              <button className="arrow-button"
+              onClick={() => {
+                prevWeek();
+              }}>
                 <img alt="" width="30px" src={arrowBack} />
               </button>
-              <h2 className="reports-date">04/29/24 - 05/03/24</h2>
-              <button className="arrow-button">
+              <h2 className="reports-date">{startOfWeek} - {endOfWeek}</h2>
+              <button className="arrow-button"
+              onClick={() => {
+                nextWeek();
+              }}>
                 <img alt="" width="30px" src={arrowForward} />
               </button>
             </div>
@@ -339,11 +380,13 @@ const ReportsPage = ({formData}) => {
                 </tbody>
               </table>
             </div>
-            <Link to="/checkin" style={{ textDecoration: "none", display: "flex", justifyContent: "end"}}>
+            <div style={{   display: "flex", justifyContent: "end"}}>
+            <Link to="/checkin" style={{  textDecoration: "none", display: "flex", justifyContent: "end", width: "max-content",}}>
               <button className="back-button" >
                 Back
               </button>
               </Link>
+              </div>
           </>
         ) : view === "Mon" ? (
           <>
@@ -404,11 +447,17 @@ const ReportsPage = ({formData}) => {
               <h1 className="reports-title">
               Weekly Report ({selectedUser})
               </h1>
-              <button className="arrow-button">
+              <button className="arrow-button"
+              onClick={() => {
+                prevWeek();
+              }}>
                 <img alt="" width="30px" src={arrowBack} />
               </button>
-              <h2 className="reports-date">04/29/24 - 05/03/24</h2>
-              <button className="arrow-button">
+              <h2 className="reports-date">{startOfWeek} - {endOfWeek}</h2>
+              <button className="arrow-button"
+              onClick={() => {
+                nextWeek();
+              }}>
                 <img alt="" width="30px" src={arrowForward} />
               </button>
             </div>
