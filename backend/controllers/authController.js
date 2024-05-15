@@ -195,7 +195,7 @@ exports.login = async (req, res) => {
     }
 
     // 4. Generate and send JWT
-    const token = createShortToken(user.email);
+    const token = createLongToken(user.email);
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });

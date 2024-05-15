@@ -141,7 +141,6 @@ const ReportsPage = ({formData}) => {
       const response = await axios.post("/api/reports", {employees: employees});
       
       setDbData(response.data);
-      console.log(response.data);
     } catch (error) {
       // If there is an error with the request, set the error message
       if (error.response) {
@@ -162,20 +161,33 @@ const ReportsPage = ({formData}) => {
     setEndOfWeek(last_formatted_date);
   }
   
-  const weeklyCounter = (name, type, startdate, enddate)=>{
-    let curr = new Date;
-    let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-    let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
-    let first_formatted_date = firstday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
-    let last_formatted_date = lastday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
+  const weeklyCounter = (name, type)=>{
     let person = dbData.filter((entry) => entry.name === name)[0];
-    console.log(person)
     let amount = person.checkins.filter((checkin) => checkin.location === type && 
-                                        Date.parse(first_formatted_date) <= Date.parse(checkin.date) &&
-                                        Date.parse(checkin.date) <= Date.parse(last_formatted_date));
-    
+                                        Date.parse(startOfWeek) <= Date.parse(checkin.date) &&
+                                        Date.parse(checkin.date) <= Date.parse(endOfWeek));
     return amount.length;
- 
+  }
+
+  const selectedWeeklyCounter = (type)=>{
+    let person = dbData.filter((entry) => entry.name === selectedUser)[0];
+    let amount = person.checkins.filter((checkin) => checkin.location === type && 
+                                        Date.parse(startOfWeek) <= Date.parse(checkin.date) &&
+                                        Date.parse(checkin.date) <= Date.parse(endOfWeek));
+    return amount.length;
+  }
+
+  const weeklyStatus = ()=> {
+    let daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",]
+    let person = dbData.filter((entry) => entry.name === selectedUser)[0];
+    let amount = person.checkins.filter((checkin) => Date.parse(startOfWeek) <= Date.parse(checkin.date) &&
+                                                    Date.parse(checkin.date) <= Date.parse(endOfWeek));
+    let status = {};
+    amount.forEach((checkin) => {
+      return status[daysOfWeek[new Date(checkin.date).getDay()]] = checkin.location;
+    });
+
+    return status;
   }
   // Function to generate the calendar
   const manipulate = () => {
@@ -286,7 +298,7 @@ const ReportsPage = ({formData}) => {
   };
 
   const prevWeek = () => {
-    if(weeksBack<8){
+    if(weeksBack<6){
     let lastWeekDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
     setCurrentDate(lastWeekDate)
     setWeeksBack(weeksBack+1)
@@ -464,58 +476,65 @@ const ReportsPage = ({formData}) => {
             <hr className="reports-hr"></hr>
             <div className="table-div" style={{ overflowY: "auto" }}>
               <table>
-                <tr>
-                  <th>Location</th>
-                  <th>Monday</th>
-                  <th>Tuesday</th>
-                  <th>Wednesday</th>
-                  <th>Thursday</th>
-                  <th>Friday</th>
-                  <th>Total</th>
-                </tr>
-                {data2.map((val, key) => {
-                  return (
-                    <tr key={key}>
-                      <td>{val.Location}</td>
-                      <td>
-                        {val.monday ? (
-                          <img alt="" width="30px" src={check} />
-                        ) : (
-                          <></>
-                        )}
-                      </td>
-                      <td>
-                        {val.tuesday ? (
-                          <img alt="" width="30px" src={check} />
-                        ) : (
-                          <></>
-                        )}
-                      </td>
-                      <td>
-                        {val.wednesday ? (
-                          <img alt="" width="30px" src={check} />
-                        ) : (
-                          <></>
-                        )}
-                      </td>
-                      <td>
-                        {val.thursday ? (
-                          <img alt="" width="30px" src={check} />
-                        ) : (
-                          <></>
-                        )}
-                      </td>
-                      <td>
-                        {val.friday ? (
-                          <img alt="" width="30px" src={check} />
-                        ) : (
-                          <></>
-                        )}
-                      </td>
-                      <td>{val.total}</td>
-                    </tr>
-                  );
-                })}
+                <tbody>
+                  <tr>
+                    <th>Location</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Total</th>
+                  </tr>
+                  {dbData.map((val, key) => {
+                    //if (val.name !== selectedUser) {
+                    //  return
+                    //}
+                    let status = weeklyStatus();
+                    let type = key === 0 ? "In Office" : "Remote";
+                    return (
+                      <tr key={key}>
+                        <td>{type}</td>
+                        <td>
+                          {status.Monday === type ? (
+                            <img alt="" width="30px" src={check} />
+                          ) : (
+                            <></>
+                          )}
+                        </td>
+                        <td>
+                          {status.Tuesday === type ? (
+                            <img alt="" width="30px" src={check} />
+                          ) : (
+                            <></>
+                          )}
+                        </td>
+                        <td>
+                          {status.Wednesday === type  ? (
+                            <img alt="" width="30px" src={check} />
+                          ) : (
+                            <></>
+                          )}
+                        </td>
+                        <td>
+                          {status.Thursday === type  ? (
+                            <img alt="" width="30px" src={check} />
+                          ) : (
+                            <></>
+                          )}
+                        </td>
+                        <td>
+                          {status.Friday === type  ? (
+                            <img alt="" width="30px" src={check} />
+                          ) : (
+                            <></>
+                          )}
+                        </td>
+                        <td>{selectedWeeklyCounter(type)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
               </table>
             </div>
             <button className="back-button" onClick={() => setView("Sum")}>
