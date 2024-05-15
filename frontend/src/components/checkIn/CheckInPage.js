@@ -81,8 +81,8 @@ const CheckInPage = ({ formData, updateFormData }) => {
       );
 
       // Check if the user is at work based on the distance
-      setIsAtWork(distance < 1); // Consider user to be at work if they are less than 0.3 km away
-      updateFormData({ ...formData, location: distance < 1 });
+      setIsAtWork(distance < 1.5); // Consider user to be at work if they are less than 0.3 km away
+      updateFormData({ ...formData, location: distance < 1.5 });
       
       try {
         // Send a POST request to the server
