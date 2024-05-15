@@ -58,7 +58,7 @@ exports.generateReport = async (req, res) => {
     const result = checkIns.map((checkin) => { return { name: checkin.name[0], checkins: checkin.checkins }});
 
     // Send the report
-    res.status(201).json(checkIns);
+    res.status(201).json(result);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'An error occurred while generating the report.' });

@@ -287,46 +287,48 @@ const ReportsPage = ({formData}) => {
             <hr className="reports-hr"></hr>
             <div className="table-div" style={{ overflowY: "auto" }}>
               <table>
-                <tr>
-                  <th>Name</th>
-                  <th>In Office</th>
-                  <th>Remote</th>
-                  <th>Monthly Report</th>
-                  <th>Weekly Report</th>
-                </tr>
+                <tbody>
+                  <tr>
+                    <th>Name</th>
+                    <th>In Office</th>
+                    <th>Remote</th>
+                    <th>Monthly Report</th>
+                    <th>Weekly Report</th>
+                  </tr>
 
-                {dbData.map((val, key) => {
-                  return (
-                    <tr key={key}>
-                      <td>{val.name}</td>
-                      <td>{weeklyCounter(val.name, "In Office")}</td>
-                      <td>{weeklyCounter(val.name, "In Office")}</td>
-                      <td>
-                        <button
-                          className="view-button"
-                          onClick={() => {
-                            setView("Mon");
-                            setSelectedUser(val.name);
-                            manipulate();
-                          }}
-                        >
-                          View
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          className="view-button"
-                          onClick={() => {
-                            setView("Det");
-                            setSelectedUser(val.name);
-                          }}
-                        >
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                  {dbData.map((val, key) => {
+                    return (
+                      <tr key={key}>
+                        <td>{val.name}</td>
+                        <td>{weeklyCounter(val.name, "In Office")}</td>
+                        <td>{weeklyCounter(val.name, "In Office")}</td>
+                        <td>
+                          <button
+                            className="view-button"
+                            onClick={() => {
+                              setView("Mon");
+                              setSelectedUser(val.name);
+                              manipulate();
+                            }}
+                          >
+                            View
+                          </button>
+                        </td>
+                        <td>
+                          <button
+                            className="view-button"
+                            onClick={() => {
+                              setView("Det");
+                              setSelectedUser(val.name);
+                            }}
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
               </table>
             </div>
             <Link to="/checkin" style={{ textDecoration: "none", display: "flex", justifyContent: "end"}}>
