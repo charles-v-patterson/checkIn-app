@@ -8,72 +8,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const data = [
-  { name: "Anom", inOffice: 2, remote: 3 },
-  { name: "Megha", inOffice: 1, remote: 4 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-  { name: "Subham", inOffice: 3, remote: 2 },
-];
-
-const users = [
-  {
-    name: "Fred Smith",
-    checkins: [
-      { date: "05-09-24", location: "In Office" },
-      { date: "05-10-24", location: "In Office" },
-      { date: "05-11-24", location: "In Office" },
-      { date: "05-12-24", location: "In Office" },
-      { date: "05-13-24", location: "In Office" },
-      { date: "05-14-24", location: "Remote" },
-      { date: "05-15-24", location: "In Office" },
-    ],
-  },
-  {
-    name: "Tim Posey",
-    checkins: [
-      { date: "05-09-24", location: "In Office" },
-      { date: "05-10-24", location: "In Office" },
-      { date: "05-11-24", location: "In Office" },
-      { date: "05-12-24", location: "In Office" },
-      { date: "05-13-24", location: "In Office" },
-      { date: "05-14-24", location: "Remote" },
-      { date: "05-15-24", location: "In Office" },
-    ],
-  },
-];
-
-const data2 = [
-  {
-    Location: "In Office",
-    monday: true,
-    tuesday: true,
-    wednesday: false,
-    thursday: true,
-    friday: false,
-    total: 3,
-  },
-  {
-    Location: "Remote",
-    monday: false,
-    tuesday: false,
-    wednesday: true,
-    thursday: false,
-    friday: true,
-    total: 2,
-  },
-];
 
 // reportsForm component
 const ReportsPage = ({ formData }) => {
@@ -118,6 +52,18 @@ const ReportsPage = ({ formData }) => {
   useEffect(() => {
     handleData();
   }, [employees]);
+
+  useEffect(() => {
+    let person = dbData.filter((entry) => entry.name === selectedUser)[0];
+    if (person) {
+      person.checkins.forEach((checkin) => {
+        let status_heading = document.getElementById(`${checkin.date + "-status"}`);
+        if (status_heading) {
+          status_heading.innerHTML = checkin.location;
+        }
+      });
+    }
+  }, [lit, selectedUser]);
 
   useEffect(() => {
     getWeek(currentDate);
@@ -165,6 +111,10 @@ const ReportsPage = ({ formData }) => {
     setEndOfWeek(last_formatted_date);
   }
   
+  const padWithZeros=(num, totalLength)=>{
+    return String(num).padStart(totalLength, '0');
+  }
+
   const weeklyCounter = (name, type)=>{
     let person = dbData.filter((entry) => entry.name === name)[0];
     let amount = person.checkins.filter((checkin) => checkin.location === type && 
@@ -210,37 +160,38 @@ const ReportsPage = ({ formData }) => {
     // Variable to store the generated calendar HTML
     let litTemp = "";
     let seperator = 0;
-    const user = users.find(user => user.name === "Fred Smith");
     
     // Loop to add the last dates of the previous month
     for (let i = dayone; i > 0; i--) {
-      litTemp += `<td class="inactive">${monthlastdate - i + 1}</td>`;
+      let idDate = `${padWithZeros(month, 2)}-${padWithZeros(monthlastdate - i + 1, 2)}-${month === 0 ? yearTemp-1 : yearTemp}`;
+      litTemp += `<td class="inactive">${monthlastdate - i + 1}<h2 id="${idDate + "-status"}"></h2></td>`;
       seperator++;
     }
 
     // Loop to add the dates of the current month
     for (let i = 1; i <= lastdate; i++) {
       // Check if the current date is today
-
-      let status = "";
-      if (typeof user.checkins[i] != "undefined"){
-        status = user.checkins[i].location}
+      let idDate = `${padWithZeros(month+1, 2)}-${padWithZeros(i, 2)}-${yearTemp}`;
+      // if (typeof user.checkins[i] != "undefined"){
+      //   status = user.checkins[i].location}
       let isToday =
         i === date.getDate() &&
         month === new Date().getMonth() &&
         year === new Date().getFullYear()
           ? "active"
           : "";
-      litTemp += `<td class="${isToday}">${i}<h2>${status}</h2></td>`;
+      litTemp += `<td class="${isToday}">${i}<h2 id="${idDate + "-status"}"></h2></td>`;
       seperator++;
       if (seperator % 7 === 0) {
         litTemp += `</tr><tr>`;
       }
     }
+    console.log(litTemp);
 
     // Loop to add the first dates of the next month
     for (let i = dayend; i < 6; i++) {
-      litTemp += `<td class="inactive">${i - dayend + 1}</td>`;
+      let idDate = `${padWithZeros(month+1, 2)}-${padWithZeros(i, 2)}-${month === 11 ? yearTemp+1 : yearTemp}`;
+      litTemp += `<td class="inactive">${i - dayend + 1}<h2 id="${idDate + "-status"}"></h2></td>`;
     }
 
     // update the HTML of the dates element
@@ -285,7 +236,7 @@ const ReportsPage = ({ formData }) => {
   };
 
   const prevWeek = () => {
-    if(weeksBack<8){
+    if(weeksBack<6){
     let lastWeekDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
     setCurrentDate(lastWeekDate)
     setWeeksBack(weeksBack+1)
