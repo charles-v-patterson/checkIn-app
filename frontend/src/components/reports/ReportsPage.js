@@ -132,6 +132,7 @@ const ReportsPage = ({formData}) => {
       const response = await axios.post("/api/reports", {employees: employees});
       
       setDbData(response.data);
+      console.log(response.data);
     } catch (error) {
       // If there is an error with the request, set the error message
       if (error.response) {
@@ -143,12 +144,19 @@ const ReportsPage = ({formData}) => {
     }
   };
   
-  const weeklyCounter = (name, type)=>{
-    let counter = 0;
-    var firstday = new Date(date.setDate(date.getDate() - date.getDay()));
-    let weekStart = firstday.getDate();
+  const weeklyCounter = (name, type, startdate, enddate)=>{
+    let curr = new Date;
+    let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+    let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
+    let first_formatted_date = firstday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
+    let last_formatted_date = lastday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
+    let person = dbData.filter((entry) => entry.name === name)[0];
+    console.log(person)
+    let amount = person.checkins.filter((checkin) => checkin.location === type && 
+                                        Date.parse(first_formatted_date) <= Date.parse(checkin.date) &&
+                                        Date.parse(checkin.date) <= Date.parse(last_formatted_date));
     
-      return counter;
+    return amount.length;
  
   }
   // Function to generate the calendar
@@ -301,7 +309,7 @@ const ReportsPage = ({formData}) => {
                       <tr key={key}>
                         <td>{val.name}</td>
                         <td>{weeklyCounter(val.name, "In Office")}</td>
-                        <td>{weeklyCounter(val.name, "In Office")}</td>
+                        <td>{weeklyCounter(val.name, "Remote")}</td>
                         <td>
                           <button
                             className="view-button"

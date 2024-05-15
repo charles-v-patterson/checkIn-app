@@ -52,6 +52,61 @@ exports.generateReport = async (req, res) => {
               },
             },
         },
+        {
+          $project:
+          {
+            _id: "$_id",
+            name: "$name",
+            checkins: {
+              $map: {
+                input: {
+                  $sortArray: {
+                    input: {
+                      $map: {
+                         input: "$checkins",
+                        as: "checkin",
+                        in: { 
+                          $mergeObjects: [
+                            {
+                              location: "$$checkin.location"
+                            },
+                            { 
+                              date: {
+                                $dateFromString: {
+                                  dateString:
+                                    "$$checkin.date",
+                                  format: "%m-%d-%Y",
+                                },
+                              }
+                            }
+                          ]
+                        },
+                      },
+                    },
+                    sortBy: 1,
+                  },
+                },
+                as: "checkin",
+                in: {
+                  $mergeObjects: [
+                    {
+                      location: "$$checkin.location"
+                    },
+                    { 
+                      date: {
+                        $dateToString: {
+                          date:
+                            "$$checkin.date",
+                          format: "%m-%d-%Y",
+                        },
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
       ]);
 
     
