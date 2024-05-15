@@ -5,7 +5,7 @@ import check from "../../img/check_icon.png";
 import arrowBack from "../../img/arrow-back-ios.png";
 import arrowForward from "../../img/arrow-forward-ios.png";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const data = [
@@ -27,29 +27,32 @@ const data = [
   { name: "Subham", inOffice: 3, remote: 2 },
 ];
 
-const users = 
-  [
-    {
-      "name" : "Fred Smith",
-      "checkins": [ { "date" : "05-09-24", "location" : "In Office" },
-      { "date" : "05-10-24", "location" : "In Office" },
-      { "date" : "05-11-24", "location" : "In Office" },
-      { "date" : "05-12-24", "location" : "In Office" },
-      { "date" : "05-13-24", "location" : "In Office" },
-      { "date" : "05-14-24", "location" : "Remote" },
-      { "date" : "05-15-24", "location" : "In Office" },]
-    },
-    {
-      "name" : "Tim Posey",
-      "checkins": [ { "date" : "05-09-24", "location" : "In Office" },
-      { "date" : "05-10-24", "location" : "In Office" },
-      { "date" : "05-11-24", "location" : "In Office" },
-      { "date" : "05-12-24", "location" : "In Office" },
-      { "date" : "05-13-24", "location" : "In Office" },
-      { "date" : "05-14-24", "location" : "Remote" },
-      { "date" : "05-15-24", "location" : "In Office" },]
-    }
-  ];
+const users = [
+  {
+    name: "Fred Smith",
+    checkins: [
+      { date: "05-09-24", location: "In Office" },
+      { date: "05-10-24", location: "In Office" },
+      { date: "05-11-24", location: "In Office" },
+      { date: "05-12-24", location: "In Office" },
+      { date: "05-13-24", location: "In Office" },
+      { date: "05-14-24", location: "Remote" },
+      { date: "05-15-24", location: "In Office" },
+    ],
+  },
+  {
+    name: "Tim Posey",
+    checkins: [
+      { date: "05-09-24", location: "In Office" },
+      { date: "05-10-24", location: "In Office" },
+      { date: "05-11-24", location: "In Office" },
+      { date: "05-12-24", location: "In Office" },
+      { date: "05-13-24", location: "In Office" },
+      { date: "05-14-24", location: "Remote" },
+      { date: "05-15-24", location: "In Office" },
+    ],
+  },
+];
 
 const data2 = [
   {
@@ -73,7 +76,7 @@ const data2 = [
 ];
 
 // reportsForm component
-const ReportsPage = ({formData}) => {
+const ReportsPage = ({ formData }) => {
   const [dbData, setDbData] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [employees, setEmployees] = useState([]);
@@ -95,28 +98,29 @@ const ReportsPage = ({formData}) => {
   // const prenexIcons = document.querySelectorAll(".calendar-navigation span");
 
   useEffect(() => {
-    axios.post('/api/getEmployees', { email: formData.email })
-    .then(response => {
-      if (response.data.numemployees === 0) {
+    axios
+      .post("/api/getEmployees", { email: formData.email })
+      .then((response) => {
+        if (response.data.numemployees > 0) {
+          setEmployees(response.data.employees);
+          handleData(); // Fetch data immediately after getting employees
+        } else {
+          navigate("/checkin");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
         navigate("/checkin");
-      }
-      else {
-        setEmployees(response.data.employees);
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      navigate("/checkin");
-    });
-  }, []);
+      });
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   useEffect(() => {
-    handleData(); 
-  }, [employees]); 
+    handleData();
+  }, [employees]);
 
   useEffect(() => {
-    getWeek(currentDate)
-  }, [currentDate]); 
+    getWeek(currentDate);
+  }, [currentDate]);
 
   // Array of month names
   const months = [
@@ -136,50 +140,57 @@ const ReportsPage = ({formData}) => {
   // Function to handle form submission
   const handleData = async () => {
     try {
-
-      // Send a POST request to the server
-      const response = await axios.post("/api/reports", {employees: employees});
-      
+      const response = await axios.post("/api/reports", { employees });
       setDbData(response.data);
-      console.log(response.data);
     } catch (error) {
-      // If there is an error with the request, set the error message
-      if (error.response) {
-        setErrorMessage(error.response.data.error);
-      } else {
-        // If there is no response, set a generic error message
-        setErrorMessage("Data error.");
-      }
+      setErrorMessage(error.response?.data?.error || "Data error.");
     }
   };
 
-  const getWeek = ( curr ) => {
+  const getWeek = (curr) => {
     var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-    let first_formatted_date = firstday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
-    var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
-    let last_formatted_date = lastday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
+    let first_formatted_date = firstday.toLocaleString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+    let last_formatted_date = lastday.toLocaleString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
     setStartOfWeek(first_formatted_date);
     setEndOfWeek(last_formatted_date);
-  }
-  
-  const weeklyCounter = (name, type, startdate, enddate)=>{
-    let curr = new Date;
+  };
+
+  const weeklyCounter = (name, type, startdate, enddate) => {
+    let curr = new Date();
     let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-    let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
-    let first_formatted_date = firstday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
-    let last_formatted_date = lastday.toLocaleString("en-US", {day:"2-digit", month: "2-digit", year:"numeric"});
+    let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+    let first_formatted_date = firstday.toLocaleString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    let last_formatted_date = lastday.toLocaleString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
     let person = dbData.filter((entry) => entry.name === name)[0];
-    console.log(person)
-    let amount = person.checkins.filter((checkin) => checkin.location === type && 
-                                        Date.parse(first_formatted_date) <= Date.parse(checkin.date) &&
-                                        Date.parse(checkin.date) <= Date.parse(last_formatted_date));
-    
+    console.log(person);
+    let amount = person.checkins.filter(
+      (checkin) =>
+        checkin.location === type &&
+        Date.parse(first_formatted_date) <= Date.parse(checkin.date) &&
+        Date.parse(checkin.date) <= Date.parse(last_formatted_date)
+    );
+
     return amount.length;
- 
-  }
+  };
   // Function to generate the calendar
   const manipulate = () => {
-    
     // Get the first day of the month
     let dayone = new Date(year, month, 1).getDay();
 
@@ -195,9 +206,8 @@ const ReportsPage = ({formData}) => {
     // Variable to store the generated calendar HTML
     let litTemp = "";
     let seperator = 0;
-    const user = users.find(user => user.name === "Fred Smith");
-    
-  
+    const user = users.find((user) => user.name === "Fred Smith");
+
     // Loop to add the last dates of the previous month
     for (let i = dayone; i > 0; i--) {
       litTemp += `<td class="inactive">${monthlastdate - i + 1}</td>`;
@@ -209,8 +219,9 @@ const ReportsPage = ({formData}) => {
       // Check if the current date is today
 
       let status = "";
-      if (typeof user.checkins[i] != "undefined"){
-        status = user.checkins[i].location}
+      if (typeof user.checkins[i] != "undefined") {
+        status = user.checkins[i].location;
+      }
       let isToday =
         i === date.getDate() &&
         monthT === new Date().getMonth() &&
@@ -286,20 +297,18 @@ const ReportsPage = ({formData}) => {
   };
 
   const prevWeek = () => {
-    if(weeksBack<8){
-    let lastWeekDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-    setCurrentDate(lastWeekDate)
-    setWeeksBack(weeksBack+1)
-    setWeeksForward(weeksForward-1)
+    if (weeksBack < 8) {
+      setCurrentDate(new Date(currentDate - 7 * 24 * 60 * 60 * 1000));
+      setWeeksBack(weeksBack + 1);
+      setWeeksForward(weeksForward - 1);
     }
   };
 
   const nextWeek = () => {
-    if(weeksForward<0){
-    let nextWeekDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-    setCurrentDate(nextWeekDate)
-    setWeeksBack(weeksBack-1)
-    setWeeksForward(weeksForward+1)
+    if (weeksForward < 0) {
+      setCurrentDate(new Date(currentDate + 7 * 24 * 60 * 60 * 1000));
+      setWeeksBack(weeksBack - 1);
+      setWeeksForward(weeksForward + 1);
     }
   };
 
@@ -316,20 +325,24 @@ const ReportsPage = ({formData}) => {
         {view === "Sum" ? (
           <>
             <div className="table-header">
-              <h1 className="reports-title">
-              Summary Report
-              </h1>
-              <button className="arrow-button"
-              onClick={() => {
-                prevWeek();
-              }}>
+              <h1 className="reports-title">Summary Report</h1>
+              <button
+                className="arrow-button"
+                onClick={() => {
+                  prevWeek();
+                }}
+              >
                 <img alt="" width="30px" src={arrowBack} />
               </button>
-              <h2 className="reports-date">{startOfWeek} - {endOfWeek}</h2>
-              <button className="arrow-button"
-              onClick={() => {
-                nextWeek();
-              }}>
+              <h2 className="reports-date">
+                {startOfWeek} - {endOfWeek}
+              </h2>
+              <button
+                className="arrow-button"
+                onClick={() => {
+                  nextWeek();
+                }}
+              >
                 <img alt="" width="30px" src={arrowForward} />
               </button>
             </div>
@@ -380,19 +393,25 @@ const ReportsPage = ({formData}) => {
                 </tbody>
               </table>
             </div>
-            <div style={{   display: "flex", justifyContent: "end"}}>
-            <Link to="/checkin" style={{  textDecoration: "none", display: "flex", justifyContent: "end", width: "max-content",}}>
-              <button className="back-button" >
-                Back
-              </button>
+            <div style={{ display: "flex", justifyContent: "end" }}>
+              <Link
+                to="/checkin"
+                style={{
+                  textDecoration: "none",
+                  display: "flex",
+                  justifyContent: "end",
+                  width: "max-content",
+                }}
+              >
+                <button className="back-button">Back</button>
               </Link>
-              </div>
+            </div>
           </>
         ) : view === "Mon" ? (
           <>
             <div className="table-header">
               <h1 className="reports-title">
-              Monthly Summary ({selectedUser})
+                Monthly Summary ({selectedUser})
               </h1>
               <button
                 onClick={() => {
@@ -438,26 +457,30 @@ const ReportsPage = ({formData}) => {
               </div>
             </div>
             <button className="back-button" onClick={() => setView("Sum")}>
-          Back
-        </button>
+              Back
+            </button>
           </>
         ) : (
           <>
             <div className="table-header">
-              <h1 className="reports-title">
-              Weekly Report ({selectedUser})
-              </h1>
-              <button className="arrow-button"
-              onClick={() => {
-                prevWeek();
-              }}>
+              <h1 className="reports-title">Weekly Report ({selectedUser})</h1>
+              <button
+                className="arrow-button"
+                onClick={() => {
+                  prevWeek();
+                }}
+              >
                 <img alt="" width="30px" src={arrowBack} />
               </button>
-              <h2 className="reports-date">{startOfWeek} - {endOfWeek}</h2>
-              <button className="arrow-button"
-              onClick={() => {
-                nextWeek();
-              }}>
+              <h2 className="reports-date">
+                {startOfWeek} - {endOfWeek}
+              </h2>
+              <button
+                className="arrow-button"
+                onClick={() => {
+                  nextWeek();
+                }}
+              >
                 <img alt="" width="30px" src={arrowForward} />
               </button>
             </div>
@@ -519,11 +542,10 @@ const ReportsPage = ({formData}) => {
               </table>
             </div>
             <button className="back-button" onClick={() => setView("Sum")}>
-          Back
-        </button>
+              Back
+            </button>
           </>
         )}
-        
       </div>
     </div>
   );
