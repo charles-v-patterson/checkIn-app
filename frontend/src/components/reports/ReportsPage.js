@@ -27,10 +27,29 @@ const data = [
   { name: "Subham", inOffice: 3, remote: 2 },
 ];
 
-const data3 = [
-  { name: "Anom", date: "May 9th 24", location: "inOffice" },
-
-];
+const users = 
+  [
+    {
+      "name" : "Fred Smith",
+      "checkins": [ { "date" : "05-09-24", "location" : "In Office" },
+      { "date" : "05-10-24", "location" : "In Office" },
+      { "date" : "05-11-24", "location" : "In Office" },
+      { "date" : "05-12-24", "location" : "In Office" },
+      { "date" : "05-13-24", "location" : "In Office" },
+      { "date" : "05-14-24", "location" : "Remote" },
+      { "date" : "05-15-24", "location" : "In Office" },]
+    },
+    {
+      "name" : "Tim Posey",
+      "checkins": [ { "date" : "05-09-24", "location" : "In Office" },
+      { "date" : "05-10-24", "location" : "In Office" },
+      { "date" : "05-11-24", "location" : "In Office" },
+      { "date" : "05-12-24", "location" : "In Office" },
+      { "date" : "05-13-24", "location" : "In Office" },
+      { "date" : "05-14-24", "location" : "Remote" },
+      { "date" : "05-15-24", "location" : "In Office" },]
+    }
+  ];
 
 const data2 = [
   {
@@ -86,6 +105,10 @@ const ReportsPage = ({formData}) => {
     });
   }, []);
 
+  useEffect(() => {
+    handleData(); 
+  }, [employees]); 
+
   // Array of month names
   const months = [
     "January",
@@ -101,7 +124,6 @@ const ReportsPage = ({formData}) => {
     "November",
     "December",
   ];
-
   // Function to handle form submission
   const handleData = async () => {
     try {
@@ -120,7 +142,15 @@ const ReportsPage = ({formData}) => {
       }
     }
   };
-
+  
+  const weeklyCounter = (name, type)=>{
+    let counter = 0;
+    var firstday = new Date(date.setDate(date.getDate() - date.getDay()));
+    let weekStart = firstday.getDate();
+    
+      return counter;
+ 
+  }
   // Function to generate the calendar
   const manipulate = () => {
     
@@ -139,6 +169,9 @@ const ReportsPage = ({formData}) => {
     // Variable to store the generated calendar HTML
     let litTemp = "";
     let seperator = 0;
+    const user = users.find(user => user.name === "Fred Smith");
+    
+  
     // Loop to add the last dates of the previous month
     for (let i = dayone; i > 0; i--) {
       litTemp += `<td class="inactive">${monthlastdate - i + 1}</td>`;
@@ -148,13 +181,17 @@ const ReportsPage = ({formData}) => {
     // Loop to add the dates of the current month
     for (let i = 1; i <= lastdate; i++) {
       // Check if the current date is today
+
+      let status = "";
+      if (typeof user.checkins[i] != "undefined"){
+        status = user.checkins[i].location}
       let isToday =
         i === date.getDate() &&
         monthT === new Date().getMonth() &&
         year === new Date().getFullYear()
           ? "active"
           : "";
-      litTemp += `<td class="${isToday}">${i}</td>`;
+      litTemp += `<td class="${isToday}">${i}<h2>${status}</h2></td>`;
       seperator++;
       if (seperator % 7 === 0) {
         litTemp += `</tr><tr>`;
@@ -237,11 +274,7 @@ const ReportsPage = ({formData}) => {
           <>
             <div className="table-header">
               <h1 className="reports-title">
-                {view === "Sum"
-                  ? "Summary Report"
-                  : view === "Mon"
-                  ? `Monthly Summary (${selectedUser})`
-                  : `Detailed Report (${selectedUser})`}
+              Summary Report
               </h1>
               <button className="arrow-button">
                 <img alt="" width="30px" src={arrowBack} />
@@ -259,15 +292,15 @@ const ReportsPage = ({formData}) => {
                   <th>In Office</th>
                   <th>Remote</th>
                   <th>Monthly Report</th>
-                  <th>Detailed Report</th>
+                  <th>Weekly Report</th>
                 </tr>
 
-                {data.map((val, key) => {
+                {dbData.map((val, key) => {
                   return (
                     <tr key={key}>
                       <td>{val.name}</td>
-                      <td>{val.inOffice}</td>
-                      <td>{val.remote}</td>
+                      <td>{weeklyCounter(val.name, "In Office")}</td>
+                      <td>{weeklyCounter(val.name, "In Office")}</td>
                       <td>
                         <button
                           className="view-button"
@@ -296,7 +329,7 @@ const ReportsPage = ({formData}) => {
                 })}
               </table>
             </div>
-            <Link to="/checkin" style={{display: "flex", justifyContent: "end"}}>
+            <Link to="/checkin" style={{ textDecoration: "none", display: "flex", justifyContent: "end"}}>
               <button className="back-button" >
                 Back
               </button>
@@ -306,11 +339,7 @@ const ReportsPage = ({formData}) => {
           <>
             <div className="table-header">
               <h1 className="reports-title">
-                {view === "Sum"
-                  ? "Summary Report"
-                  : view === "Mon"
-                  ? `Monthly Summary (${selectedUser})`
-                  : `Detailed Report (${selectedUser})`}
+              Monthly Summary ({selectedUser})
               </h1>
               <button
                 onClick={() => {
@@ -363,11 +392,7 @@ const ReportsPage = ({formData}) => {
           <>
             <div className="table-header">
               <h1 className="reports-title">
-                {view === "Sum"
-                  ? "Summary Report"
-                  : view === "Mon"
-                  ? `Monthly Summary (${selectedUser})`
-                  : `Detailed Report (${selectedUser})`}
+              Weekly Report ({selectedUser})
               </h1>
               <button className="arrow-button">
                 <img alt="" width="30px" src={arrowBack} />
