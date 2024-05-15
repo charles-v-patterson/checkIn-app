@@ -89,7 +89,6 @@ const ReportsPage = ({ formData }) => {
   const [startOfWeek, setStartOfWeek] = useState();
   const [endOfWeek, setEndOfWeek] = useState();
   const [weeksBack, setWeeksBack] = useState(0);
-  const [weeksForward, setWeeksForward] = useState(0);
   let date = new Date();
   let monthT = date.getMonth();
   let year = date.getFullYear();
@@ -300,18 +299,17 @@ const ReportsPage = ({ formData }) => {
   };
 
   const prevWeek = () => {
-    if (weeksBack < 6) {
-      setCurrentDate(new Date(currentDate - 7 * 24 * 60 * 60 * 1000));
-      setWeeksBack(weeksBack + 1);
-      setWeeksForward(weeksForward - 1);
+    if(weeksBack<8){
+    let lastWeekDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+    setCurrentDate(lastWeekDate)
+    setWeeksBack(weeksBack+1)
     }
   };
-
   const nextWeek = () => {
-    if (weeksForward < 0) {
-      setCurrentDate(new Date(currentDate + 7 * 24 * 60 * 60 * 1000));
-      setWeeksBack(weeksBack - 1);
-      setWeeksForward(weeksForward + 1);
+    if(weeksBack>0){
+    let nextWeekDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    setCurrentDate(nextWeekDate)
+    setWeeksBack(weeksBack-1)
     }
   };
 
@@ -501,51 +499,87 @@ const ReportsPage = ({ formData }) => {
                     <th>Total</th>
                   </tr>
                   {dbData.map((val, key) => {
-                    //if (val.name !== selectedUser) {
-                    //  return
-                    //}
                     let status = weeklyStatus();
-                    let type = key === 0 ? "In Office" : "Remote";
                     return (
-                      <tr key={key}>
-                        <td>{type}</td>
+                      <><tr key={0}>
+                        <td>In Office</td>
                         <td>
-                          {status.Monday === type ? (
+                          {status.Monday === "In Office" ? (
                             <img alt="" width="30px" src={check} />
                           ) : (
                             <></>
                           )}
                         </td>
                         <td>
-                          {status.Tuesday === type ? (
+                          {status.Tuesday === "In Office" ? (
                             <img alt="" width="30px" src={check} />
                           ) : (
                             <></>
                           )}
                         </td>
                         <td>
-                          {status.Wednesday === type  ? (
+                          {status.Wednesday === "In Office" ? (
                             <img alt="" width="30px" src={check} />
                           ) : (
                             <></>
                           )}
                         </td>
                         <td>
-                          {status.Thursday === type  ? (
+                          {status.Thursday === "In Office" ? (
                             <img alt="" width="30px" src={check} />
                           ) : (
                             <></>
                           )}
                         </td>
                         <td>
-                          {status.Friday === type  ? (
+                          {status.Friday === "In Office" ? (
                             <img alt="" width="30px" src={check} />
                           ) : (
                             <></>
                           )}
                         </td>
-                        <td>{selectedWeeklyCounter(type)}</td>
+                        <td>{selectedWeeklyCounter("In Office")}</td>
                       </tr>
+                      <tr key={1}>
+                          <td>{"Remote"}</td>
+                          <td>
+                            {status.Monday === "Remote" ? (
+                              <img alt="" width="30px" src={check} />
+                            ) : (
+                              <></>
+                            )}
+                          </td>
+                          <td>
+                            {status.Tuesday === "Remote" ? (
+                              <img alt="" width="30px" src={check} />
+                            ) : (
+                              <></>
+                            )}
+                          </td>
+                          <td>
+                            {status.Wednesday === "Remote" ? (
+                              <img alt="" width="30px" src={check} />
+                            ) : (
+                              <></>
+                            )}
+                          </td>
+                          <td>
+                            {status.Thursday === "Remote" ? (
+                              <img alt="" width="30px" src={check} />
+                            ) : (
+                              <></>
+                            )}
+                          </td>
+                          <td>
+                            {status.Friday === "Remote" ? (
+                              <img alt="" width="30px" src={check} />
+                            ) : (
+                              <></>
+                            )}
+                          </td>
+                          <td>{selectedWeeklyCounter("Remote")}</td>
+                        </tr></>
+
                     );
                   })}
                 </tbody>
