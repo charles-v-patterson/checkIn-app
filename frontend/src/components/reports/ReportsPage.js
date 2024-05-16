@@ -8,6 +8,72 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const data = [
+  { name: "Anom", inOffice: 2, remote: 3 },
+  { name: "Megha", inOffice: 1, remote: 4 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+  { name: "Subham", inOffice: 3, remote: 2 },
+];
+
+const users = [
+  {
+    name: "Fred Smith",
+    checkins: [
+      { date: "05-09-24", location: "In Office" },
+      { date: "05-10-24", location: "In Office" },
+      { date: "05-11-24", location: "In Office" },
+      { date: "05-12-24", location: "In Office" },
+      { date: "05-13-24", location: "In Office" },
+      { date: "05-14-24", location: "Remote" },
+      { date: "05-15-24", location: "In Office" },
+    ],
+  },
+  {
+    name: "Tim Posey",
+    checkins: [
+      { date: "05-09-24", location: "In Office" },
+      { date: "05-10-24", location: "In Office" },
+      { date: "05-11-24", location: "In Office" },
+      { date: "05-12-24", location: "In Office" },
+      { date: "05-13-24", location: "In Office" },
+      { date: "05-14-24", location: "Remote" },
+      { date: "05-15-24", location: "In Office" },
+    ],
+  },
+];
+
+const data2 = [
+  {
+    Location: "In Office",
+    monday: true,
+    tuesday: true,
+    wednesday: false,
+    thursday: true,
+    friday: false,
+    total: 3,
+  },
+  {
+    Location: "Remote",
+    monday: false,
+    tuesday: false,
+    wednesday: true,
+    thursday: false,
+    friday: true,
+    total: 2,
+  },
+];
 
 // reportsForm component
 const ReportsPage = ({ formData }) => {
@@ -23,12 +89,10 @@ const ReportsPage = ({ formData }) => {
   const [startOfWeek, setStartOfWeek] = useState();
   const [endOfWeek, setEndOfWeek] = useState();
   const [weeksBack, setWeeksBack] = useState(0);
-  const [monthsBack, setMonthsBack] = useState(0);
   let date = new Date();
   let monthT = date.getMonth();
   let year = date.getFullYear();
-  const [monthTemp, setMonthTemp] = useState(date.getMonth());
-  const [yearTemp, setYearTemp] = useState(date.getFullYear());
+  const [month, setMonth] = useState(date.getMonth());
   const navigate = useNavigate();
   // const prenexIcons = document.querySelectorAll(".calendar-navigation span");
 
@@ -52,18 +116,6 @@ const ReportsPage = ({ formData }) => {
   useEffect(() => {
     handleData();
   }, [employees]);
-
-  useEffect(() => {
-    let person = dbData.filter((entry) => entry.name === selectedUser)[0];
-    if (person) {
-      person.checkins.forEach((checkin) => {
-        let status_heading = document.getElementById(`${checkin.date + "-status"}`);
-        if (status_heading) {
-          status_heading.innerHTML = checkin.location;
-        }
-      });
-    }
-  }, [lit, selectedUser]);
 
   useEffect(() => {
     getWeek(currentDate);
@@ -111,10 +163,6 @@ const ReportsPage = ({ formData }) => {
     setEndOfWeek(last_formatted_date);
   }
   
-  const padWithZeros=(num, totalLength)=>{
-    return String(num).padStart(totalLength, '0');
-  }
-
   const weeklyCounter = (name, type)=>{
     let person = dbData.filter((entry) => entry.name === name)[0];
     let amount = person.checkins.filter((checkin) => checkin.location === type && 
@@ -144,55 +192,59 @@ const ReportsPage = ({ formData }) => {
     return status[date];
   }
   // Function to generate the calendar
-  const manipulate = (month) => {
+  const manipulate = () => {
     // Get the first day of the month
-    let dayone = new Date(yearTemp, month, 1).getDay();
+    let dayone = new Date(year, month, 1).getDay();
 
     // Get the last date of the month
-    let lastdate = new Date(yearTemp, month + 1, 0).getDate();
+    let lastdate = new Date(year, month + 1, 0).getDate();
 
     // Get the day of the last date of the month
-    let dayend = new Date(yearTemp, month, lastdate).getDay();
+    let dayend = new Date(year, month, lastdate).getDay();
 
     // Get the last date of the previous month
-    let monthlastdate = new Date(yearTemp, month, 0).getDate();
+    let monthlastdate = new Date(year, month, 0).getDate();
 
     // Variable to store the generated calendar HTML
     let litTemp = "";
     let seperator = 0;
-    
+    const user = users.find((user) => user.name === "Fred Smith");
+
     // Loop to add the last dates of the previous month
     for (let i = dayone; i > 0; i--) {
-      let idDate = `${padWithZeros(month, 2)}-${padWithZeros(monthlastdate - i + 1, 2)}-${month === 0 ? yearTemp-1 : yearTemp}`;
-      litTemp += `<td class="inactive">${monthlastdate - i + 1}<h2 id="${idDate + "-status"}"></h2></td>`;
+      litTemp += `<td class="inactive">${monthlastdate - i + 1}</td>`;
       seperator++;
     }
 
     // Loop to add the dates of the current month
     for (let i = 1; i <= lastdate; i++) {
       // Check if the current date is today
-      let idDate = `${padWithZeros(month+1, 2)}-${padWithZeros(i, 2)}-${yearTemp}`;
-      // if (typeof user.checkins[i] != "undefined"){
-      //   status = user.checkins[i].location}
+
+      let status = "";
+      if (typeof user.checkins[i] != "undefined") {
+        status = user.checkins[i].location;
+      }
       let isToday =
         i === date.getDate() &&
-        month === new Date().getMonth() &&
+        monthT === new Date().getMonth() &&
         year === new Date().getFullYear()
           ? "active"
           : "";
-      litTemp += `<td class="${isToday}">${i}<h2 id="${idDate + "-status"}"></h2></td>`;
+      litTemp += `<td class="${isToday}">${i}<h2>${status}</h2></td>`;
       seperator++;
       if (seperator % 7 === 0) {
         litTemp += `</tr><tr>`;
       }
     }
-    console.log(litTemp);
 
     // Loop to add the first dates of the next month
     for (let i = dayend; i < 6; i++) {
-      let idDate = `${padWithZeros(month+1, 2)}-${padWithZeros(i, 2)}-${month === 11 ? yearTemp+1 : yearTemp}`;
-      litTemp += `<td class="inactive">${i - dayend + 1}<h2 id="${idDate + "-status"}"></h2></td>`;
+      litTemp += `<td class="inactive">${i - dayend + 1}</td>`;
     }
+
+    // Update the text of the current date element
+    // with the formatted current month and year
+    setcurrentD(`${months[month]} ${year}`);
 
     // update the HTML of the dates element
     // with the generated calendar
@@ -200,43 +252,54 @@ const ReportsPage = ({ formData }) => {
     setLit(litTemp);
   };
 
-
-  const prevMonth = () => {
-    console.log(monthTemp)
-    if(monthsBack<2){
+  const prevMonth = (e) => {
+    setMonth(month - 1);
     // Check if the month is out of range
-    if (monthTemp > 0) {
-      setMonthTemp(monthTemp-1);
-      manipulate(monthTemp-1);
+    if (month < 0 || month > 11) {
+      // Set the date to the first day of the
+      // month with the new year
+      date = new Date(year, month, new Date().getDate());
+
+      // Set the year to the new year
+      year = date.getFullYear();
+
+      // Set the month to the new month
+      setMonth(date.getMonth());
     } else {
-      setMonthTemp(11);
-      setYearTemp(yearTemp-1)
-      manipulate(11);
+      // Set the date to the current date
+      date = new Date();
     }
-    setMonthsBack(monthsBack+1)
-    
-  }
+
+    // Call the manipulate function to
+    // update the calendar display
+    manipulate();
   };
 
   const nextMonth = (e) => {
-    console.log(monthTemp)
-    if(monthsBack>0){
+    setMonth(month + 1);
     // Check if the month is out of range
-    if (monthTemp < 11) {
-      setMonthTemp(monthTemp+1);
-      manipulate(monthTemp+1);
+    if (month < 0 || month > 11) {
+      // Set the date to the first day of the
+      // month with the new year
+      date = new Date(year, month, new Date().getDate());
+
+      // Set the year to the new year
+      year = date.getFullYear();
+
+      // Set the month to the new month
+      setMonth(date.getMonth());
     } else {
-      setMonthTemp(0);
-      setYearTemp(yearTemp+1)
-      manipulate(0);
+      // Set the date to the current date
+      date = new Date();
     }
-    setMonthsBack(monthsBack-1)
-    
-  }
+
+    // Call the manipulate function to
+    // update the calendar display
+    manipulate();
   };
 
   const prevWeek = () => {
-    if(weeksBack<6){
+    if(weeksBack<8){
     let lastWeekDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
     setCurrentDate(lastWeekDate)
     setWeeksBack(weeksBack+1)
@@ -308,7 +371,7 @@ const ReportsPage = ({ formData }) => {
                             onClick={() => {
                               setView("Mon");
                               setSelectedUser(val.name);
-                              manipulate(monthTemp);
+                              manipulate();
                             }}
                           >
                             View
@@ -360,9 +423,9 @@ const ReportsPage = ({ formData }) => {
                 <img alt="" width="30px" src={arrowBack} />
               </button>
               <h2
-                className="reports-date">
-                {months[monthTemp]} {yearTemp}
-              </h2>
+                className="reports-date"
+                dangerouslySetInnerHTML={{ __html: currentD }}
+              ></h2>
               <button
                 onClick={() => {
                   nextMonth();

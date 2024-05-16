@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const checkInSchema = new mongoose.Schema({
   user: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User", // Reference to the User model
     required: true,
   },
   date: {
-    type: String,
+    type: Date,
     default: Date.now,
     required: true,
   },
@@ -18,4 +18,6 @@ const checkInSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("CheckIn", checkInSchema);
+const CheckIn = mongoose.model("CheckIn", checkInSchema);
+
+module.exports = CheckIn;

@@ -1,6 +1,6 @@
 const { lookup } = require("dns");
-const { mask } = require("ip");
 const { promisify } = require("util");
+
 const dnsLookup = promisify(lookup);
 
 const isOnNetwork = async (userIPAddress, networkCIDR) => {
@@ -15,32 +15,22 @@ const isOnNetwork = async (userIPAddress, networkCIDR) => {
     const networkStartNumeric = ipToNumeric(networkStart);
     const networkEndNumeric = ipToNumeric(networkEnd);
 
-    if (
-      userIPNumeric >= networkStartNumeric &&
-      userIPNumeric <= networkEndNumeric
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    return userIPNumeric >= networkStartNumeric && userIPNumeric <= networkEndNumeric;
   } catch (error) {
     console.error("Error:", error);
     return false;
   }
 };
 
-const parseCIDRForAddress = function (CIDR) {
-  var address = CIDR.substring(CIDR, CIDR.indexOf("/"));
-
-  return address;
+const parseCIDRForAddress = (CIDR) => {
+  return CIDR.substring(0, CIDR.indexOf("/"));
 };
 
-const parseCIDRForMask = function (CIDR) {
-  var maskInt = CIDR.substring(CIDR.indexOf("/") + 1);
-  var octets = [0, 0, 0, 0];
+const parseCIDRForMask = (CIDR) => {
+  const maskInt = CIDR.substring(CIDR.indexOf("/") + 1);
+  const octets = [0, 0, 0, 0];
 
-  // calculate value of each octet
-  for (var i = 0; i < 4; i++) {
+  for (let i = 0; i < 4; i++) {
     if (maskInt >= 8) {
       octets[i] = 255;
       maskInt -= 8;
@@ -61,11 +51,7 @@ const calculateNetworkEnd = (networkAddress, subnetMask) => {
 };
 
 const ipToNumeric = (ip) => {
-  return (
-    ip
-      .split(".")
-      .reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0
-  );
+  return ip.split(".").reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
 };
 
 const numericToIp = (numeric) => {

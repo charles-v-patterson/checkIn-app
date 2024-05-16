@@ -6,11 +6,11 @@ const CheckIn = require("./models/CheckIn");
 const moment = require("moment");
 const cron = require("node-cron");
 const startNotificationScheduler = require("./notificationScheduler");
-
-// Import Routes
 const authRoutes = require("./routes/authRoutes");
 const checkinRoutes = require("./routes/checkinRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+
+// Import Routes
 
 // Configure Environment Variables
 dotenv.config();
@@ -30,16 +30,9 @@ mongoose
   .catch((err) => console.error("Could not connect to MongoDB", err));
 
 // API Routes
-app.post("/api/login", authRoutes);
-app.post("/api/passwordReset", authRoutes);
-app.post("/api/verifyJWT", authRoutes);
-app.post("/api/sendEmail", authRoutes);
-app.post("/api/register", authRoutes);
-app.post("/api/checkin", checkinRoutes);
-app.get("/api/check-network", checkinRoutes);
-app.post("/api/reports", reportRoutes);
-app.post("/api/getEmployees", authRoutes);
-app.get("/api/check-token", authRoutes);
+app.use("/api", authRoutes);
+app.use("/api", checkinRoutes);
+app.use("/api", reportRoutes);
 
 // Basic Route for Testing
 app.get("/", (req, res) => {
@@ -53,9 +46,11 @@ app.listen(port, () => {
 
 // Function to delete old data
 async function deleteOldData() {
-  let days = [moment().subtract(6, "weeks").format("MM-DD-YYYY")];
-  for (let i = 1; i < 7; i++) {
-    days.push(moment().subtract(6, "weeks").subtract(i, "day").format("MM-DD-YYYY"));
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    days.push(
+      moment().subtract(6, "weeks").subtract(i, "day").format("MM-DD-YYYY")
+    );
   }
 
   try {
@@ -66,7 +61,5 @@ async function deleteOldData() {
   }
 }
 
-//Schedule the function to run at 11:30pm every Saturday
-cron.schedule("30 23 * * 6", function () {
-   deleteOldData();
-});
+// Schedule the function to run at 11:30pm every Saturday
+cron.schedule("30 23 * * 6", deleteOldData);
