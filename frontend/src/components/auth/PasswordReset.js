@@ -99,7 +99,10 @@ const EmailForm = () => {
           <h2 className="login-subtitle"> Password reset</h2>
         }
         {authorized && !submitted &&
-          <div>
+          <div className="change-password-box">
+            <h2 className="login-title"> Password reset</h2>
+            <h2 className="login-subtitle"> Please enter a new password for Punch Card</h2>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
             <form className="login-form" onSubmit={handlePasswordSubmit}>
               <div className="form-group">
                 <input
@@ -110,7 +113,6 @@ const EmailForm = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
-                <br></br>
                 <input
                   type="text"
                   id="textbox"
