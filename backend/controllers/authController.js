@@ -9,7 +9,7 @@ const createLongToken = (id) => {
 };
 
 const createShortToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: 300 });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: 600 });
 };
 
 exports.register = async (req, res) => {
@@ -195,7 +195,7 @@ exports.login = async (req, res) => {
     }
 
     // 4. Generate and send JWT
-    const token = createLongToken(user.email);
+    const token = createShortToken(user.email);
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });
