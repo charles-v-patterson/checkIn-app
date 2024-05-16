@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 const ReportsPage = ({ formData }) => {
   const [dbData, setDbData] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
+  const [monthTrigger, setMonthTrigger] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [view, setView] = useState("Sum");
   const [lit, setLit] = useState("<tr>");
@@ -63,7 +64,7 @@ const ReportsPage = ({ formData }) => {
         }
       });
     }
-  }, [lit, selectedUser]);
+  }, [monthTrigger, selectedUser]);
 
   useEffect(() => {
     getWeek(currentDate);
@@ -145,6 +146,9 @@ const ReportsPage = ({ formData }) => {
   }
   // Function to generate the calendar
   const manipulate = (month) => {
+
+    setMonthTrigger(!monthTrigger);
+
     // Get the first day of the month
     let dayone = new Date(yearTemp, month, 1).getDay();
 

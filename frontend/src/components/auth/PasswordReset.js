@@ -99,7 +99,10 @@ const EmailForm = () => {
           <h2 className="login-subtitle"> Password reset</h2>
         }
         {authorized && !submitted &&
-          <div>
+          <div className="change-password-box">
+            <h2 className="login-title"> Password reset</h2>
+            <h2 className="login-subtitle"> Please enter a new password for Punch Card</h2>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
             <form className="login-form" onSubmit={handlePasswordSubmit}>
               <div className="form-group">
                 <input
@@ -110,7 +113,6 @@ const EmailForm = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
-                <br></br>
                 <input
                   type="text"
                   id="textbox"
@@ -136,7 +138,7 @@ const EmailForm = () => {
             <h1 className="login-subtitle"> Password reset request sent </h1>
             : 
             <form className="login-form" onSubmit={handleEmailSubmit}>
-              <h2 className="login-subtitle">Enter the email address associated with your accountand we'll<br/>send you a link to reset your password</h2>
+              <h2 className="login-subtitle">Enter the email address associated with your account and<br/>we'll send you a link to reset your password</h2>
               <div className="form-group">
                 <input
                   type="email"
@@ -159,5 +161,5 @@ const EmailForm = () => {
   );
 };
 
-// Export the LoginForm component
+// Export the EmailForm component
 export default EmailForm;
