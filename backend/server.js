@@ -53,22 +53,20 @@ app.listen(port, () => {
 
 // Function to delete old data
 async function deleteOldData() {
-  const sixMonthsAgo = moment().subtract(6, "months").toDate();
+  let days = [moment().subtract(6, "weeks").format("MM-DD-YYYY")];
+  for (let i = 1; i < 7; i++) {
+    days.push(moment().subtract(6, "weeks").subtract(i, "day").format("MM-DD-YYYY"));
+  }
 
   try {
-    await CheckIn.deleteMany({ date: { $lt: sixMonthsAgo } });
+    await CheckIn.deleteMany({ date: { $in: days } });
     console.log("Old data deleted successfully");
   } catch (error) {
     console.error("Error deleting old data:", error);
   }
 }
 
-// Schedule the function to run at 00:00 on the last day of every month
-cron.schedule("0 0 28-31 * *", function () {
-  const now = new Date();
-  const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  if (tomorrow.getDate() === 1) {
-    deleteOldData();
-  }
+//Schedule the function to run at 11:30pm every Saturday
+cron.schedule("30 23 * * 6", function () {
+   deleteOldData();
 });
