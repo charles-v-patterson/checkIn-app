@@ -39,7 +39,7 @@ app.post("/api/checkin", checkinRoutes);
 app.get("/api/check-network", checkinRoutes);
 app.post("/api/reports", reportRoutes);
 app.post("/api/getEmployees", authRoutes);
-app.get("/api/check-token", authRoutes);
+app.post("/api/check-token", authRoutes);
 
 // Basic Route for Testing
 app.get("/", (req, res) => {
