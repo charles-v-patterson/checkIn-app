@@ -167,7 +167,7 @@ const ReportsPage = ({ formData }) => {
     
     // Loop to add the last dates of the previous month
     for (let i = dayone; i > 0; i--) {
-      let idDate = `${padWithZeros(month, 2)}-${padWithZeros(monthlastdate - i + 1, 2)}-${month === 0 ? yearTemp-1 : yearTemp}`;
+      let idDate = `${padWithZeros(month === 0 ? 12 : month, 2)}-${padWithZeros(monthlastdate - i + 1, 2)}-${month === 0 ? yearTemp-1 : yearTemp}`;
       litTemp += `<td class="inactive">${monthlastdate - i + 1}<h2 id="${idDate + "-status"}"></h2></td>`;
       seperator++;
     }
@@ -190,11 +190,10 @@ const ReportsPage = ({ formData }) => {
         litTemp += `</tr><tr>`;
       }
     }
-    console.log(litTemp);
 
     // Loop to add the first dates of the next month
     for (let i = dayend; i < 6; i++) {
-      let idDate = `${padWithZeros(month+1, 2)}-${padWithZeros(i, 2)}-${month === 11 ? yearTemp+1 : yearTemp}`;
+      let idDate = `${padWithZeros(month === 11 ? 1: month + 2, 2)}-${padWithZeros(i, 2)}-${month === 11 ? yearTemp+1 : yearTemp}`;
       litTemp += `<td class="inactive">${i - dayend + 1}<h2 id="${idDate + "-status"}"></h2></td>`;
     }
 
@@ -206,7 +205,6 @@ const ReportsPage = ({ formData }) => {
 
 
   const prevMonth = () => {
-    console.log(monthTemp)
     if(monthsBack<2){
     // Check if the month is out of range
     if (monthTemp > 0) {
@@ -223,7 +221,6 @@ const ReportsPage = ({ formData }) => {
   };
 
   const nextMonth = (e) => {
-    console.log(monthTemp)
     if(monthsBack>0){
     // Check if the month is out of range
     if (monthTemp < 11) {
