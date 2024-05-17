@@ -141,14 +141,30 @@ exports.sendEmail = async (req, res) => {
 };
 
 exports.verifyJWT = async (req, res) => {
+    let decodedJWT;
     jwt.verify(req.body.auth, process.env.JWT_SECRET, function(err, decoded) {
       if (err) {
         res.status(401);
       }
       else {
-        res.status(200).json({ decoded });
+        decodedJWT = decoded;
       }
     });
+    if (decodedJWT) {
+      try {
+        const existingUser = await User.findOne({ email: new RegExp(decodedJWT.id, "i") });
+        if (existingUser){
+          res.status(200).json({ decoded });
+        }
+        else{
+          res.status(401);
+        }
+      }
+      catch {
+        res.status(500);
+      }
+    res.status(500);
+  }
 };
 
 exports.getEmployees = async (req, res) => {

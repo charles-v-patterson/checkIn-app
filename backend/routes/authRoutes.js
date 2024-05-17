@@ -19,8 +19,8 @@ router.post("/api/login", authController.login);
 
 router.post("/api/getEmployees", authController.getEmployees);
 
-// Test route (protected)
-router.get("/api/check-token", authMiddleware, authController.checkToken);
+router.post("/api/check-token", authMiddleware, authController.checkToken);
+
 router.get("/api/status", authMiddleware, checkInController.getCheckInStatus);
 
 module.exports = router;
