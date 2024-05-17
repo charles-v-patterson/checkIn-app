@@ -17,7 +17,6 @@ const ReportsPage = ({ formData }) => {
   const [employees, setEmployees] = useState([]);
   const [view, setView] = useState("Sum");
   const [lit, setLit] = useState("<tr>");
-  const [currentD, setcurrentD] = useState();
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -26,7 +25,6 @@ const ReportsPage = ({ formData }) => {
   const [weeksBack, setWeeksBack] = useState(0);
   const [monthsBack, setMonthsBack] = useState(0);
   let date = new Date();
-  let monthT = date.getMonth();
   let year = date.getFullYear();
   const [monthTemp, setMonthTemp] = useState(date.getMonth());
   const [yearTemp, setYearTemp] = useState(date.getFullYear());
@@ -190,7 +188,6 @@ const ReportsPage = ({ formData }) => {
         litTemp += `</tr><tr>`;
       }
     }
-    console.log(litTemp);
 
     // Loop to add the first dates of the next month
     for (let i = dayend; i < 6; i++) {
@@ -198,7 +195,6 @@ const ReportsPage = ({ formData }) => {
       litTemp += `<td class="inactive">${i - dayend + 1}<h2 id="${idDate + "-status"}"></h2></td>`;
     }
 
-    // update the HTML of the dates element
     // with the generated calendar
     litTemp += `</tr>`;
     setLit(litTemp);
@@ -206,7 +202,7 @@ const ReportsPage = ({ formData }) => {
 
 
   const prevMonth = () => {
-    console.log(monthTemp)
+    
     if(monthsBack<2){
     // Check if the month is out of range
     if (monthTemp > 0) {
@@ -223,7 +219,6 @@ const ReportsPage = ({ formData }) => {
   };
 
   const nextMonth = (e) => {
-    console.log(monthTemp)
     if(monthsBack>0){
     // Check if the month is out of range
     if (monthTemp < 11) {
