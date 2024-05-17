@@ -263,6 +263,7 @@ const ReportsPage = ({ formData }) => {
           <>
             <div className="table-header">
               <h1 className="reports-title">Summary Report</h1>
+              <div className="calendar-nav">
               <button
                 className="arrow-button"
                 onClick={() => {
@@ -282,6 +283,7 @@ const ReportsPage = ({ formData }) => {
               >
                 <img alt="" width="30px" src={arrowForward} />
               </button>
+              </div>
             </div>
             <hr className="reports-hr"></hr>
             <div className="table-div" style={{ overflowY: "auto" }}>
@@ -350,6 +352,7 @@ const ReportsPage = ({ formData }) => {
               <h1 className="reports-title">
                 Monthly Summary ({selectedUser})
               </h1>
+              <div className="calendar-nav">
               <button
                 onClick={() => {
                   prevMonth();
@@ -370,6 +373,7 @@ const ReportsPage = ({ formData }) => {
               >
                 <img alt="" width="30px" src={arrowForward} />
               </button>
+              </div>
             </div>
             <hr className="reports-hr"></hr>
             <div className="table-div" style={{ overflowY: "auto" }}>
@@ -401,6 +405,7 @@ const ReportsPage = ({ formData }) => {
           <>
             <div className="table-header">
               <h1 className="reports-title">Weekly Report ({selectedUser})</h1>
+              <div className="calendar-nav">
               <button
                 className="arrow-button"
                 onClick={() => {
@@ -420,6 +425,7 @@ const ReportsPage = ({ formData }) => {
               >
                 <img alt="" width="30px" src={arrowForward} />
               </button>
+              </div>
             </div>
             <hr className="reports-hr"></hr>
             <div className="table-div" style={{ overflowY: "auto" }}>
