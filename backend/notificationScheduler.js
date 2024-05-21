@@ -68,7 +68,7 @@ async function checkUsersAndSendNotifications() {
 }
 
 function startNotificationScheduler() {
-  cron.schedule("0 12 * * 1-5", checkUsersAndSendNotifications);
+  //cron.schedule("0 12 * * 1-5", checkUsersAndSendNotifications);
   //cron.schedule("* * * * *", checkUsersAndSendNotifications);
 }
 

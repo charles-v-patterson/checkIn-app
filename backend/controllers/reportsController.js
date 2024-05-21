@@ -10,51 +10,45 @@ exports.generateReport = async (req, res) => {
     const checkIns = await CheckIn.aggregate(
       [
         {
-          $lookup:
-            {
-              from: "users",
-              localField: "user",
-              foreignField: "email",
-              as: "user",
+          $lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "email",
+            as: "user",
+          },
+        },
+        {
+          $set: {
+            name: "$user.name",
+            email: "$user.email",
+          },
+        },
+        {
+          $unset: "user",
+        },
+        {
+          $match: {
+            email: {
+              $in: req.body.employees,
             },
+          },
         },
         {
-          $set:
-            {
-              name: "$user.name",
-              email: "$user.email",
-            },
-        },
-        {
-          $unset:
-            "user",
-        },
-        {
-          $match:
-            {
-              email: {
-                $in: req.body.employees,
+          $group: {
+            _id: "$email",
+            checkins: {
+              $push: {
+                date: "$date",
+                location: "$location",
               },
             },
-        },
-        {
-          $group:
-            {
-              _id: "$email",
-              checkins: {
-                $push: {
-                  date: "$date",
-                  location: "$location",
-                },
-              },
-              name: {
-                $first: "$name",
-              },
+            name: {
+              $first: "$name",
             },
+          },
         },
         {
-          $project:
-          {
+          $project: {
             _id: "$_id",
             name: "$name",
             checkins: {
@@ -63,23 +57,24 @@ exports.generateReport = async (req, res) => {
                   $sortArray: {
                     input: {
                       $map: {
-                         input: "$checkins",
+                        input: "$checkins",
                         as: "checkin",
-                        in: { 
+                        in: {
                           $mergeObjects: [
                             {
-                              location: "$$checkin.location"
+                              location:
+                                "$$checkin.location",
                             },
-                            { 
+                            {
                               date: {
                                 $dateFromString: {
                                   dateString:
                                     "$$checkin.date",
                                   format: "%m-%d-%Y",
                                 },
-                              }
-                            }
-                          ]
+                              },
+                            },
+                          ],
                         },
                       },
                     },
@@ -90,23 +85,27 @@ exports.generateReport = async (req, res) => {
                 in: {
                   $mergeObjects: [
                     {
-                      location: "$$checkin.location"
+                      location: "$$checkin.location",
                     },
-                    { 
+                    {
                       date: {
                         $dateToString: {
-                          date:
-                            "$$checkin.date",
+                          date: "$$checkin.date",
                           format: "%m-%d-%Y",
                         },
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+        {
+          $sort: {
+            name: 1,
+          },
+        },
       ]);
 
     

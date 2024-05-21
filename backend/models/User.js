@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs"); // For pw hashing
 
 var validateEmail = (email) => {
-  var re = /^[a-zA-Z0-9.]+@(?:[a-zA-Z.]{3})?ibm\.com$/;
+  var re = /^[a-zA-Z0-9.-]+@(?:[a-zA-Z.]{3})?ibm\.com$/;
   return re.test(email)
 };
 

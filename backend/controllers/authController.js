@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
     // 1. Destructure email and password from request body
     const { email, password, name, manager } = req.body;
 
-    const emailregex = /^[a-zA-Z0-9.]+@(?:[a-zA-Z.]{3})?ibm\.com$/;
+    const emailregex = /^[a-zA-Z0-9.-]+@(?:[a-zA-Z.]{3})?ibm\.com$/;
     const passregex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/;
 
     const passMatch = passregex.test(password);
