@@ -165,7 +165,7 @@ const ReportsPage = ({ formData }) => {
     
     // Loop to add the last dates of the previous month
     for (let i = dayone; i > 0; i--) {
-      let idDate = `${padWithZeros(month, 2)}-${padWithZeros(monthlastdate - i + 1, 2)}-${month === 0 ? yearTemp-1 : yearTemp}`;
+      let idDate = `${padWithZeros(month === 0 ? 12 : month, 2)}-${padWithZeros(monthlastdate - i + 1, 2)}-${month === 0 ? yearTemp-1 : yearTemp}`;
       litTemp += `<td class="inactive">${monthlastdate - i + 1}<h2 id="${idDate + "-status"}"></h2></td>`;
       seperator++;
     }
@@ -191,7 +191,7 @@ const ReportsPage = ({ formData }) => {
 
     // Loop to add the first dates of the next month
     for (let i = dayend; i < 6; i++) {
-      let idDate = `${padWithZeros(month+1, 2)}-${padWithZeros(i, 2)}-${month === 11 ? yearTemp+1 : yearTemp}`;
+      let idDate = `${padWithZeros(month === 11 ? 1: month + 2, 2)}-${padWithZeros(i, 2)}-${month === 11 ? yearTemp+1 : yearTemp}`;
       litTemp += `<td class="inactive">${i - dayend + 1}<h2 id="${idDate + "-status"}"></h2></td>`;
     }
 
