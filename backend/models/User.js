@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
   manager: {
     type: String,
     required: false,
+  },
+  notification: {
+    type: Boolean,
+    required: true,
+    default: true,
   }
 });
 

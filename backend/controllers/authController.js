@@ -79,6 +79,23 @@ exports.passwordReset = async (req, res) => {
   }
 };
 
+exports.toggleNotifications = async (req, res) => {
+  try {
+    const user = await User.findOne({email: req.body.email});
+    if (user) {
+      await User.updateOne({email: user.email}, {notification: !user.notification});
+      res.sendStatus(201);
+    }
+    else {
+      res.status(400).json({ error: "User Not Found" });
+    }
+    
+  }
+  catch {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 exports.sendEmail = async (req, res) => {
   const { email, message } = req.body;
   const token = createShortToken(email);

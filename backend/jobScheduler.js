@@ -48,6 +48,9 @@ async function checkUsersAndSendNotifications() {
   let usersNotCheckedIn = [];
 
   for (let user of users) {
+    if (!user.notification){
+      continue;
+    }
     let status = await getCheckInStatus(user);
     if (status === "Not Checked In") {
       usersNotCheckedIn.push(user);

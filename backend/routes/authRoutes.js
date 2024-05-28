@@ -21,6 +21,8 @@ router.post("/api/getEmployees", authController.getEmployees);
 
 router.post("/api/check-token", authMiddleware, authController.checkToken);
 
+router.post("/api/toggleNotifications", authController.toggleNotifications);
+
 router.get("/api/status", authMiddleware, checkInController.getCheckInStatus);
 
 module.exports = router;
