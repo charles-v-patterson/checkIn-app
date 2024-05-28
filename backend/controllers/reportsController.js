@@ -107,7 +107,7 @@ exports.generateReport = async (req, res) => {
       ]);
 
     // Send the report
-    res.status(201).json(checkins);
+    res.status(201).json(checkIns);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'An error occurred while generating the report.' });

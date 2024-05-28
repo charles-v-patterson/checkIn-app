@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const CheckIn = require("./models/CheckIn");
 const moment = require("moment");
 const cron = require("node-cron");
-const startNotificationScheduler = require("./notificationScheduler");
+const startScheduler = require("./jobScheduler");
 
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
@@ -49,24 +49,4 @@ app.get("/", (req, res) => {
 // Start Server
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
-});
-
-// Function to delete old data
-async function deleteOldData() {
-  let days = [moment().subtract(6, "weeks").format("MM-DD-YYYY")];
-  for (let i = 1; i < 7; i++) {
-    days.push(moment().subtract(6, "weeks").subtract(i, "day").format("MM-DD-YYYY"));
-  }
-
-  try {
-    await CheckIn.deleteMany({ date: { $in: days } });
-    console.log("Old data deleted successfully");
-  } catch (error) {
-    console.error("Error deleting old data:", error);
-  }
-}
-
-//Schedule the function to run at 11:30pm every Saturday
-cron.schedule("30 23 * * 6", function () {
-   deleteOldData();
 });
