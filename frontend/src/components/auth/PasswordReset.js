@@ -138,7 +138,7 @@ const EmailForm = () => {
             <h1 className="login-subtitle"> Password reset request sent </h1>
             : 
             <form className="login-form" onSubmit={handleEmailSubmit}>
-              <h2 className="login-subtitle">Enter the email address associated with your account and<br/>we'll send you a link to reset your password</h2>
+              <h2 className="login-subtitle">Enter the email address associated with your account and we'll send you a link to reset your password</h2>
               <div className="form-group">
                 <input
                   type="email"

@@ -9,7 +9,11 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Login from "./components/auth/LoginForm";
-import Reports from "./components/reports/ReportsPage";
+import ReportsMenu from "./components/reports/ReportsMenu";
+import WeekReport from "./components/reports/WeekReport";
+import FourWeekReport from "./components/reports/FourWeekReport";
+import DetailedReport from "./components/reports/DetailedReport";
+import MonthlyReport from "./components/reports/MonthlyReport";
 import PasswordReset from "./components/auth/PasswordReset";
 import CheckIn from "./components/checkIn/CheckInPage";
 
@@ -17,6 +21,11 @@ import CheckIn from "./components/checkIn/CheckInPage";
 const App = () => {
 
   const [formData, setFormData] = useState({});
+  const [selectedUser, setSelectedUser] = useState("");
+
+    const updateSelectedUser = (newData) => {
+        setSelectedUser(newData);
+    };
 
     const updateFormData = (newData) => {
         setFormData(newData);
@@ -42,6 +51,8 @@ const App = () => {
 
       // set the users email to the email in the token to ensure persistence
       formData.email = decodedToken.id;
+      // if page is detailed or decoded.name is valid
+      //   then selectedUser = decoded.name
 
       // Token seems valid
       return true;
@@ -57,8 +68,24 @@ const App = () => {
         <Route path="/" element={<Login updateFormData={ updateFormData } />} />
         {/* currently no check for if manager */}
         <Route 
-          path="/reports" 
-          element={isLoggedIn() ? <Reports formData={ formData } /> : <Login updateFormData={ updateFormData } />}
+          path="/reportsmenu" 
+          element={isLoggedIn() ? <ReportsMenu formData={ formData } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
+        />
+        <Route 
+          path="/weekreport" 
+          element={isLoggedIn() ? <WeekReport formData={ formData } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
+        />
+        <Route 
+          path="/fourweekreport" 
+          element={isLoggedIn() ? <FourWeekReport formData={ formData } /> : <Login updateFormData={ updateFormData } />}
+        />
+        <Route 
+          path="/detailedreport" 
+          element={isLoggedIn() ? <DetailedReport formData={ formData } selectedUser={ selectedUser } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
+        />
+        <Route 
+          path="/monthlyreport" 
+          element={isLoggedIn() ? <MonthlyReport formData={ formData } selectedUser={ selectedUser } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
         />
         <Route
           path="/checkIn"

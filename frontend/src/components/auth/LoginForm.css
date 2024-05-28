@@ -30,6 +30,9 @@
     font-size: 16px;
     font-weight: 300;
     color: #000000;
+    text-wrap: wrap;
+    word-break: normal;
+    white-space: normal;
 }
 
 .signin-button {
