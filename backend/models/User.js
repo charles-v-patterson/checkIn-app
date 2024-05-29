@@ -13,6 +13,11 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: [validateEmail, 'Please fill a valid IBM email address'],
   },
+  uid: {
+    type: String, 
+    required: true,
+    unique: true,
+  },
   password: {
     type: String,
     required: true,

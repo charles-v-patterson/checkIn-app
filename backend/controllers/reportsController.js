@@ -22,6 +22,7 @@ exports.generateReport = async (req, res) => {
             name: "$user.name",
             email: "$user.email",
             manager: "$user.manager",
+            uid: "$user.uid",
           },
         },
         {
@@ -38,6 +39,7 @@ exports.generateReport = async (req, res) => {
             },
             name: { $first: "$name", },
             manager: { $first: "$manager", },
+            uid: { $first: "$uid", },
           },
         },
         {
@@ -56,6 +58,7 @@ exports.generateReport = async (req, res) => {
             _id: { $arrayElemAt: ["$_id", 0], },
             name: { $arrayElemAt: ["$name", 0], },
             manager: { $arrayElemAt: ["$manager", 0], },
+            uid: { $arrayElemAt: ["$uid", 0], },
             checkins: {
               $map: {
                 input: {
@@ -105,7 +108,7 @@ exports.generateReport = async (req, res) => {
           $sort: { name: 1, },
         },
       ]);
-
+      
     // Send the report
     res.status(201).json(checkIns);
   } catch (error) {

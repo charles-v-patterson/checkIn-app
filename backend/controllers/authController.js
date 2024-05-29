@@ -15,7 +15,7 @@ const createShortToken = (id) => {
 exports.register = async (req, res) => {
   try {
     // 1. Destructure email and password from request body
-    const { email, password, name, manager } = req.body;
+    const { uid, email, password, name, manager } = req.body;
 
     const emailregex = /^[a-zA-Z0-9.-]+@(?:[a-zA-Z.]{3})?ibm\.com$/;
     const passregex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/;
@@ -37,7 +37,7 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: "Email already in use" });
     }
 
-    const newUser = manager ? new User({email, password, name, manager}) : new User({email, password,  name});
+    const newUser = manager ? new User({uid, email, password, name, manager}) : new User({uid, email, password,  name});
     
     await newUser.save();
 
@@ -183,6 +183,22 @@ exports.verifyJWT = async (req, res) => {
     res.status(500);
   }
 };
+
+exports.getNotificationsEnabled = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email: new RegExp(email, "i") });
+    if (user) {
+      res.status(200).json({enabled: user.notification});
+    }
+    else {
+      return res.status(400).json({ error: "Invalid user" });
+    }
+  }
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 
 exports.getEmployees = async (req, res) => {
   const { email } = req.body;
