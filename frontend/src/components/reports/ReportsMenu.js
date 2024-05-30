@@ -132,7 +132,7 @@ const closeSearch =() =>{
               </Link>
             <button id="one-week-button" className="view-button" onClick={openWeekSearch}>1 Week (Detailed)</button>
             <div id="week-search-div" className={openWSearch} ref={weekRef}>
-            <input type="text" id="one-week-search" className="search-bar" onKeyUp={()=>{searchEmployees("one-week-search", "employees-list-week")}} placeholder="Search employees.."></input>
+            <input type="text" id="one-week-search" className="search-bar" onKeyUp={()=>{searchEmployees("one-week-search", "employees-list-week")}} placeholder="Search mployees.."></input>
             <ul id="employees-list-week" className="employees-list">
             {dbData.map((val, key) => {
                     return (
@@ -143,7 +143,7 @@ const closeSearch =() =>{
             </div>
             <button id="month-button" className="view-button" onClick={openMonthSearch}>Monthly</button>
             <div id="month-search-div" className={openMSearch} ref={monthRef}>
-            <input type="text" id="month-search" className="search-bar" onKeyUp={()=>{searchEmployees("month-search", "employees-list-month")}} placeholder="Search employees.."></input>
+            <input type="text" id="month-search" className="search-bar" onKeyUp={()=>{searchEmployees("month-search", "employees-list-month")}} placeholder="Search Employees.."></input>
             <ul id="employees-list-month" className="employees-list">
             {dbData.map((val, key) => {
                     return (
@@ -155,6 +155,7 @@ const closeSearch =() =>{
             </div>
             <hr className="reports-hr"></hr>
             <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>
+            
               <Link
                 to="/checkin"
                 style={{

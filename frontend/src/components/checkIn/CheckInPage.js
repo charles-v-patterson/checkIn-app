@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from "react";
 import "./CheckInPage.css"; // Import the CSS file
 import ibmLogoPNG from "../../img/ibm-logo-transparent.png";
+import settingsIcon from "../../img/settings-icon-white.png";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
@@ -19,6 +20,7 @@ const CheckInPage = ({ formData, updateFormData }) => {
   const [location, setLocation] = useState(null);
   const [workLocation, setWorkLocation] = useState(null);
   const [buttonClicked, setButtonClicked] = useState(false);
+  
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -118,6 +120,8 @@ const CheckInPage = ({ formData, updateFormData }) => {
     setButtonClicked(true);
   };
 
+  
+
   const getAddress = async (lat, lng) => {
     const response = await fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyAPwjOR90GtwlHzTmqJjvzmZVyXgA1z4PY`
@@ -195,6 +199,11 @@ const CheckInPage = ({ formData, updateFormData }) => {
           </Link>)
         }
       </div>
+      <Link to="/settings" style={{ position: "absolute", bottom: "20px", right: "20px", display: "flex", justifyContent: "center", textDecoration: "none"}}>
+      <button className="settings-button" >
+        <img height="25x" alt="" src={settingsIcon} />
+          </button>
+          </Link>
     </div>
   );
 };

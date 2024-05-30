@@ -15,6 +15,8 @@ import FourWeekReport from "./components/reports/FourWeekReport";
 import DetailedReport from "./components/reports/DetailedReport";
 import MonthlyReport from "./components/reports/MonthlyReport";
 import PasswordReset from "./components/auth/PasswordReset";
+import ErrorPage from "./components/error/ErrorPage";
+import Settings from "./components/settings/Settings";
 import CheckIn from "./components/checkIn/CheckInPage";
 
 // Main App component
@@ -95,7 +97,20 @@ const App = () => {
           path="/passwordreset/:auth?"
           element={<PasswordReset />}
         />
+        <Route
+          path="*"
+          element={<ErrorPage errorName={ "404" }/>}
+        />
+        <Route
+          path="/401"
+          element={<ErrorPage errorName={ "401" }/>}
+        />
+        <Route
+          path="/settings"
+          element={isLoggedIn() ? <Settings formData={ formData } updateFormData={ updateFormData } /> : <Login updateFormData={ updateFormData } />}
+        />
       </Routes>
+      
     </Router>
   );
 };

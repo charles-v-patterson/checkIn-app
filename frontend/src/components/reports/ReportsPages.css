@@ -98,6 +98,42 @@
     height: 160px; 
 }
 
+#remove-search-div {
+    width: 30vh;
+    border-radius: 10px;
+    margin: 0; 
+    overflow: hidden;
+    transition: height 1s,
+    margin-top 1s;
+}
+
+#remove-search-div.close {
+    height: 0px; 
+    margin-top: -15px;
+}
+
+#remove-search-div.open {
+    height: 160px; 
+}
+
+#add-search-div {
+    width: 30vh;
+    border-radius: 10px;
+    margin: 0; 
+    overflow: hidden;
+    transition: height 1s,
+    margin-top 1s;
+}
+
+#add-search-div.close {
+    height: 0px; 
+    margin-top: -15px;
+}
+
+#add-search-div.open {
+    height: 40px; 
+}
+
 #month-search-div {
     width: 30vh;
     border-radius: 10px;

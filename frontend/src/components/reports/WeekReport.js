@@ -138,7 +138,7 @@ const WeekReport = ({ formData, updateSelectedUser }) => {
             </div>
             <hr className="reports-hr"></hr>
             <div className="load-div" style={{ overflowY: "auto" }}>
-            <div class="loader"></div>
+            <div className="loader"></div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>
             <Link

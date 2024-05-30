@@ -40,12 +40,22 @@
   color: #FFFFFF;
 }
 
+.settings-button {
+  justify-self: center;
+  border-radius: 10px;
+  border: none;
+  padding: 15px 15px 11px 15px;
+  cursor: pointer;
+  background-color: #0199EF;
+  color: #FFFFFF;
+}
+
 .checkin-button:hover {
   background-color: #7ac2eb; /* Darker blue */
 }
 
 .reports-button {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   justify-self: center;
   width: max-content;
   border-radius: 10px;
