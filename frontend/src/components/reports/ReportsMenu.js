@@ -136,7 +136,7 @@ const closeSearch =() =>{
             <ul id="employees-list-week" className="employees-list">
             {dbData.map((val, key) => {
                     return (
-                      <li><a key={key} onClick={()=> {updateSelectedUser(val.name); navigate("/detailedreport")}}>{val.name}</a></li>
+                      <li key={key} onClick={()=> {updateSelectedUser(val.name); navigate("/detailedreport")}}>{val.name}</li>
                     );
                   })}
             </ul>
@@ -147,7 +147,7 @@ const closeSearch =() =>{
             <ul id="employees-list-month" className="employees-list">
             {dbData.map((val, key) => {
                     return (
-                      <li><a key={key} onClick={()=> {updateSelectedUser(val.name); navigate("/monthlyreport")}}>{val.name}</a></li>
+                      <li key={key} onClick={()=> {updateSelectedUser(val.name); navigate("/monthlyreport")}}>{val.name}</li>
                     );
                   })}
             </ul>

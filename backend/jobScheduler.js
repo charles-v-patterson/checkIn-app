@@ -68,7 +68,7 @@ async function checkUsersAndSendNotifications() {
 }
 
 async function updateEmps() {
-  let cicLeader = await getUserByUID({ uid : process.env.CIC_LEADER_UID });
+  let cicLeader = await getUserByUID({body: { uid : process.env.CIC_LEADER_UID }});
   const unVisited = [cicLeader];
   const emps = {};
 
@@ -151,6 +151,8 @@ function startScheduler() {
 
   //run at 11:30pm every Saturday
   //cron.schedule("30 23 * * 6", deleteOldData);
+
+  //run at 12:00am every day
 }
 
 startScheduler();

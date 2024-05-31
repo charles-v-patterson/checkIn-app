@@ -4,6 +4,7 @@ import ibmLogo from "../../img/IBM-Logo.jpg";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { response } from "express";
 
 // settingsForm component
 const Settings = ({ formData, updateSelectedUser }) => {
@@ -15,7 +16,7 @@ const Settings = ({ formData, updateSelectedUser }) => {
   const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
   const [isManager, setIsManager] = useState(false);
-  const [notifsEnabled, setNotifsEnabled] = useState(true);
+  const [notifsEnabled, setNotifsEnabled] = useState();
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -29,10 +30,17 @@ const Settings = ({ formData, updateSelectedUser }) => {
         if (response.data.numemployees > 0) {
           setEmployees(response.data.employees);
           setIsManager(true);
-        } else {
-          navigate("/checkin");
-        }
+        } 
       })
+      .catch((error) => {
+        console.error("Error:", error);
+        navigate("/checkin");
+      });
+    axios
+      .post("/api/getNotificationsEnabled", { email: formData.email })
+      .then((response) => {
+        setNotifsEnabled(response.data.enabled);
+      }) 
       .catch((error) => {
         console.error("Error:", error);
         navigate("/checkin");
@@ -42,7 +50,7 @@ const Settings = ({ formData, updateSelectedUser }) => {
   useEffect(() => {
     handleData();
   }, [employees]);
-console.log(employees)
+
   // Function to handle form submission
   const handleData = async () => {
     try {
@@ -58,8 +66,23 @@ console.log(employees)
   const handleAdd = () => {};
 
   const handleNotifs = () => {
-    setNotifsEnabled(!notifsEnabled);
+    axios
+      .post("/api/toggleNotifications", { email: formData.email })
+      .then((response) => {
+        setNotifsEnabled(!notifsEnabled);
+      }) 
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
+
+  const getEmployeeData = () => {
+    const content = document.getElementById("add-input").value;
+    axios.post("/api/getUserByUID", {uid: content})
+    .then((response) => {
+      console.log(response);
+    });
+  }
 
   const searchEmployees = (bar, list) => {
     var input, filter, ul, li, a, i, txtValue;
@@ -80,7 +103,7 @@ console.log(employees)
 
   useEffect(() => {
     let handler = (e) => {
-     if(!openAddConfirm && !openRemoveConfirm)
+     if(!openAddConfirm && !openRemoveConfirm && isManager)
       { if (
         !addRef.current.contains(e.target) &&
         !removeRef.current.contains(e.target)
@@ -160,7 +183,10 @@ console.log(employees)
                   id="add-input"
                   className="search-bar"
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") setOpenAddConfirm(true);
+                    if (e.key === "Enter") {
+                      getEmployeeData();
+                      setOpenAddConfirm(true);
+                    }
                   }}
                   placeholder="Talent ID.. "
                 ></input>
@@ -189,10 +215,8 @@ console.log(employees)
                 <ul id="employees-list-week" className="employees-list">
                   {dbData.map((val, key) => {
                     return (
-                      <li>
-                        <a key={key} onClick={()=>{setOpenRemoveConfirm(true)}}>
-                          {val.name}
-                        </a>
+                      <li key={key} onClick={()=>{setOpenRemoveConfirm(true)}}>
+                        {val.name}
                       </li>
                     );
                   })}

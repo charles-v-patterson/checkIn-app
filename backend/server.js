@@ -41,6 +41,8 @@ app.post("/api/reports", reportRoutes);
 app.post("/api/getEmployees", authRoutes);
 app.post("/api/check-token", authRoutes);
 app.post("/api/toggleNotifications", authRoutes);
+app.post("/api/getNotificationsEnabled", authRoutes);
+app.post("/api/getUserByUID", authRoutes);
 
 // Basic Route for Testing
 app.get("/", (req, res) => {
