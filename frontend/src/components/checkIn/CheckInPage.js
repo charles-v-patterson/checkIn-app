@@ -7,14 +7,23 @@
 */
 import React, { useState, useEffect } from "react";
 import "./CheckInPage.css"; // Import the CSS file
-import ibmLogo from "../../img/IBM-Logo.jpg";
+import ibmLogoPNG from "../../img/ibm-logo-transparent.png";
+import settingsIcon from "../../img/settings-icon-white.png";
+import { Link } from "react-router-dom";
+import axios from 'axios';
 
 // CheckInPage component
-const CheckInPage = () => {
+const CheckInPage = ({ formData, updateFormData }) => {
   const [isAtWork, setIsAtWork] = useState(false);
+  const [isOnNetwork, setIsOnNetwork] = useState(false);
+  const [isManager, setIsManager] = useState(false);
   const [location, setLocation] = useState(null);
   const [workLocation, setWorkLocation] = useState(null);
   const [buttonClicked, setButtonClicked] = useState(false);
+  
+  // State for error message
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   // Fetch the work location and user's current location
   useEffect(() => {
@@ -40,10 +49,31 @@ const CheckInPage = () => {
         address: address,
       });
     });
+    
+    axios.post('/api/getEmployees', { email: formData.email })
+    .then(response => {
+      setIsManager(response.data.numemployees !== 0);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      setIsManager(false);
+    });
+
+    axios.get('/api/check-network')
+    .then(response => {
+      const { onNetwork } = response.data;
+      setIsOnNetwork(onNetwork);
+      updateFormData({ ...formData, location: onNetwork });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      setIsOnNetwork(false);
+    });
+
   }, []);
 
   // Function to handle the check-in button click
-  const handleCheckIn = () => {
+  const handleCheckIn = async () => {
     if (location && workLocation) {
       const distance = getDistanceFromLatLonInKm(
         location.lat,
@@ -53,11 +83,44 @@ const CheckInPage = () => {
       );
 
       // Check if the user is at work based on the distance
-      setIsAtWork(distance < 1); // Consider user to be at work if they are less than 0.3 km away
+      setIsAtWork(distance < 1.5); // Consider user to be at work if they are less than 0.3 km away
+      updateFormData({ ...formData, location: distance < 1.5 });
+      
+      try {
+        // Send a POST request to the server
+        await axios.post("/api/checkin", { formData });
+      } catch (error) {
+        // If there is an error with the request, set the error message
+        if (error.response) {
+          setErrorMessage(error.response.data.error);
+        } else {
+          // If there is no response, set a generic error message
+          setErrorMessage("Check in failed. Please try again.");
+        }
+      }
+
     }
+
+    else if (isOnNetwork) {
+      try {
+        // Send a POST request to the server
+        await axios.post("/api/checkin", { formData });
+      } catch (error) {
+        // If there is an error with the request, set the error message
+        if (error.response) {
+          setErrorMessage(error.response.data.error);
+        } else {
+          // If there is no response, set a generic error message
+          setErrorMessage("Check in failed. Please try again.");
+        }
+      }
+    }
+
     // Set the button clicked state to true
     setButtonClicked(true);
   };
+
+  
 
   const getAddress = async (lat, lng) => {
     const response = await fetch(
@@ -92,13 +155,14 @@ const CheckInPage = () => {
   return (
     <div className="checkin-page-container">
       <div className="checkin-header">
-        <h1 className="header-title">Punch Card</h1>
-        <hr className="checkin-hr"></hr>
-        <img height="45px" alt="" src={ibmLogo} />
-      </div>{" "}
+      <h1 className="title">Punch Card</h1>
+        <hr className="signin-hr"></hr>
+        <img height="90x" alt="" src={ibmLogoPNG} />
+      </div>
+      <hr className="checkin-hr"></hr>
+      {" "}
       {/* Add styling */}
       <div className="checkin-form-box">
-        <h1 className="checkin-title">IBM Monroe CIC </h1>
         {buttonClicked && (
           <>
             <p className="location">
@@ -110,7 +174,12 @@ const CheckInPage = () => {
                 Thanks! You have been checked in and logged as working in the
                 office today.
               </p>
-            ) : (
+            ) : isOnNetwork ? (
+              <p className="status">
+                Thanks! You have been checked in and logged as working in the
+                office today.
+              </p>
+            ): (
               <p className="status">
                 Thanks! You have been checked in and logged as working remotely
                 today.
@@ -120,13 +189,25 @@ const CheckInPage = () => {
         )}
         {!buttonClicked && (
           <button className="checkin-button" onClick={handleCheckIn}>
-            Check In Now
+            Check In
           </button>
         )}
+        {isManager && (<Link to="/reportsmenu" style={{ display: "flex", justifyContent: "center", textDecoration: "none"}}>
+        <button className="reports-button" >
+            Reports
+          </button>
+          </Link>)
+        }
       </div>
+      <Link to="/settings" style={{ position: "absolute", bottom: "20px", right: "20px", display: "flex", justifyContent: "center", textDecoration: "none"}}>
+      <button className="settings-button" >
+        <img height="25x" alt="" src={settingsIcon} />
+          </button>
+          </Link>
     </div>
   );
 };
 
 // Export the CheckInPage component
 export default CheckInPage;
+

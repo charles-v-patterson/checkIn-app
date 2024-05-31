@@ -5,11 +5,13 @@ import "./LoginForm.css";
 import ibmEye from "../../img/ibm eye.png";
 import ibmLogo from "../../img/IBM-Logo.jpg";
 import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 // LoginForm component
-const LoginForm = () => {
-  // State for form inputs
-  const [email, setEmail] = useState("");
+const LoginForm = ({ updateFormData }) => {
+  // State for email and location 
+  const [formData, setFormData] = useState({ email: '', location: false});
+  // State for password
   const [password, setPassword] = useState("");
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,9 +25,14 @@ const LoginForm = () => {
 
     try {
       // Send a POST request to the server
-      const response = await axios.post("/api/login", { email, password });
+      const response = await axios.post("/api/login", { email: formData.email, password: password });
       // Store token in local storage
       localStorage.setItem("token", response.data.token);
+
+      const decodedToken = jwtDecode(response.data.token);
+
+      setFormData({...formData, email: decodedToken.id});
+      updateFormData(formData);
 
       // Redirect to check-in page
       navigate("/checkin");
@@ -38,6 +45,14 @@ const LoginForm = () => {
         setErrorMessage("Login failed. Please try again.");
       }
     }
+  };
+
+  const handleEmailChange = (e) => {
+      setFormData({ ...formData, email: e.target.value });
+  };
+
+  const handlePasswordChange = (e) => {
+      setPassword(e.target.value);
   };
 
   // Function to toggle password visibility
@@ -63,14 +78,14 @@ const LoginForm = () => {
         <h1 className="login-title">Sign In</h1>
         <h2 className="login-subtitle">Sign in to check into your CIC</h2>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
-        <form className="login-form" onSubmit={handleSubmit}>
+        <div className="login-form" >
           <div className="form-group">
             <input
               type="email"
               id="email"
-              value={email}
+              value={formData.email}
               placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               required
             />
           </div>
@@ -78,22 +93,25 @@ const LoginForm = () => {
             <input
               type="password"
               id="password"
-              value={password}
+              value={formData.password}
               placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               required
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSubmit(e);
+              }}
             />
             <button className="eye-button" onClick={passToggle}>
               <img width="24px" alt="" src={ibmEye} />
             </button>
           </div>
-          <Link to="" style={{ textDecoration: "none", color: "#0199EF" }}>
+          <Link to="/passwordreset" style={{ textDecoration: "none", color: "#0199EF" }}>
             Forgot password?
           </Link>
-          <button className="signin-button" type="submit">
+          <button className="signin-button" onClick={handleSubmit}>
             Login
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );

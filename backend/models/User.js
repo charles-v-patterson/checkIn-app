@@ -1,17 +1,40 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs"); // For pw hashing
 
+var validateEmail = (email) => {
+  var re = /^[a-zA-Z0-9.-]+@(?:[a-zA-Z.]{3})?ibm\.com$/;
+  return re.test(email)
+};
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
     unique: true,
-    lowercase: true,
+    validate: [validateEmail, 'Please fill a valid IBM email address'],
+  },
+  uid: {
+    type: String, 
+    required: true,
+    unique: true,
   },
   password: {
     type: String,
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
+  manager: {
+    type: String,
+    required: false,
+  },
+  notification: {
+    type: Boolean,
+    required: true,
+    default: true,
+  }
 });
 
 // Hash password before saving (pre-save hook)

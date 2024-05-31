@@ -2,16 +2,27 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
 const authMiddleware = require("../middleware/authMiddleware");
-const checkInController = require("../controllers/checkinController")
+const checkInController = require("../controllers/checkinController");
 
-// Registration Route
+// Register Route
 router.post("/api/register", authController.register);
+
+// Password Reset Route
+router.post("/api/passwordReset", authController.passwordReset);
+
+router.post("/api/sendEmail", authController.sendEmail);
+
+router.post("/api/verifyJWT", authController.verifyJWT);
 
 // Login Route
 router.post("/api/login", authController.login);
 
-// Test route (protected)
-router.get("/check-token", authMiddleware, authController.checkToken);
-router.get("/status", authMiddleware, checkInController.getCheckInStatus);
+router.post("/api/getEmployees", authController.getEmployees);
+
+router.post("/api/check-token", authMiddleware, authController.checkToken);
+
+router.post("/api/toggleNotifications", authController.toggleNotifications);
+
+router.get("/api/status", authMiddleware, checkInController.getCheckInStatus);
 
 module.exports = router;

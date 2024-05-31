@@ -5,18 +5,36 @@
   define the different routes in the application, and the Route component is used to specify the path 
   and the component to render for each route.
 */
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Login from "./components/auth/LoginForm";
+import ReportsMenu from "./components/reports/ReportsMenu";
+import WeekReport from "./components/reports/WeekReport";
+import FourWeekReport from "./components/reports/FourWeekReport";
+import DetailedReport from "./components/reports/DetailedReport";
+import MonthlyReport from "./components/reports/MonthlyReport";
+import PasswordReset from "./components/auth/PasswordReset";
+import ErrorPage from "./components/error/ErrorPage";
+import Settings from "./components/settings/Settings";
 import CheckIn from "./components/checkIn/CheckInPage";
 
 // Main App component
 const App = () => {
+
+  const [formData, setFormData] = useState({});
+  const [selectedUser, setSelectedUser] = useState("");
+    const updateSelectedUser = (newData) => {
+        setSelectedUser(newData);
+    };
+
+    const updateFormData = (newData) => {
+        setFormData(newData);
+    };
+
   // Function to check if a user is logged in
   const isLoggedIn = () => {
     const token = localStorage.getItem("token");
-    console.log("Token status: " + token);
     if (!token) {
       return false; // No token found
     }
@@ -32,6 +50,11 @@ const App = () => {
         return false;
       }
 
+      // set the users email to the email in the token to ensure persistence
+      formData.email = decodedToken.id;
+      // if page is detailed or decoded.name is valid
+      //   then selectedUser = decoded.name
+
       // Token seems valid
       return true;
     } catch (error) {
@@ -43,12 +66,50 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Login updateFormData={ updateFormData } />} />
+        {/* currently no check for if manager */}
+        <Route 
+          path="/reportsmenu" 
+          element={isLoggedIn() ? <ReportsMenu formData={ formData } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
+        />
+        <Route 
+          path="/weekreport" 
+          element={isLoggedIn() ? <WeekReport formData={ formData } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
+        />
+        <Route 
+          path="/fourweekreport" 
+          element={isLoggedIn() ? <FourWeekReport formData={ formData } /> : <Login updateFormData={ updateFormData } />}
+        />
+        <Route 
+          path="/detailedreport" 
+          element={isLoggedIn() ? <DetailedReport formData={ formData } selectedUser={ selectedUser } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
+        />
+        <Route 
+          path="/monthlyreport" 
+          element={isLoggedIn() ? <MonthlyReport formData={ formData } selectedUser={ selectedUser } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
+        />
         <Route
           path="/checkIn"
-          element={isLoggedIn() ? <CheckIn /> : <Login />}
+          element={isLoggedIn() ? <CheckIn formData={ formData } updateFormData={ updateFormData } /> : <Login updateFormData={ updateFormData } />}
+        />
+        <Route
+          path="/passwordreset/:auth?"
+          element={<PasswordReset />}
+        />
+        <Route
+          path="*"
+          element={<ErrorPage errorName={ "404" }/>}
+        />
+        <Route
+          path="/401"
+          element={<ErrorPage errorName={ "401" }/>}
+        />
+        <Route
+          path="/settings"
+          element={isLoggedIn() ? <Settings formData={ formData } updateFormData={ updateFormData } /> : <Login updateFormData={ updateFormData } />}
         />
       </Routes>
+      
     </Router>
   );
 };

@@ -1,0 +1,66 @@
+/*
+    entire page background
+*/
+.error-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #FFFFFF;
+}
+
+.error-message-box {
+    display: flex;
+    flex-direction: column;
+    background-color: #EEEEEE;
+    padding: 70px;
+    gap: 15px;
+    box-shadow: 10px 10px black;
+    justify-content: center;
+}
+
+.error-title {
+    text-align: center;
+    margin: 0px;
+    font-size: 80px;
+    color: #000000;
+}
+
+.error-subtitle {
+    margin: 0px;
+    font-size: 30px;
+    font-weight: 300;
+    color: #000000;
+    text-wrap: wrap;
+    word-break: normal;
+    white-space: normal;
+    margin: 7% 0%;
+}
+
+.error-header {
+    position: absolute;
+    gap: 10px;
+    top: 10px;
+    left:20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.header-title {
+    margin: 0px;
+    width: auto;
+    font-family: 'Codystar';
+    font-size: 40px;
+    color: #000000;
+}
+
+.signin-hr {
+    margin: 5px;
+    border: 1px solid #000000;
+}
+
+.error-hr {
+    margin: 0px;
+    border: 2px solid #000000;
+  }
