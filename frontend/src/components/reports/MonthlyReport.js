@@ -7,10 +7,10 @@ import arrowForward from "../../img/arrow-forward-ios.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { useFormData } from '../context/FormDataContext';
 
 // reportsForm component
-const MonthlyReport = ({ formData, selectedUser }) => {
+const MonthlyReport = ({ selectedUser }) => {
   const [dbData, setDbData] = useState([]);
   const [monthTrigger, setMonthTrigger] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -26,6 +26,7 @@ const MonthlyReport = ({ formData, selectedUser }) => {
   const [monthTemp, setMonthTemp] = useState(date.getMonth());
   const [yearTemp, setYearTemp] = useState(date.getFullYear());
   const navigate = useNavigate();
+  const { formData } = useFormData();
   // const prenexIcons = document.querySelectorAll(".calendar-navigation span");
 
   useEffect(() => {

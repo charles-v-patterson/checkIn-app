@@ -6,11 +6,11 @@ import arrowForward from "../../img/arrow-forward-ios.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { useFormData } from '../context/FormDataContext';
 
 
 // reportsForm component
-const FourWeekReport = ({ formData }) => {
+const FourWeekReport = () => {
   const [dbData, setDbData] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [isLoading, setLoading] = useState(true); 
@@ -22,6 +22,8 @@ const FourWeekReport = ({ formData }) => {
   const [weeksBack, setWeeksBack] = useState(0);
   const [arrowRDisable, setArrowRDisable] = useState("arrow-end");
   const [arrowLDisable, setArrowLDisable] = useState("arrow-button");
+  const { formData } = useFormData();
+  
   let date = new Date();
   const navigate = useNavigate();
   // const prenexIcons = document.querySelectorAll(".calendar-navigation span");

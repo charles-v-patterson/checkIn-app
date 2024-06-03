@@ -4,9 +4,10 @@ import ibmLogo from "../../img/IBM-Logo.jpg";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useFormData } from '../context/FormDataContext';
 
 // settingsForm component
-const Settings = ({ formData, updateSelectedUser }) => {
+const Settings = ({ updateSelectedUser }) => {
   const [dbData, setDbData] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [aOpenSearch, setAOpenSearch] = useState("close");
@@ -19,6 +20,7 @@ const Settings = ({ formData, updateSelectedUser }) => {
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const { formData } = useFormData();
   let addRef = useRef();
   let removeRef = useRef();
 

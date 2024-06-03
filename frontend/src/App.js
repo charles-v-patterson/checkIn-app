@@ -5,9 +5,11 @@
   define the different routes in the application, and the Route component is used to specify the path 
   and the component to render for each route.
 */
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate, Form } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import W3Login from "./components/auth/W3LoginForm";
 import Login from "./components/auth/LoginForm";
 import ReportsMenu from "./components/reports/ReportsMenu";
 import WeekReport from "./components/reports/WeekReport";
@@ -18,6 +20,9 @@ import PasswordReset from "./components/auth/PasswordReset";
 import ErrorPage from "./components/error/ErrorPage";
 import Settings from "./components/settings/Settings";
 import CheckIn from "./components/checkIn/CheckInPage";
+import { AuthProvider, useAuth } from './components/context/AuthContext';
+import { FormDataProvider } from './components/context/FormDataContext';
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 // Main App component
 const App = () => {
@@ -27,11 +32,7 @@ const App = () => {
     const updateSelectedUser = (newData) => {
         setSelectedUser(newData);
     };
-
-    const updateFormData = (newData) => {
-        setFormData(newData);
-    };
-
+    
   // Function to check if a user is logged in
   const isLoggedIn = () => {
     const token = localStorage.getItem("token");
@@ -64,53 +65,85 @@ const App = () => {
 
   // Render the app component
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login updateFormData={ updateFormData } />} />
-        {/* currently no check for if manager */}
-        <Route 
-          path="/reportsmenu" 
-          element={isLoggedIn() ? <ReportsMenu formData={ formData } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
-        />
-        <Route 
-          path="/weekreport" 
-          element={isLoggedIn() ? <WeekReport formData={ formData } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
-        />
-        <Route 
-          path="/fourweekreport" 
-          element={isLoggedIn() ? <FourWeekReport formData={ formData } /> : <Login updateFormData={ updateFormData } />}
-        />
-        <Route 
-          path="/detailedreport" 
-          element={isLoggedIn() ? <DetailedReport formData={ formData } selectedUser={ selectedUser } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
-        />
-        <Route 
-          path="/monthlyreport" 
-          element={isLoggedIn() ? <MonthlyReport formData={ formData } selectedUser={ selectedUser } updateSelectedUser={ updateSelectedUser }/> : <Login updateFormData={ updateFormData } />}
-        />
-        <Route
-          path="/checkIn"
-          element={isLoggedIn() ? <CheckIn formData={ formData } updateFormData={ updateFormData } /> : <Login updateFormData={ updateFormData } />}
-        />
-        <Route
-          path="/passwordreset/:auth?"
-          element={<PasswordReset />}
-        />
-        <Route
-          path="*"
-          element={<ErrorPage errorName={ "404" }/>}
-        />
-        <Route
-          path="/401"
-          element={<ErrorPage errorName={ "401" }/>}
-        />
-        <Route
-          path="/settings"
-          element={isLoggedIn() ? <Settings formData={ formData } updateFormData={ updateFormData } /> : <Login updateFormData={ updateFormData } />}
-        />
-      </Routes>
-      
-    </Router>
+    <AuthProvider>
+      <FormDataProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<W3Login />} />
+            <Route path="/login" element={<Login />} />
+            {/* currently no check for if manager */}
+            <Route 
+              path="/reportsmenu" 
+              element={
+              <ProtectedRoute>  
+                <ReportsMenu updateSelectedUser={ updateSelectedUser }/>
+              </ProtectedRoute>
+              }
+            />
+            <Route 
+              path="/weekreport" 
+              element={
+              <ProtectedRoute>
+                <WeekReport updateSelectedUser={ updateSelectedUser }/> 
+              </ProtectedRoute>
+              }
+            />
+            <Route 
+              path="/fourweekreport" 
+              element={
+              <ProtectedRoute>
+                <FourWeekReport />
+              </ProtectedRoute>
+              }
+            />
+            <Route 
+              path="/detailedreport" 
+              element={
+              <ProtectedRoute>
+                <DetailedReport selectedUser={ selectedUser } updateSelectedUser={ updateSelectedUser }/>
+              </ProtectedRoute>
+              }
+            />
+            <Route 
+              path="/monthlyreport" 
+              element={
+              <ProtectedRoute>
+                <MonthlyReport selectedUser={ selectedUser } updateSelectedUser={ updateSelectedUser }/>
+              </ProtectedRoute>
+              }
+              />
+            <Route
+              path="/checkIn"
+              element={
+              <ProtectedRoute>
+                <CheckIn />
+              </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/passwordreset/:auth?"
+              element={<PasswordReset />}
+            />
+            <Route
+              path="*"
+              element={<ErrorPage errorName={ "404" }/>}
+            />
+            <Route
+              path="/401"
+              element={<ErrorPage errorName={ "401" }/>}
+            />
+            <Route
+              path="/settings"
+              element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>}
+            />
+          </Routes>
+        
+        </Router>
+      </FormDataProvider>
+    </AuthProvider>
   );
 };
 

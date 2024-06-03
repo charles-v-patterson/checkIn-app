@@ -11,19 +11,26 @@ import ibmLogoPNG from "../../img/ibm-logo-transparent.png";
 import settingsIcon from "../../img/settings-icon-white.png";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { useFormData } from '../context/FormDataContext';
+import { useAuth } from '../context/AuthContext';
 
 // CheckInPage component
-const CheckInPage = ({ formData, updateFormData }) => {
+const CheckInPage = () => {
+  // State for email and location 
   const [isAtWork, setIsAtWork] = useState(false);
   const [isOnNetwork, setIsOnNetwork] = useState(false);
   const [isManager, setIsManager] = useState(false);
   const [location, setLocation] = useState(null);
   const [workLocation, setWorkLocation] = useState(null);
   const [buttonClicked, setButtonClicked] = useState(false);
+  // handling form data
+  const { auth, setAuth } = useAuth();
+  const { formData, updateFormData } = useFormData();
+  const [localEmail, setLocalEmail] = useState(formData.email);
+  const [localLocation, setLocalLocation] = useState(formData.location);
   
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
-
 
   // Fetch the work location and user's current location
   useEffect(() => {
@@ -50,27 +57,58 @@ const CheckInPage = ({ formData, updateFormData }) => {
       });
     });
     
-    axios.post('/api/getEmployees', { email: formData.email })
-    .then(response => {
-      setIsManager(response.data.numemployees !== 0);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      setIsManager(false);
-    });
-
     axios.get('/api/check-network')
     .then(response => {
       const { onNetwork } = response.data;
       setIsOnNetwork(onNetwork);
-      updateFormData({ ...formData, location: onNetwork });
+      setLocalLocation(onNetwork);
     })
     .catch(error => {
-      console.error('Error:', error);
+      console.error('check-network Error:', error);
       setIsOnNetwork(false);
     });
 
+    const getUser = () => {
+      const storedToken = localStorage.getItem("auth");
+      let token = storedToken ? JSON.parse(storedToken) : null;
+    
+      if (!token && auth.isAuthenticated) {
+        // no token in local storage but user is authenticated? store the auth object
+        localStorage.setItem('auth', JSON.stringify(auth));
+        token = auth;
+      }
+    
+      if (token && token.isAuthenticated) {
+        setLocalEmail(token.user.id);
+      }
+    
+      console.log("Token: ", token);
+    }
+
+    getUser();
+
   }, []);
+
+  useEffect(() => {
+    if (localEmail) {
+      updateFormData({ email: localEmail, location: localLocation });
+    }
+  }, [localEmail, localLocation, updateFormData]);
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      if (formData.email) {
+        try {
+          const response = await axios.post('/api/getEmployees', { email: formData.email });
+          setIsManager(response.data.numemployees !== 0);
+        } catch (error) {
+          console.error('Error fetching employees:', error);
+        }
+      }
+    };
+
+    fetchEmployees();
+  }, [formData.email]);
 
   // Function to handle the check-in button click
   const handleCheckIn = async () => {
@@ -84,7 +122,7 @@ const CheckInPage = ({ formData, updateFormData }) => {
 
       // Check if the user is at work based on the distance
       setIsAtWork(distance < 1.5); // Consider user to be at work if they are less than 0.3 km away
-      updateFormData({ ...formData, location: distance < 1.5 });
+      setLocalLocation(distance < 1.5);
       
       try {
         // Send a POST request to the server
@@ -116,6 +154,7 @@ const CheckInPage = ({ formData, updateFormData }) => {
       }
     }
 
+    console.log(formData);
     // Set the button clicked state to true
     setButtonClicked(true);
   };
@@ -210,4 +249,3 @@ const CheckInPage = ({ formData, updateFormData }) => {
 
 // Export the CheckInPage component
 export default CheckInPage;
-

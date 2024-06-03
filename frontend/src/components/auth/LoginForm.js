@@ -10,7 +10,7 @@ import { jwtDecode } from "jwt-decode";
 // LoginForm component
 const LoginForm = ({ updateFormData }) => {
   // State for email and location 
-  const [formData, setFormData] = useState({ email: '', location: false});
+  const [formData, setFormData] = useState({ email: 'hello', location: false});
   // State for password
   const [password, setPassword] = useState("");
   // State for error message
