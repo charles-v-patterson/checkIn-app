@@ -26,10 +26,6 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-if ("development" == app.get("env")) {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
-
 // Middleware
 app.use(cors()); // Enable CORS
 app.use(express.json()); // Parse incoming JSON payloads

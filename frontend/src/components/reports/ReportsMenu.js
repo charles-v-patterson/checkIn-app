@@ -13,6 +13,7 @@ const ReportsMenu = ({ updateSelectedUser }) => {
   const [openWSearch, setWOpenSearch] = useState("close");
   const [openMSearch, setMOpenSearch] = useState("close");
   const [selectedUser, setSelectedUser] = useState("");
+  const [isLoading, setLoading] = useState(true); 
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -38,6 +39,10 @@ const ReportsMenu = ({ updateSelectedUser }) => {
 
   useEffect(() => {
     handleData();
+    setTimeout(() => {
+      setLoading(false);
+    }, 
+    700);
   }, [employees]);
 
   // Function to handle form submission
@@ -93,7 +98,13 @@ const closeSearch =() =>{
   setWOpenSearch("close")
   setMOpenSearch("close")
 }
-
+if (isLoading) {
+  return (
+  <div className="load-div" style={{ overflowY: "auto" }}>
+    <div className="loader"></div>
+  </div>
+  )
+}
   // Render the reports form
   return (
     <div className="reports-form-container">

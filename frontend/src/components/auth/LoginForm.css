@@ -111,3 +111,19 @@
     margin: 5px;
     border: 1px solid #000000;
 }
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+
+  .load-div{
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}

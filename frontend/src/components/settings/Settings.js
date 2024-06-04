@@ -18,6 +18,7 @@ const Settings = ({ updateSelectedUser }) => {
   const [selectedUserData, setSelectedUserData] = useState({});
   const [isManager, setIsManager] = useState(false);
   const [notifsEnabled, setNotifsEnabled] = useState();
+  const [isLoading, setLoading] = useState(true); 
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -41,7 +42,12 @@ const Settings = ({ updateSelectedUser }) => {
 
   useEffect(() => {
     handleData();
+    setTimeout(() => {
+      setLoading(false);
+    }, 
+    700);
   }, [employees]);
+  
 
   useEffect(() => {
     setErrorMessage(""); 
@@ -185,6 +191,14 @@ const Settings = ({ updateSelectedUser }) => {
     setROpenSearch("close");
   };
 
+  if (isLoading) {
+    return (
+    <div className="load-div" style={{ overflowY: "auto" }}>
+      <div className="loader"></div>
+    </div>
+    )
+  }
+
   // Render the settings form
   return (
     <div className="settings-form-container">
@@ -233,7 +247,7 @@ const Settings = ({ updateSelectedUser }) => {
             className="view-button"
             onClick={handleNotifs}
           >
-            {notifsEnabled ? "Disable Notifications" : "Enable Notifications"}
+            {notifsEnabled ? "Disable Reminders" : "Enable Reminders"}
           </button>
 
           {isManager && (

@@ -43,10 +43,13 @@ const WeekReport = ({ updateSelectedUser }) => {
   }, []); // Empty dependency array ensures this runs only once on mount
 
   useEffect(() => {
+    if (employees.length!==0) {
     handleData();
     setTimeout(() => {
       setLoading(false);
-    }, 700);
+    }, 
+    700);
+  }
   }, [employees]);
 
   useEffect(() => {

@@ -24,6 +24,7 @@ const CheckInPage = () => {
   const [workLocation, setWorkLocation] = useState(null);
   const [buttonClicked, setButtonClicked] = useState(false);
   const { auth, setAuth } = useAuth();
+  const [isLoading, setLoading] = useState(true); 
   const { formData, updateFormData } = useFormData();
   const [localEmail, setLocalEmail] = useState(formData.email);
   const [localLocation, setLocalLocation] = useState(formData.location);
@@ -85,7 +86,11 @@ const CheckInPage = () => {
     }
 
     getUser();
-
+    console.log(isLoading)
+    setTimeout(() => {
+      setLoading(false);
+    }, 
+    700);
   }, []);
 
   useEffect(() => {
@@ -100,6 +105,7 @@ const CheckInPage = () => {
         try {
           const response = await axios.post('/api/getEmployees', { email: formData.email });
           setIsManager(response.data.numemployees !== 0);
+          console.log(response.data.numemployees)
         } catch (error) {
           console.error('Error fetching employees:', error);
         }
@@ -187,6 +193,15 @@ const CheckInPage = () => {
   const deg2rad = (deg) => {
     return deg * (Math.PI / 180);
   };
+
+  if (isLoading) {
+    
+    return (
+    <div className="load-div" style={{ overflowY: "auto" }}>
+      <div className="loader"></div>
+    </div>
+    )
+  }
 
   // Render the CheckInPage component
   return (
