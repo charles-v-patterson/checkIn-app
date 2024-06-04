@@ -1,10 +1,3 @@
-/*
-  App.js is the main component of the application. It is responsible for routing the user to the 
-  correct page based on the URL path. The App component uses the BrowserRouter component from the 
-  react-router-dom library to enable routing in the application. The Routes component is used to 
-  define the different routes in the application, and the Route component is used to specify the path 
-  and the component to render for each route.
-*/
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, Form } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -67,7 +60,10 @@ const App = () => {
       <FormDataProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<W3Login />} />
+            <Route path="/" element={
+            <ProtectedRoute>
+              <W3Login />
+            </ProtectedRoute>} />
             <Route 
               path="/reportsmenu" 
               element={

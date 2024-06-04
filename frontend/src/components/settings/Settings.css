@@ -7,6 +7,13 @@
     color: #FFFFFF;
 }
 
+.load-div{
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
 .settings-form-box {
     display: flex;
     flex-direction: column;
@@ -51,12 +58,6 @@
     color: #000000;
 }
 
-.settings-sub-title {
-    margin: 0px;
-    font-size: 22px;
-    color: #000000;
-}
-
 .settings-date {
     text-align: center;
     margin: 0px;
@@ -98,24 +99,6 @@
     background-color: #0199EF;
     color: #FFFFFF;
     align-self: end;
-}
-
-#week-search-div {
-    width: 30vh;
-    border-radius: 10px;
-    margin: 0; 
-    overflow: hidden;
-    transition: height 1s,
-    margin-top 1s;
-}
-
-#week-search-div.close {
-    height: 0px; 
-    margin-top: -15px;
-}
-
-#week-search-div.open {
-    height: 160px; 
 }
 
 #remove-search-div {

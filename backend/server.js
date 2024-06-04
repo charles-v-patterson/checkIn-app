@@ -26,10 +26,6 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-if ("development" == app.get("env")) {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
-
 // Middleware
 app.use(cors()); // Enable CORS
 app.use(express.json()); // Parse incoming JSON payloads
@@ -144,15 +140,10 @@ app.get("/api/w3info", ensureAuthenticated, (req, res) => {
 });
 
 app.get('/api/check_logged_into_w3', (req, res) => {
-  if (req.user) {
-    User.findOne({ email: new RegExp(req.user.id, "i")})
-    .then((response) => {
-      if (req.isAuthenticated() && response ) {
-        res.json({ isAuthenticated: true, user: req.user });
-      } else {
-        res.json({ isAuthenticated: false });
-      }
-    });
+  if (req.isAuthenticated() && User.findOne({ email: new RegExp(req.user.id, "i") })) {
+    res.json({ isAuthenticated: true, user: req.user });
+  } else {
+    res.json({ isAuthenticated: false });
   }
 });
 

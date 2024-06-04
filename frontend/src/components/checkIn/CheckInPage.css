@@ -26,6 +26,13 @@
   color: #000000;
 }
 
+.load-div{
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
 .checkin-button {
   margin-bottom: 20px;
   justify-self: center;

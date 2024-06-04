@@ -46,10 +46,13 @@ const FourWeekReport = () => {
   }, []); // Empty dependency array ensures this runs only once on mount
 
   useEffect(() => {
+    if (employees.length!==0) {
     handleData();
     setTimeout(() => {
       setLoading(false);
-    }, 700);
+    }, 
+    700);
+  }
   }, [employees]);
 
   useEffect(() => {
@@ -70,10 +73,11 @@ const FourWeekReport = () => {
   };
 
   const isUnder = (name) => {
-    let lastWeekDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-    let last2WeekDate = new Date(currentDate.getTime() - 14 * 24 * 60 * 60 * 1000);
-    let last3WeekDate = new Date(currentDate.getTime() - 21 * 24 * 60 * 60 * 1000);
-    let last4WeekDate = new Date(currentDate.getTime() - 28 * 24 * 60 * 60 * 1000);
+    let anchorDate = new Date();
+    let lastWeekDate = new Date(anchorDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+    let last2WeekDate = new Date(anchorDate.getTime() - 14 * 24 * 60 * 60 * 1000);
+    let last3WeekDate = new Date(anchorDate.getTime() - 21 * 24 * 60 * 60 * 1000);
+    let last4WeekDate = new Date(anchorDate.getTime() - 28 * 24 * 60 * 60 * 1000);
     let total= fourWeekCounter(name, lastWeekDate, last2WeekDate, last3WeekDate, last4WeekDate)
     if(total< 12){
       return "under";

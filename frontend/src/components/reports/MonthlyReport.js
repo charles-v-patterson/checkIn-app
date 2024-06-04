@@ -160,80 +160,6 @@ const MonthlyReport = ({ selectedUser }) => {
    
   };
 
-  const tableToCSV = () => {
- 
-    // Variable to store the final csv data
-    let csv_data = [];
-
-    // Get each row data
-    let rows = document.getElementsByTagName('tr');
-    for (let i = 0; i < rows.length; i++) {
-
-        // Get each column data
-        let cols = rows[i].querySelectorAll('td,th');
-
-        // Stores each csv row data
-        let csvrow = [];
-        for (let j = 0; j < cols.length; j++) {
-          let pushedString = "";
-          let strFirst2 = cols[j].innerHTML.substring(0,2);
-          if (strFirst2.includes('<')){
-            pushedString = strFirst2.substring(0,1);
-          }
-          else if(cols[j].innerHTML.includes('day')){
-            pushedString = cols[j].innerHTML;
-          }else{
-            pushedString = strFirst2;
-          }
-          if (cols[j].innerHTML.includes('In Office'))
-            {
-              pushedString = pushedString + ": In Office";
-            }
-            else if(cols[j].innerHTML.includes('Remote')){
-              pushedString = pushedString + ": Remote";
-            }
-            csvrow.push(pushedString);
-        }
-
-        // Combine each column value with comma
-        csv_data.push(csvrow.join(","));
-    }
-
-    // Combine each row data with new line character
-    csv_data = csv_data.join('\n');
-
-    // Call this function to download csv file  
-    downloadCSVFile(csv_data);
-
-}
-
-const downloadCSVFile = (csv_data) => {
-
-    // Create CSV file object and feed
-    // our csv_data into it
-    let CSVFile = new Blob([csv_data], {
-        type: "text/csv"
-    });
-
-    // Create to temporary link to initiate
-    // download process
-    let temp_link = document.createElement('a');
-
-    // Download csv file
-    temp_link.download = `${selectedUser}-${months[monthTemp]} ${yearTemp}.csv`;
-    let url = window.URL.createObjectURL(CSVFile);
-    temp_link.href = url;
-
-    // This link should not be displayed
-    temp_link.style.display = "none";
-    document.body.appendChild(temp_link);
-
-    // Automatically click the link to
-    // trigger download
-    temp_link.click();
-    document.body.removeChild(temp_link);
-}
-
 
   const prevMonth = () => {
     
@@ -354,7 +280,6 @@ const downloadCSVFile = (csv_data) => {
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>
-            <button className="back-button" onClick={tableToCSV}>Export</button>
             <Link
                 to="/reportsmenu"
                 style={{
