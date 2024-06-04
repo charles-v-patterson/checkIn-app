@@ -10,7 +10,8 @@ const ProtectedRoute = ({ children }) => {
   }
 
   if (!auth.isAuthenticated) {
-    return <Navigate to="/" />;
+    //return <Navigate to="/" />
+    window.location.replace('https://localhost:5000/login');
   }
 
   return children;

@@ -4,13 +4,13 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const CheckIn = require("./models/CheckIn");
+const User = require("./models/User");
 const moment = require("moment");
 const cron = require("node-cron");
 const startScheduler = require("./jobScheduler");
 const passport = require('passport');
 const https = require('https');
 const fs = require('fs');
-const User = require("./models/User");
 
 const startNotificationScheduler = require("./jobScheduler");
 
@@ -123,6 +123,19 @@ app.get("/api/authMiddle", (req, res, next) => {
   });
 })
 
+app.get("/api/authMiddle", (req, res, next) => {
+  User.findOne({ email: new RegExp(req.user.id, "i") })
+  .then((response) => {
+    // change redirect depending on current page
+    if (response) {
+      res.redirect(`${process.env.FRONTEND_URL}/checkin`);
+    }
+    else {
+      res.redirect(`${process.env.FRONTEND_URL}/401`);
+    }
+  });
+})
+
 const ensureAuthenticated = (req, res, next) => {
   if(!req.isAuthenticated()) {
     res.redirect('/login')
@@ -144,15 +157,10 @@ app.get("/api/w3info", ensureAuthenticated, (req, res) => {
 });
 
 app.get('/api/check_logged_into_w3', (req, res) => {
-  if (req.user) {
-    User.findOne({ email: new RegExp(req.user.id, "i")})
-    .then((response) => {
-      if (req.isAuthenticated() && response ) {
-        res.json({ isAuthenticated: true, user: req.user });
-      } else {
-        res.json({ isAuthenticated: false });
-      }
-    });
+  if (req.isAuthenticated() && User.findOne({ email: new RegExp(req.user.id, "i") })) {
+    res.json({ isAuthenticated: true, user: req.user });
+  } else {
+    res.json({ isAuthenticated: false });
   }
 });
 

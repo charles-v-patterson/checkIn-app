@@ -23,7 +23,6 @@ const CheckInPage = () => {
   const [location, setLocation] = useState(null);
   const [workLocation, setWorkLocation] = useState(null);
   const [buttonClicked, setButtonClicked] = useState(false);
-  // handling form data
   const { auth, setAuth } = useAuth();
   const { formData, updateFormData } = useFormData();
   const [localEmail, setLocalEmail] = useState(formData.email);

@@ -8,7 +8,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, Form } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
 import W3Login from "./components/auth/W3LoginForm";
 import ReportsMenu from "./components/reports/ReportsMenu";
 import WeekReport from "./components/reports/WeekReport";
@@ -18,7 +17,7 @@ import MonthlyReport from "./components/reports/MonthlyReport";
 import ErrorPage from "./components/error/ErrorPage";
 import Settings from "./components/settings/Settings";
 import CheckIn from "./components/checkIn/CheckInPage";
-import { AuthProvider, useAuth } from './components/context/AuthContext';
+import { AuthProvider } from './components/context/AuthContext';
 import { FormDataProvider } from './components/context/FormDataContext';
 import ProtectedRoute from './components/auth/ProtectedRoute'
 
@@ -30,7 +29,7 @@ const App = () => {
     const updateSelectedUser = (newData) => {
         setSelectedUser(newData);
     };
-    
+
   // Function to check if a user is logged in
   const isLoggedIn = () => {
     const token = localStorage.getItem("token");
