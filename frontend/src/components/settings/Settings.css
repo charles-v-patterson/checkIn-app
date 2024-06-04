@@ -51,6 +51,12 @@
     color: #000000;
 }
 
+.settings-sub-title {
+    margin: 0px;
+    font-size: 22px;
+    color: #000000;
+}
+
 .settings-date {
     text-align: center;
     margin: 0px;

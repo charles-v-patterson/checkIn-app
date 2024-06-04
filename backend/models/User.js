@@ -18,10 +18,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  password: {
-    type: String,
-    required: true,
-  },
   name: {
     type: String,
     required: true,
@@ -34,25 +30,6 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: true,
-  }
-});
-
-// Hash password before saving (pre-save hook)
-userSchema.pre("save", async function (next) {
-  try {
-    // Generate salt for stronger hashing
-    const salt = await bcrypt.genSalt(10);
-
-    // Hash the password using the generated salt
-    const hashedPassword = await bcrypt.hash(this.password, salt);
-
-    // Replace the plain-text password with the hashed version
-    this.password = hashedPassword;
-
-    // Continue with saving the user
-    next();
-  } catch (error) {
-    next(error); // Pass the error to the next middleware or error handler
   }
 });
 

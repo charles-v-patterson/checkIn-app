@@ -10,6 +10,7 @@ const startScheduler = require("./jobScheduler");
 const passport = require('passport');
 const https = require('https');
 const fs = require('fs');
+const User = require("./models/User");
 
 const startNotificationScheduler = require("./jobScheduler");
 
@@ -24,6 +25,10 @@ dotenv.config();
 // Express App Initialization
 const app = express();
 const port = process.env.PORT || 5000;
+
+if ("development" == app.get("env")) {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
 
 // Middleware
 app.use(cors()); // Enable CORS
@@ -46,7 +51,6 @@ const Strategy = new OpenIDConnectStrategy({
   passReqToCallback : true
 }, (req, iss, sub, profile, done) => {
   // 'profile' is what w3ID returned to us and has lots of info in it
-     //console.log("This is profile: ", profile)
 
   // The object we pass to the 'done() callback is stored as 'req.user' and accessible
   // in express route handlers. A real app would probably pass a full user-like object
@@ -85,16 +89,14 @@ mongoose
   .catch((err) => console.error("Could not connect to MongoDB", err));
 
 // API Routes
-app.post("/api/login", authRoutes);
-app.post("/api/passwordReset", authRoutes);
 app.post("/api/verifyJWT", authRoutes);
 app.post("/api/sendEmail", authRoutes);
 app.post("/api/register", authRoutes);
+app.post("/api/remove", authRoutes);
 app.post("/api/checkin", checkinRoutes);
 app.get("/api/check-network", checkinRoutes);
 app.post("/api/reports", reportRoutes);
 app.post("/api/getEmployees", authRoutes);
-app.post("/api/check-token", authRoutes);
 app.post("/api/toggleNotifications", authRoutes);
 app.post("/api/getNotificationsEnabled", authRoutes);
 app.post("/api/getUserByUID", authRoutes);
@@ -104,9 +106,21 @@ app.get('/login', passport.authenticate('openidconnect', {}))
 
 app.get('/oidc_callback', (req,res,next) => {
   passport.authenticate('openidconnect', {
-    successRedirect: 'https://localhost:3000/checkin',
+    successRedirect: '/api/authMiddle',
     failureRedirect: '/failure',
   })(req,res,next)
+})
+
+app.get("/api/authMiddle", (req, res, next) => {
+  User.findOne({ email: new RegExp(req.user.id, "i") })
+  .then((response) => {
+    if (response) {
+      res.redirect(`${process.env.FRONTEND_URL}/checkin`);
+    }
+    else {
+      res.redirect(`${process.env.FRONTEND_URL}/401`);
+    }
+  });
 })
 
 const ensureAuthenticated = (req, res, next) => {
@@ -130,10 +144,15 @@ app.get("/api/w3info", ensureAuthenticated, (req, res) => {
 });
 
 app.get('/api/check_logged_into_w3', (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json({ isAuthenticated: true, user: req.user });
-  } else {
-    res.json({ isAuthenticated: false });
+  if (req.user) {
+    User.findOne({ email: new RegExp(req.user.id, "i")})
+    .then((response) => {
+      if (req.isAuthenticated() && response ) {
+        res.json({ isAuthenticated: true, user: req.user });
+      } else {
+        res.json({ isAuthenticated: false });
+      }
+    });
   }
 });
 

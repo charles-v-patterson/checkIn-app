@@ -15,8 +15,9 @@ const Settings = ({ updateSelectedUser }) => {
   const [openAddConfirm, setOpenAddConfirm] = useState(false);
   const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
+  const [selectedUserData, setSelectedUserData] = useState({});
   const [isManager, setIsManager] = useState(false);
-  const [notifsEnabled, setNotifsEnabled] = useState(true);
+  const [notifsEnabled, setNotifsEnabled] = useState();
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -25,15 +26,12 @@ const Settings = ({ updateSelectedUser }) => {
   let removeRef = useRef();
 
   useEffect(() => {
+    getEmployeeData();
+
     axios
-      .post("/api/getEmployees", { email: formData.email })
+      .post("/api/getNotificationsEnabled", { email: formData.email })
       .then((response) => {
-        if (response.data.numemployees > 0) {
-          setEmployees(response.data.employees);
-          setIsManager(true);
-        } else {
-          navigate("/checkin");
-        }
+        setNotifsEnabled(response.data.enabled);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -45,6 +43,36 @@ const Settings = ({ updateSelectedUser }) => {
     handleData();
   }, [employees]);
 
+  useEffect(() => {
+    setErrorMessage(""); 
+    setOpenAddConfirm(false); 
+    setOpenRemoveConfirm(false); 
+    setSelectedUser(""); 
+    setSelectedUserData({}); 
+  }, [isManager]);
+
+  const getEmployeeData = async () => {
+    axios
+    .post("/api/getEmployees", { email: formData.email })
+    .then((response) => {
+      if (response.data.numemployees > 0) {
+        setEmployees(response.data.employees);
+        setIsManager(true);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      navigate("/checkin");
+    });
+  }
+
+  const resetPage = async () => {
+    getEmployeeData();
+    setErrorMessage(""); 
+    setOpenRemoveConfirm(false); 
+    setOpenAddConfirm(false); 
+  }
+
   // Function to handle form submission
   const handleData = async () => {
     try {
@@ -55,12 +83,59 @@ const Settings = ({ updateSelectedUser }) => {
     }
   };
 
-  const handleRemove = () => {};
+  const getUserInfo = async () => {
+    axios
+    .post("/api/getUserByUID", { uid: document.getElementById("add-input").value })
+    .then((response) => {
+      setSelectedUser(response.data.name);
+      setSelectedUserData(response.data);
+    })
+    .catch((error) => {
+      if (error.response.status === 400) {
+        setErrorMessage("Invalid Talent ID");
+      }
+      setOpenAddConfirm(false);
+    });
+  }
 
-  const handleAdd = () => {};
+  const handleRemove = () => {
+    axios
+    .post("/api/remove", {authemail: formData.email, email: selectedUserData.email})
+    .then(() => {
+      setErrorMessage("User successfully removed");
+    })
+    .catch((error) => {
+      if (error.response.status === 401) {
+        setErrorMessage("You are not authorized to remove this user");
+      }
+      setOpenRemoveConfirm(false);
+    });
+  };
+
+  const handleAdd = () => {
+    axios
+    .post("/api/register", {uid: selectedUserData.uid, email: selectedUserData.email, password: "abcABC123!!!", name: selectedUserData.name, manager: formData.email })
+    .then(() => {
+      setErrorMessage("User successfully added");
+    })
+    .catch((error) => {
+      if (error.response.status === 400) {
+        setErrorMessage(`Talent id ${selectedUserData.uid} already registered`);
+      }
+      setOpenAddConfirm(false);
+    });
+  };
 
   const handleNotifs = () => {
-    setNotifsEnabled(!notifsEnabled);
+    axios
+      .post("/api/toggleNotifications", { email: formData.email })
+      .then(() => {
+        setNotifsEnabled(!notifsEnabled);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        navigate("/checkin");
+      });
   };
 
   const searchEmployees = (bar, list) => {
@@ -82,7 +157,7 @@ const Settings = ({ updateSelectedUser }) => {
 
   useEffect(() => {
     let handler = (e) => {
-     if(!openAddConfirm && !openRemoveConfirm)
+     if(!openAddConfirm && !openRemoveConfirm && isManager && errorMessage === "")
       { if (
         !addRef.current.contains(e.target) &&
         !removeRef.current.contains(e.target)
@@ -125,21 +200,31 @@ const Settings = ({ updateSelectedUser }) => {
         </div>
         <hr className="settings-hr"></hr>
         <div className="menu-div" style={{ overflowY: "auto" }}>
-            {openAddConfirm ? (<>
+            {errorMessage !== "" ? (<>
+              <h1 className="settings-title">{errorMessage}</h1>
+              <button className="view-button" onClick={()=>{resetPage();}}>
+                {errorMessage === "User successfully removed" || errorMessage === "User successfully added" ? "To Menu": "Cancel"}
+              </button>
+              </>)
+                : openAddConfirm ? (<>
                 <h1 className="settings-title">Are you sure you want to add this user?</h1>
-                <button className="view-button" onClick={handleAdd(selectedUser)}>
+                <h2 className="settings-sub-title">{selectedUserData.email}</h2>
+                <h2 className="settings-sub-title">{selectedUser}</h2>
+                <button className="view-button" onClick={() => {handleAdd(selectedUserData.email)}}>
                 Add
               </button>
-              <button className="view-button" onClick={()=>{setOpenAddConfirm(false)}}>
+              <button className="view-button" onClick={()=>{setOpenAddConfirm(false); setSelectedUser(""); setSelectedUserData({});}}>
                 Cancel
               </button>
             </>) 
              :openRemoveConfirm? (<>
             <h1 className="settings-title">Are you sure you want to remove this user?</h1>
-                <button className="view-button" onClick={handleRemove(selectedUser)}>
+            <h2 className="settings-sub-title">{selectedUserData.email}</h2>
+            <h2 className="settings-sub-title">{selectedUser}</h2>
+                <button className="view-button" onClick={() => {handleRemove(selectedUserData.email)}}>
                 Remove
               </button>
-              <button className="view-button" onClick={()=>{setOpenRemoveConfirm(false)}}>
+              <button className="view-button" onClick={()=>{setOpenRemoveConfirm(false); setSelectedUser(""); setSelectedUserData({});}}>
                 Cancel
               </button>
             </>) : (<>
@@ -162,7 +247,10 @@ const Settings = ({ updateSelectedUser }) => {
                   id="add-input"
                   className="search-bar"
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") setOpenAddConfirm(true);
+                    if (e.key === "Enter") {
+                      setOpenAddConfirm(true);
+                      getUserInfo();
+                    }
                   }}
                   placeholder="Talent ID.. "
                 ></input>
@@ -191,7 +279,11 @@ const Settings = ({ updateSelectedUser }) => {
                 <ul id="employees-list-week" className="employees-list">
                   {dbData.map((val, key) => {
                     return (
-                      <li key={key} onClick={()=>{setOpenRemoveConfirm(true)}}>
+                      <li key={key} onClick={()=>{
+                        setSelectedUser(val.name);
+                        setSelectedUserData({uid: val.uid, name: val.name, email: val._id});
+                        setOpenRemoveConfirm(true);
+                        }}>
                           {val.name}
                       </li>
                     );

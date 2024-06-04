@@ -7,22 +7,18 @@ const checkInController = require("../controllers/checkinController");
 // Register Route
 router.post("/api/register", authController.register);
 
-// Password Reset Route
-router.post("/api/passwordReset", authController.passwordReset);
+router.post("/api/remove", authController.remove);
 
 router.post("/api/sendEmail", authController.sendEmail);
 
 router.post("/api/verifyJWT", authController.verifyJWT);
 
-// Login Route
-router.post("/api/login", authController.login);
-
 router.post("/api/getEmployees", authController.getEmployees);
 
-router.post("/api/check-token", authMiddleware, authController.checkToken);
+router.post("/api/getUserByUID", authController.getUserByUID);
 
 router.post("/api/toggleNotifications", authController.toggleNotifications);
 
-router.get("/api/status", authMiddleware, checkInController.getCheckInStatus);
+router.post("/api/getNotificationsEnabled", authController.getNotificationsEnabled);
 
 module.exports = router;

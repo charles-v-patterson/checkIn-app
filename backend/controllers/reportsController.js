@@ -102,9 +102,6 @@ exports.generateReport = async (req, res) => {
           },
         },
         {
-          $unset: "_id",
-        },
-        {
           $sort: { name: 1, },
         },
       ]);

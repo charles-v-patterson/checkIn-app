@@ -154,7 +154,6 @@ const CheckInPage = () => {
       }
     }
 
-    console.log(formData);
     // Set the button clicked state to true
     setButtonClicked(true);
   };

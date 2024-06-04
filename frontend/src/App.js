@@ -10,13 +10,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Form } from "react-ro
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import W3Login from "./components/auth/W3LoginForm";
-import Login from "./components/auth/LoginForm";
 import ReportsMenu from "./components/reports/ReportsMenu";
 import WeekReport from "./components/reports/WeekReport";
 import FourWeekReport from "./components/reports/FourWeekReport";
 import DetailedReport from "./components/reports/DetailedReport";
 import MonthlyReport from "./components/reports/MonthlyReport";
-import PasswordReset from "./components/auth/PasswordReset";
 import ErrorPage from "./components/error/ErrorPage";
 import Settings from "./components/settings/Settings";
 import CheckIn from "./components/checkIn/CheckInPage";
@@ -70,8 +68,6 @@ const App = () => {
         <Router>
           <Routes>
             <Route path="/" element={<W3Login />} />
-            <Route path="/login" element={<Login />} />
-            {/* currently no check for if manager */}
             <Route 
               path="/reportsmenu" 
               element={
@@ -119,10 +115,6 @@ const App = () => {
                 <CheckIn />
               </ProtectedRoute>
               }
-            />
-            <Route
-              path="/passwordreset/:auth?"
-              element={<PasswordReset />}
             />
             <Route
               path="*"

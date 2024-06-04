@@ -62,13 +62,19 @@ async function checkUsersAndSendNotifications() {
   usersNotCheckedIn.forEach(async (user) => {
     await sendEmail({body: {
                       email : user.email,
-                      message : `Reminder: You have not checked in today.</p> <a href=http://localhost:3000/ class="button">Check In</a><p>Check in to set your location for the day.`
+                      message : `Reminder: You have not checked in today.</p> <a href=${process.env.FRONTEND_URL} class="button">Check In</a><p>Check in to set your location for the day.`
                     }});
   });
 }
 
 async function updateEmps() {
-  let cicLeader = await getUserByUID({body: { uid : process.env.CIC_LEADER_UID }});
+  let cicLeaderRequest = await fetch(new Request("http://localhost:5000/api/getUserByUID", 
+                                          {
+                                            method: "POST",
+                                            headers: { "Content-Type": "application/json" }, 
+                                            body: JSON.stringify({uid: process.env.CIC_LEADER_UID}),
+                                          }));
+  const cicLeader = await cicLeaderRequest.json();
   const unVisited = [cicLeader];
   const emps = {};
 
@@ -151,8 +157,6 @@ function startScheduler() {
 
   //run at 11:30pm every Saturday
   //cron.schedule("30 23 * * 6", deleteOldData);
-
-  //run at 12:00am every day
 }
 
 startScheduler();
