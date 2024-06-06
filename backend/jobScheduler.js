@@ -68,7 +68,7 @@ async function checkUsersAndSendNotifications() {
 }
 
 async function updateEmps() {
-  let cicLeaderRequest = await fetch(new Request("http://localhost:5000/api/getUserByUID", 
+  let cicLeaderRequest = await fetch(new Request("https://localhost:5000/api/getUserByUID", 
                                           {
                                             method: "POST",
                                             headers: { "Content-Type": "application/json" }, 

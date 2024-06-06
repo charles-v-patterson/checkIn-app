@@ -11,6 +11,7 @@ const startScheduler = require("./jobScheduler");
 const passport = require('passport');
 const https = require('https');
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
 
 const startNotificationScheduler = require("./jobScheduler");
 
@@ -84,6 +85,10 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB", err));
 
+const createLongToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "3h" });
+};
+
 // API Routes
 app.post("/api/verifyJWT", authRoutes);
 app.post("/api/sendEmail", authRoutes);
@@ -97,26 +102,29 @@ app.post("/api/toggleNotifications", authRoutes);
 app.post("/api/getNotificationsEnabled", authRoutes);
 app.post("/api/getUserByUID", authRoutes);
 
+app.get('/api/check_logged_into_w3', (req, res) => {
+  try {
+    if (req.isAuthenticated() && User.findOne({ email: new RegExp(req.user.id, "i") })) {
+      response = createLongToken({ isAuthenticated: true, user: req.user });
+      res.status(200).json(response);
+    } else {
+      response = createLongToken({ isAuthenticated: false });
+      res.status(200).json(response);
+    }
+  }
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/failure', (req, res) => res.send('login failed'))
 app.get('/login', passport.authenticate('openidconnect', {}))
 
 app.get('/oidc_callback', (req,res,next) => {
   passport.authenticate('openidconnect', {
-    successRedirect: '/api/authMiddle',
+    successRedirect: 'https://localhost:3000/checkin',
     failureRedirect: '/failure',
   })(req,res,next)
-})
-
-app.get("/api/authMiddle", (req, res, next) => {
-  User.findOne({ email: new RegExp(req.user.id, "i") })
-  .then((response) => {
-    if (response) {
-      res.redirect(`${process.env.FRONTEND_URL}/checkin`);
-    }
-    else {
-      res.redirect(`${process.env.FRONTEND_URL}/401`);
-    }
-  });
 })
 
 app.get("/api/authMiddle", (req, res, next) => {
@@ -130,6 +138,27 @@ app.get("/api/authMiddle", (req, res, next) => {
       res.redirect(`${process.env.FRONTEND_URL}/401`);
     }
   });
+})
+
+app.get("/api/check_if_in_database", (req, res) => {
+  try {
+    if (req.user.id) {
+      const user = User.findOne({ email: new RegExp(req.user.id, "i") })
+      if (user) {
+        res.json({ inDatabase: true });
+      }
+      else {
+        res.json({ inDatabase: false });
+      }
+    }
+  } catch (err) {
+    console.error("User ID is unavailable.");
+    try {
+      window.location.reload()
+    } catch (err) {
+      console.error("Window not defined in backend.");
+    }
+  };
 })
 
 const ensureAuthenticated = (req, res, next) => {
@@ -151,15 +180,6 @@ app.get("/api/w3info", ensureAuthenticated, (req, res) => {
     res.status(500).json({ error: 'An error occurred while checking w3info.' });
 }
 });
-
-app.get('/api/check_logged_into_w3', (req, res) => {
-  if (req.isAuthenticated() && User.findOne({ email: new RegExp(req.user.id, "i") })) {
-    res.json({ isAuthenticated: true, user: req.user });
-  } else {
-    res.json({ isAuthenticated: false });
-  }
-});
-
 
 // You can use self-signed certificates for testing, or real certificates for
 // testing and production.
