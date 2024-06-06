@@ -36,12 +36,12 @@ const FourWeekReport = () => {
           setEmployees(response.data.employees);
           //handleData(); // Fetch data immediately after getting employees
         } else {
-          navigate("/checkin");
+          navigate("/reportsmenu");
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        navigate("/checkin");
+        navigate("/reportsmenu");
       });
   }, []); // Empty dependency array ensures this runs only once on mount
 

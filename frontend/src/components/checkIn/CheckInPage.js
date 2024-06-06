@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import { useFormData } from '../context/FormDataContext';
 import { useAuth } from '../context/AuthContext';
+import { jwtDecode } from "jwt-decode";
 
 // CheckInPage component
 const CheckInPage = () => {
@@ -23,7 +24,7 @@ const CheckInPage = () => {
   const [location, setLocation] = useState(null);
   const [workLocation, setWorkLocation] = useState(null);
   const [buttonClicked, setButtonClicked] = useState(false);
-  const { auth, setAuth } = useAuth();
+  const { auth, setAuth, browserToken } = useAuth();
   const [isLoading, setLoading] = useState(true); 
   const { formData, updateFormData } = useFormData();
   const [localEmail, setLocalEmail] = useState(formData.email);
@@ -70,23 +71,20 @@ const CheckInPage = () => {
 
     const getUser = () => {
       const storedToken = localStorage.getItem("auth");
-      let token = storedToken ? JSON.parse(storedToken) : null;
+      let decodedToken = storedToken ? jwtDecode(storedToken) : null;
     
-      if (!token && auth.isAuthenticated) {
+      if (!decodedToken && auth.isAuthenticated) {
         // no token in local storage but user is authenticated? store the auth object
-        localStorage.setItem('auth', JSON.stringify(auth));
-        token = auth;
+        localStorage.setItem("auth", browserToken);
+        decodedToken = jwtDecode(browserToken);
       }
     
-      if (token && token.isAuthenticated) {
-        setLocalEmail(token.user.id);
+      if (decodedToken && decodedToken.id.isAuthenticated) {
+        setLocalEmail(decodedToken.id.user.id);
       }
-    
-      console.log("Token: ", token);
     }
 
     getUser();
-    console.log(isLoading)
     setTimeout(() => {
       setLoading(false);
     }, 
@@ -105,13 +103,12 @@ const CheckInPage = () => {
         try {
           const response = await axios.post('/api/getEmployees', { email: formData.email });
           setIsManager(response.data.numemployees !== 0);
-          console.log(response.data.numemployees)
         } catch (error) {
           console.error('Error fetching employees:', error);
         }
       }
     };
-
+    
     fetchEmployees();
   }, [formData.email]);
 

@@ -251,32 +251,3 @@ exports.getUserByUID = async (req, res) => {
   }
  
 }
-
-exports.getUserByUIDLocal = async (req) => {
-  try {
-    const uidformat = new RegExp(/^\d[0-9A-Z]\d{7}$/);
-    if (!uidformat.test(req.uid)) {
-      return {error: "Invalid UID"};
-    }
-    const response = await fetch(new Request(`https://bluepages.ibm.com/BpHttpApisv3/slaphapi?ibmperson/(uid=${req.uid})/byjson?uid&callupname&mail`));
-    const empdata = await response.json();
-
-    let emp = empdata.search.entry[0];
-    let uidIndx, nameIndx, mailIndx;
-    for (let i = 0; i < emp.attribute.length; i++) {
-      switch (emp.attribute[i].name) {
-        case "mail": mailIndx = i; break;
-        case "callupname": nameIndx = i; break;
-        case "uid": uidIndx = i; break;
-      }
-    }
-    let name = emp.attribute[nameIndx].value[0].split(",").reverse().join(" ").substring(1);
-    let uid = emp.attribute[uidIndx].value[0];
-    let email = emp.attribute[mailIndx].value[0];
-
-    return {name: name, uid: uid, email: email, manager: ""};
-  } catch (error) {
-    return { error: error.message };
-  }
- 
-}

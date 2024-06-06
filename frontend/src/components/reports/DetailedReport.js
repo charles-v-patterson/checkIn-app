@@ -37,12 +37,12 @@ const WeekReport = ({ updateSelectedUser, selectedUser }) => {
           setEmployees(response.data.employees);
           //handleData(); // Fetch data immediately after getting employees
         } else {
-          navigate("/checkin");
+          navigate("/reportsmenu");
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        navigate("/checkin");
+        navigate("/reportsmenu");
       });}
       else
       {
