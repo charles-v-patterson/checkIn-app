@@ -1,6 +1,7 @@
 const cron = require("node-cron");
 const dotenv = require("dotenv").config();
-const { sendEmail, getUserByUID } = require("./controllers/authController");
+const { sendEmailLocal, getEmployees, getUserByUIDLocal } = require("./controllers/authController");
+const { generateReport } = require("./controllers/reportsController");
 const Holidays = require("date-holidays");
 const User = require("./models/User");
 const CheckIn = require("./models/CheckIn");
@@ -60,21 +61,16 @@ async function checkUsersAndSendNotifications() {
 
   // Send email notifications to users who have not checked in
   usersNotCheckedIn.forEach(async (user) => {
-    await sendEmail({body: {
+    await sendEmailLocal({
                       email : user.email,
+                      susbject: 'Notification from IBM Punch Card',
                       message : `Reminder: You have not checked in today.</p> <a href=${process.env.FRONTEND_URL} class="button">Check In</a><p>Check in to set your location for the day.`
-                    }});
+                    });
   });
 }
 
 async function updateEmps() {
-  let cicLeaderRequest = await fetch(new Request("http://localhost:5000/api/getUserByUID", 
-                                          {
-                                            method: "POST",
-                                            headers: { "Content-Type": "application/json" }, 
-                                            body: JSON.stringify({uid: process.env.CIC_LEADER_UID}),
-                                          }));
-  const cicLeader = await cicLeaderRequest.json();
+  const cicLeader = await getUserByUIDLocal({body: {uid: process.env.CIC_LEADER_UID}});
   const unVisited = [cicLeader];
   const emps = {};
 
@@ -148,12 +144,67 @@ async function deleteOldData() {
   }
 }
 
+async function sendExceptionEmails() {
+  const managers = await User.aggregate([
+    {
+      $group: {
+        _id: "$manager",
+      },
+    },
+    {
+      $match: {
+        _id: {
+          $ne: null,
+        },
+      },
+    },
+  ]);
+  let tempemps;
+  for (let i = 0; i < managers.length; i++) {
+    tempemps = await getEmployees({body: {email: managers[i]._id}});
+    const checkIns = await generateReport({body: {employees: tempemps.employees}});
+    const weekStart = moment().subtract(8, "days").format("MM-DD-YYYY")
+    const monday = moment().subtract(7, "days").format("MM-DD-YYYY")
+    const tuesday = moment().subtract(6, "days").format("MM-DD-YYYY")
+    const wednesday = moment().subtract(5, "days").format("MM-DD-YYYY")
+    const thursday = moment().subtract(4, "days").format("MM-DD-YYYY")
+    const friday = moment().subtract(3, "days").format("MM-DD-YYYY")
+    const weekEnd = moment().subtract(2, "days").format("MM-DD-YYYY")
+
+    let exceptionTable = "<tbody>";
+    for (let j = 0; j < checkIns.length; j++) {
+      let person = checkIns[j];
+      let checkinobjects = person.checkins.filter((checkin) => checkin.location === "In Office" && 
+                                           Date.parse(monday) <= Date.parse(checkin.date) &&
+                                           Date.parse(checkin.date) <= Date.parse(friday));
+      let amount = checkinobjects.length;
+      let dates = checkinobjects.map((entry) => entry.date);
+      if (amount < 3 || (amount < 5 && person.bench)) {
+        exceptionTable += `<tr><td>${person.name}</td><td>${dates.includes(monday) ? "Y" : ""}</td><td>${dates.includes(tuesday) ? "Y" : ""}</td>`
+                          +`<td>${dates.includes(wednesday) ? "Y" : ""}</td><td>${dates.includes(thursday) ? "Y" : ""}</td>`
+                          +`<td>${dates.includes(friday)? "Y" : ""}</td><td>${amount}</td></tr>`
+      }
+    }
+    if (exceptionTable !== "<tbody>") {
+      exceptionTable = `The employees listed below have not reached the required number of days in office for the week of ${weekStart} - ${weekEnd}:</p>`
+                        +`<table><thead><tr><th scope="col">Name</th><th scope="col">Mon</th><th scope="col">Tues</th><th scope="col">Wed</th>`
+                        +`<th scope="col">Thu</th><th scope="col">Fri</th><th scope="col">Total</th></tr></thead>`
+                        +exceptionTable
+                        +`</tbody></table><p>`;
+      await sendEmailLocal({email: managers[i]._id, subject: "IBM Punchcard Exception Report", message: exceptionTable});
+    }
+  }
+}
+
 function startScheduler() {
   //run at 12:00pm every weekday
   //cron.schedule("0 12 * * 1-5", checkUsersAndSendNotifications);
 
   //run at 12:00am every day
   //cron.schedule("0 0 * * *", updateEmps);
+
+  //run at 12:00am every Monday
+  //cron.schedule("0 0 * * 1", sendExceptionEmails);
 
   //run at 11:30pm every Saturday
   //cron.schedule("30 23 * * 6", deleteOldData);

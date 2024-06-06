@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: true,
+  },
+  bench: {
+    type: Boolean,
+    required: true,
+    default: false,
   }
 });
 

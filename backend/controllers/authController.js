@@ -97,11 +97,10 @@ exports.toggleNotifications = async (req, res) => {
   }
 }
 
-exports.sendEmail = async (req, res) => {
-  const { email, message } = req.body;
+exports.sendEmailLocal = async (req) => {
+  const { email, subject, message } = req;
   const token = createShortToken(email);
   let content = `<p>${message}</p>`;
-  let subject = 'Notification from IBM Punch Card';
   
   const html = `<head>
                   <meta charset="UTF-8">
@@ -110,6 +109,8 @@ exports.sendEmail = async (req, res) => {
                     body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
                     .email-container { max-width: 600px; margin: 20px auto; padding: 20px; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; word-break: break-word;}
                     .button { background-color: #007bff; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
+                    td, th { border: 1px solid rgb(160 160 160); padding: 8px 10px;}
+                    table { border-collapse: collapse; border: 2px solid rgb(140 140 140); letter-spacing: 1px;}
                   </style>
                 </head>
                 <body>
@@ -137,9 +138,9 @@ exports.sendEmail = async (req, res) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-          res.status(500).json({ error: error.message });
+          return { error: error.message };
       } else {
-          res.sendStatus(200);
+          return {};
       }
   });
 };
@@ -206,9 +207,19 @@ exports.getEmployees = async (req, res) => {
     }]);
     const employees = response[0].employees.map(employee => employee.email);
     const numemployees = employees.length;
-    res.status(200).json({ employees: employees, numemployees: numemployees });
+    if (res) {
+      res.status(200).json({ employees: employees, numemployees: numemployees });
+    }
+    else {
+      return { employees: employees, numemployees: numemployees };
+    }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (res) {
+      res.status(500).json({ error: error.message });
+    }
+    else {
+      return { error: error.message };
+    }
   }
 };
 
@@ -237,6 +248,35 @@ exports.getUserByUID = async (req, res) => {
     res.status(200).json({name: name, uid: uid, email: email, manager: ""});
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+ 
+}
+
+exports.getUserByUIDLocal = async (req) => {
+  try {
+    const uidformat = new RegExp(/^\d[0-9A-Z]\d{7}$/);
+    if (!uidformat.test(req.uid)) {
+      return {error: "Invalid UID"};
+    }
+    const response = await fetch(new Request(`https://bluepages.ibm.com/BpHttpApisv3/slaphapi?ibmperson/(uid=${req.uid})/byjson?uid&callupname&mail`));
+    const empdata = await response.json();
+
+    let emp = empdata.search.entry[0];
+    let uidIndx, nameIndx, mailIndx;
+    for (let i = 0; i < emp.attribute.length; i++) {
+      switch (emp.attribute[i].name) {
+        case "mail": mailIndx = i; break;
+        case "callupname": nameIndx = i; break;
+        case "uid": uidIndx = i; break;
+      }
+    }
+    let name = emp.attribute[nameIndx].value[0].split(",").reverse().join(" ").substring(1);
+    let uid = emp.attribute[uidIndx].value[0];
+    let email = emp.attribute[mailIndx].value[0];
+
+    return {name: name, uid: uid, email: email, manager: ""};
+  } catch (error) {
+    return { error: error.message };
   }
  
 }

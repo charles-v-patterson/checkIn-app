@@ -9,8 +9,6 @@ router.post("/api/register", authController.register);
 
 router.post("/api/remove", authController.remove);
 
-router.post("/api/sendEmail", authController.sendEmail);
-
 router.post("/api/verifyJWT", authController.verifyJWT);
 
 router.post("/api/getEmployees", authController.getEmployees);

@@ -86,7 +86,6 @@ mongoose
 
 // API Routes
 app.post("/api/verifyJWT", authRoutes);
-app.post("/api/sendEmail", authRoutes);
 app.post("/api/register", authRoutes);
 app.post("/api/remove", authRoutes);
 app.post("/api/checkin", checkinRoutes);

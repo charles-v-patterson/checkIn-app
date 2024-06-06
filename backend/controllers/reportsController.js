@@ -23,6 +23,7 @@ exports.generateReport = async (req, res) => {
             email: "$user.email",
             manager: "$user.manager",
             uid: "$user.uid",
+            bench: "$user.bench"
           },
         },
         {
@@ -40,6 +41,7 @@ exports.generateReport = async (req, res) => {
             name: { $first: "$name", },
             manager: { $first: "$manager", },
             uid: { $first: "$uid", },
+            bench: { $first: "$bench", },
           },
         },
         {
@@ -59,6 +61,7 @@ exports.generateReport = async (req, res) => {
             name: { $arrayElemAt: ["$name", 0], },
             manager: { $arrayElemAt: ["$manager", 0], },
             uid: { $arrayElemAt: ["$uid", 0], },
+            bench: { $arrayElemAt: ["$bench", 0], },
             checkins: {
               $map: {
                 input: {
@@ -70,7 +73,7 @@ exports.generateReport = async (req, res) => {
                         in: {
                           $mergeObjects: [
                             { location: "$$checkin.location", },
-                            { date: { 
+                            { date: {
                                 $dateFromString: {
                                   dateString: "$$checkin.date",
                                   format: "%m-%d-%Y",
@@ -107,9 +110,19 @@ exports.generateReport = async (req, res) => {
       ]);
       
     // Send the report
-    res.status(201).json(checkIns);
+    if (res) {
+      res.status(201).json(checkIns);
+    }
+    else {
+      return checkIns;
+    }
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'An error occurred while generating the report.' });
+    if (res) {
+      res.status(500).json({ error: 'An error occurred while generating the report.' });
+    }
+    else {
+      return { error: 'An error occurred while generating the report.' };
+    }
   }
 };
