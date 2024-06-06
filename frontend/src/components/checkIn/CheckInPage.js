@@ -103,13 +103,12 @@ const CheckInPage = () => {
         try {
           const response = await axios.post('/api/getEmployees', { email: formData.email });
           setIsManager(response.data.numemployees !== 0);
-          console.log(response.data.numemployees)
         } catch (error) {
           console.error('Error fetching employees:', error);
         }
       }
     };
-
+    
     fetchEmployees();
   }, [formData.email]);
 

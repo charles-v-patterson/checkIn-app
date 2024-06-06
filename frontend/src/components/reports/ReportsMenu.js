@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useFormData } from '../context/FormDataContext';
+import { useAuth } from '../context/AuthContext';
+import { jwtDecode } from "jwt-decode";
 
 // reportsForm component
 const ReportsMenu = ({ updateSelectedUser }) => {
@@ -13,13 +15,42 @@ const ReportsMenu = ({ updateSelectedUser }) => {
   const [openWSearch, setWOpenSearch] = useState("close");
   const [openMSearch, setMOpenSearch] = useState("close");
   const [selectedUser, setSelectedUser] = useState("");
-  const [isLoading, setLoading] = useState(true); 
+  const [isLoading, setLoading] = useState(true);
+  const { auth } = useAuth();
+  const { formData, updateFormData, browserToken } = useFormData(); 
+  const [localEmail, setLocalEmail] = useState(formData.email);
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const { formData } = useFormData();
   let weekRef = useRef();
   let monthRef = useRef();
+
+  useEffect(() => {
+
+    const getUser = () => {
+      const storedToken = localStorage.getItem("auth");
+      let decodedToken = storedToken ? jwtDecode(storedToken) : null;
+
+      if (!decodedToken && auth.isAuthenticated) {
+        // no token in local storage but user is authenticated? store the auth object
+        localStorage.setItem("auth", browserToken);
+        decodedToken = jwtDecode(browserToken);
+      }
+    
+      if (decodedToken && decodedToken.id.isAuthenticated) {
+        setLocalEmail(decodedToken.id.user.id);
+      }
+    }
+
+    getUser();
+
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  useEffect(() => {
+    if (localEmail) {
+      updateFormData({ ...formData, email: localEmail });
+    }
+  }, [localEmail, updateFormData]);
 
   useEffect(() => {
     axios
@@ -27,15 +58,14 @@ const ReportsMenu = ({ updateSelectedUser }) => {
       .then((response) => {
         if (response.data.numemployees > 0) {
           setEmployees(response.data.employees);
-        } else {
-          navigate("/checkin");
         }
       })
       .catch((error) => {
         console.error("Error:", error);
         navigate("/checkin");
       });
-  }, []); // Empty dependency array ensures this runs only once on mount
+
+  }, [formData.email]); // Empty dependency array ensures this runs only once on mount
 
   useEffect(() => {
     handleData();
@@ -54,7 +84,6 @@ const ReportsMenu = ({ updateSelectedUser }) => {
       setErrorMessage(error.response?.data?.error || "Data error.");
     }
   };
-  
   
 const searchEmployees = (bar, list) => {
     var input, filter, ul, li, a, i, txtValue;

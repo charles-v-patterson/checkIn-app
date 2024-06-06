@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useFormData } from '../context/FormDataContext';
+import { useAuth } from '../context/AuthContext';
+import { jwtDecode } from "jwt-decode";
 
 // settingsForm component
 const Settings = ({ updateSelectedUser }) => {
@@ -18,14 +20,43 @@ const Settings = ({ updateSelectedUser }) => {
   const [selectedUserData, setSelectedUserData] = useState({});
   const [isManager, setIsManager] = useState(false);
   const [notifsEnabled, setNotifsEnabled] = useState();
-  const [isLoading, setLoading] = useState(true); 
+  const [isLoading, setLoading] = useState(true);
+  const { auth } = useAuth();
+  const { formData, updateFormData, browserToken } = useFormData();
+  const [localEmail, setLocalEmail] = useState(formData.email);
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const { formData } = useFormData();
   let addRef = useRef();
   let removeRef = useRef();
 
+  useEffect(() => {
+
+    const getUser = () => {
+      const storedToken = localStorage.getItem("auth");
+      let decodedToken = storedToken ? jwtDecode(storedToken) : null;
+
+      if (!decodedToken && auth.isAuthenticated) {
+        // no token in local storage but user is authenticated? store the auth object
+        localStorage.setItem("auth", browserToken);
+        decodedToken = jwtDecode(browserToken);
+      }
+    
+      if (decodedToken && decodedToken.id.isAuthenticated) {
+        setLocalEmail(decodedToken.id.user.id);
+      }
+    }
+
+    getUser();
+
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  useEffect(() => {
+    if (localEmail) {
+      updateFormData({ ...formData, email: localEmail });
+    }
+  }, [localEmail, updateFormData]);
+  
   useEffect(() => {
     getEmployeeData();
 
@@ -35,10 +66,10 @@ const Settings = ({ updateSelectedUser }) => {
         setNotifsEnabled(response.data.enabled);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error("Error: ", error);
         navigate("/checkin");
       });
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, [formData.email]);
 
   useEffect(() => {
     handleData();
@@ -47,7 +78,6 @@ const Settings = ({ updateSelectedUser }) => {
     }, 
     700);
   }, [employees]);
-  
 
   useEffect(() => {
     setErrorMessage(""); 
