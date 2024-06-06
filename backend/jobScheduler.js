@@ -1,6 +1,6 @@
 const cron = require("node-cron");
 const dotenv = require("dotenv").config();
-const { sendEmailLocal, getEmployees, getUserByUIDLocal } = require("./controllers/authController");
+const { sendEmailLocal, getEmployees, getUserByUID } = require("./controllers/authController");
 const { generateReport } = require("./controllers/reportsController");
 const Holidays = require("date-holidays");
 const User = require("./models/User");
@@ -70,7 +70,7 @@ async function checkUsersAndSendNotifications() {
 }
 
 async function updateEmps() {
-  const cicLeader = await getUserByUIDLocal({body: {uid: process.env.CIC_LEADER_UID}});
+  const cicLeader = await getUserByUID({body: {uid: process.env.CIC_LEADER_UID}});
   const unVisited = [cicLeader];
   const emps = {};
 

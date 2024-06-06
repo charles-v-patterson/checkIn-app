@@ -245,9 +245,19 @@ exports.getUserByUID = async (req, res) => {
     let uid = emp.attribute[uidIndx].value[0];
     let email = emp.attribute[mailIndx].value[0];
 
-    res.status(200).json({name: name, uid: uid, email: email, manager: ""});
+    if (res) {
+      res.status(200).json({name: name, uid: uid, email: email, manager: ""});
+    }
+    else {
+      return {name: name, uid: uid, email: email, manager: ""};
+    }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (res) {
+      res.status(500).json({ error: error.message });
+    }
+    else {
+      return { error: error.message };
+    }
   }
  
 }
