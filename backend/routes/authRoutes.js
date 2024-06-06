@@ -19,4 +19,6 @@ router.post("/api/toggleNotifications", authController.toggleNotifications);
 
 router.post("/api/getNotificationsEnabled", authController.getNotificationsEnabled);
 
+router.post("/api/toggleBench", authController.toggleBench);
+
 module.exports = router;

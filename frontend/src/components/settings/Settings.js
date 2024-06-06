@@ -16,6 +16,7 @@ const Settings = ({ updateSelectedUser }) => {
   const [rOpenSearch, setROpenSearch] = useState("close");
   const [openAddConfirm, setOpenAddConfirm] = useState(false);
   const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
+  const [openBenchEdit, setOpenBenchEdit] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedUserData, setSelectedUserData] = useState({});
   const [isManager, setIsManager] = useState(false);
@@ -52,6 +53,10 @@ const Settings = ({ updateSelectedUser }) => {
   }, []); // Empty dependency array ensures this runs only once on mount
 
   useEffect(() => {
+    handleData();
+  }, [openBenchEdit]);
+
+  useEffect(() => {
     if (localEmail) {
       updateFormData({ ...formData, email: localEmail });
     }
@@ -67,7 +72,7 @@ const Settings = ({ updateSelectedUser }) => {
       })
       .catch((error) => {
         console.error("Error: ", error);
-        navigate("/checkin");
+        // navigate("/checkin");
       });
   }, [formData.email]);
 
@@ -174,6 +179,16 @@ const Settings = ({ updateSelectedUser }) => {
       });
   };
 
+  const handleBench = ( email ) => {
+    axios
+      .post("/api/toggleBench", { email: email })
+      .catch((error) => {
+        console.error("Error:", error);
+        navigate("/checkin");
+      });
+
+  };
+
   const searchEmployees = (bar, list) => {
     var input, filter, ul, li, a, i, txtValue;
     input = document.getElementById(bar);
@@ -193,7 +208,7 @@ const Settings = ({ updateSelectedUser }) => {
 
   useEffect(() => {
     let handler = (e) => {
-     if(!openAddConfirm && !openRemoveConfirm && isManager && errorMessage === "")
+     if(!openAddConfirm && !openRemoveConfirm && isManager && !openBenchEdit && errorMessage === "")
       { if (
         !addRef.current.contains(e.target) &&
         !removeRef.current.contains(e.target)
@@ -240,120 +255,156 @@ const Settings = ({ updateSelectedUser }) => {
       {/* Add styling */}
       <div className="settings-menu-box">
         <div className="menu-header">
-          <h1 className="settings-title">Settings</h1>
+        <h1 className="settings-title">{openBenchEdit ? "Edit Bench Resourses" : "Settings"}</h1>
         </div>
         <hr className="settings-hr"></hr>
-        <div className="menu-div" style={{ overflowY: "auto" }}>
-            {errorMessage !== "" ? (<>
-              <h1 className="settings-title">{errorMessage}</h1>
-              <button className="view-button" onClick={()=>{resetPage();}}>
-                {errorMessage === "User successfully removed" || errorMessage === "User successfully added" ? "To Menu": "Cancel"}
-              </button>
-              </>)
-                : openAddConfirm ? (<>
-                <h1 className="settings-title">Are you sure you want to add this user?</h1>
-                <h2 className="settings-sub-title">{selectedUserData.email}</h2>
-                <h2 className="settings-sub-title">{selectedUser}</h2>
-                <button className="view-button" onClick={() => {handleAdd(selectedUserData.email)}}>
-                Add
-              </button>
-              <button className="view-button" onClick={()=>{setOpenAddConfirm(false); setSelectedUser(""); setSelectedUserData({});}}>
-                Cancel
-              </button>
-            </>) 
-             :openRemoveConfirm? (<>
-            <h1 className="settings-title">Are you sure you want to remove this user?</h1>
-            <h2 className="settings-sub-title">{selectedUserData.email}</h2>
-            <h2 className="settings-sub-title">{selectedUser}</h2>
-                <button className="view-button" onClick={() => {handleRemove(selectedUserData.email)}}>
-                Remove
-              </button>
-              <button className="view-button" onClick={()=>{setOpenRemoveConfirm(false); setSelectedUser(""); setSelectedUserData({});}}>
-                Cancel
-              </button>
-            </>) : (<>
-                <button
-            id="notifs-button"
-            className="view-button"
-            onClick={handleNotifs}
-          >
-            {notifsEnabled ? "Disable Reminders" : "Enable Reminders"}
-          </button>
-
-          {isManager && (
-            <>
-              <button className="view-button" onClick={openAddSearch}>
-                Add User
-              </button>
-              <div id="add-search-div" className={aOpenSearch} ref={addRef}>
-                <input
-                  type="text"
-                  id="add-input"
-                  className="search-bar"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setOpenAddConfirm(true);
-                      getUserInfo();
-                    }
-                  }}
-                  placeholder="Talent ID.. "
-                ></input>
-              </div>
-              <button
-                id="remove-button"
-                className="view-button"
-                onClick={openRemoveSearch}
-              >
-                Remove User
-              </button>
-              <div
-                id="remove-search-div"
-                className={rOpenSearch}
-                ref={removeRef}
-              >
-                <input
-                  type="text"
-                  id="edit-search"
-                  className="search-bar"
-                  onKeyUp={() => {
-                    searchEmployees("edit-search", "employees-list-week");
-                  }}
-                  placeholder="Search Employees.."
-                ></input>
-                <ul id="employees-list-week" className="employees-list">
+        {openBenchEdit ? (
+          <>
+          <table className="bench-body">
+                  <tbody>
+                    <tr>
+                      <th>Name</th>
+                      <th>Bench Status</th>
+                    </tr>
+                  
                   {dbData.map((val, key) => {
                     return (
-                      <li key={key} onClick={()=>{
-                        setSelectedUser(val.name);
-                        setSelectedUserData({uid: val.uid, name: val.name, email: val._id});
-                        setOpenRemoveConfirm(true);
-                        }}>
-                          {val.name}
-                      </li>
+                      <tr key={key} id="four-week-row" className="bench-table">
+                        <td>{val.name}</td>
+                        <td>
+                          <label className="switch">
+                            <input type="checkbox" defaultChecked={val.bench} onClick={()=>{handleBench(val._id)}}/>
+                            <span className="slider round"></span>
+                          </label>
+                        </td>
+                      </tr>
                     );
                   })}
-                </ul>
-              </div>
+                  </tbody>
+                </table>
+          <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>
+        <button className="back-button" onClick={()=>{setOpenBenchEdit(false)}}>Back</button>
+    </div>
+          </>
+          ) : (
+            <>
+              <div className="menu-div" style={{ overflowY: "auto" }}>
+        
+        {errorMessage !== "" ? (<>
+          <h1 className="settings-title">{errorMessage}</h1>
+          <button className="view-button" onClick={()=>{resetPage();}}>
+            {errorMessage === "User successfully removed" || errorMessage === "User successfully added" ? "To Menu": "Cancel"}
+          </button>
+          </>)
+            : openAddConfirm ? (<>
+            <h1 className="settings-title">Are you sure you want to add this user?</h1>
+            <h2 className="settings-sub-title">{selectedUserData.email}</h2>
+            <h2 className="settings-sub-title">{selectedUser}</h2>
+            <button className="view-button" onClick={() => {handleAdd(selectedUserData.email)}}>
+            Add
+          </button>
+          <button className="view-button" onClick={()=>{setOpenAddConfirm(false); setSelectedUser(""); setSelectedUserData({});}}>
+            Cancel
+          </button>
+        </>) 
+         :openRemoveConfirm? (<>
+        <h1 className="settings-title">Are you sure you want to remove this user?</h1>
+        <h2 className="settings-sub-title">{selectedUserData.email}</h2>
+        <h2 className="settings-sub-title">{selectedUser}</h2>
+            <button className="view-button" onClick={() => {handleRemove(selectedUserData.email)}}>
+            Remove
+          </button>
+          <button className="view-button" onClick={()=>{setOpenRemoveConfirm(false); setSelectedUser(""); setSelectedUserData({});}}>
+            Cancel
+          </button>
+        </>) : (<>
+            <button
+        id="notifs-button"
+        className="view-button"
+        onClick={handleNotifs}
+      >
+        {notifsEnabled ? "Disable Reminders" : "Enable Reminders"}
+      </button>
+
+      {isManager && (
+        <>
+          <button className="view-button" onClick={openAddSearch}>
+            Add User
+          </button>
+          <div id="add-search-div" className={aOpenSearch} ref={addRef}>
+            <input
+              type="text"
+              id="add-input"
+              className="search-bar"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setOpenAddConfirm(true);
+                  getUserInfo();
+                }
+              }}
+              placeholder="Talent ID.. "
+            ></input>
+          </div>
+          <button
+            id="remove-button"
+            className="view-button"
+            onClick={openRemoveSearch}
+          >
+            Remove User
+          </button>
+          <div
+            id="remove-search-div"
+            className={rOpenSearch}
+            ref={removeRef}
+          >
+            <input
+              type="text"
+              id="edit-search"
+              className="search-bar"
+              onKeyUp={() => {
+                searchEmployees("edit-search", "employees-list-week");
+              }}
+              placeholder="Search Employees.."
+            ></input>
+            <ul id="employees-list-week" className="employees-list">
+              {dbData.map((val, key) => {
+                return (
+                  <li key={key} onClick={()=>{
+                    setSelectedUser(val.name);
+                    setSelectedUserData({uid: val.uid, name: val.name, email: val._id});
+                    setOpenRemoveConfirm(true);
+                    }}>
+                      {val.name}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <button className="view-button" onClick={()=> {setOpenBenchEdit(true)}}>
+          Edit Bench
+          </button>
+        </>
+      )}
+        </>)}
+      
+    </div>
+
+    <hr className="settings-hr"></hr>
+    <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>
+      <Link
+        to="/checkin"
+        style={{
+          textDecoration: "none",
+          display: "flex",
+          justifyContent: "end",
+          width: "max-content",
+        }}
+      >
+        <button className="back-button">Back</button>
+      </Link>
+    </div>
             </>
           )}
-            </>)}
-          
-        </div>
-
-        <hr className="settings-hr"></hr>
-        <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>
-          <Link
-            to="/checkin"
-            style={{
-              textDecoration: "none",
-              display: "flex",
-              justifyContent: "end",
-              width: "max-content",
-            }}
-          >
-            <button className="back-button">Back</button>
-          </Link>
-        </div>
       </div>
     </div>
   );

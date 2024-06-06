@@ -98,6 +98,7 @@ app.get("/api/check-network", checkinRoutes);
 app.post("/api/reports", reportRoutes);
 app.post("/api/getEmployees", authRoutes);
 app.post("/api/toggleNotifications", authRoutes);
+app.post("/api/toggleBench", authRoutes);
 app.post("/api/getNotificationsEnabled", authRoutes);
 app.post("/api/getUserByUID", authRoutes);
 

@@ -72,14 +72,18 @@ const FourWeekReport = () => {
     }
   };
 
-  const isUnder = (name) => {
+  const isUnder = (name, bench) => {
+    let modifier = 12;
+    if (bench){
+      modifier = 20;
+    }
     let anchorDate = new Date();
     let lastWeekDate = new Date(anchorDate.getTime() - 7 * 24 * 60 * 60 * 1000);
     let last2WeekDate = new Date(anchorDate.getTime() - 14 * 24 * 60 * 60 * 1000);
     let last3WeekDate = new Date(anchorDate.getTime() - 21 * 24 * 60 * 60 * 1000);
     let last4WeekDate = new Date(anchorDate.getTime() - 28 * 24 * 60 * 60 * 1000);
     let total= fourWeekCounter(name, lastWeekDate, last2WeekDate, last3WeekDate, last4WeekDate)
-    if(total< 12){
+    if(total < modifier){
       return "under";
     }
     else{
@@ -316,7 +320,7 @@ const downloadCSVFile = (csv_data) => {
                   {dbData.map((val, key) => {
 
                     return (
-                      <tr key={key} id="four-week-row" className={isUnder(val.name)}>
+                      <tr key={key} id="four-week-row" className={isUnder(val.name, val.bench)}>
                         <td>{val.name}</td>
                         <td>{val.manager}</td>
                         <td>{weeklyCounter(getWeek(new Date(currentDate.getTime() - 21 * 24 * 60 * 60 * 1000)), val.name, "In Office")}</td>

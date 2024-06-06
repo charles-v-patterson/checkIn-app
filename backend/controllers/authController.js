@@ -97,6 +97,23 @@ exports.toggleNotifications = async (req, res) => {
   }
 }
 
+exports.toggleBench = async (req, res) => {
+  try {
+    const user = await User.findOne({email: req.body.email});
+    if (user) {
+      await User.updateOne({email: user.email}, {bench: !user.bench});
+      res.sendStatus(201);
+    }
+    else {
+      res.status(400).json({ error: "User Not Found" });
+    }
+    
+  }
+  catch {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 exports.sendEmailLocal = async (req) => {
   const { email, subject, message } = req;
   const token = createShortToken(email);
