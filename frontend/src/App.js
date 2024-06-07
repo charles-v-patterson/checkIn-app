@@ -59,10 +59,14 @@ const App = () => {
       <FormDataProvider>
         <Router>
           <Routes>
-            <Route path="/" element={
-            <ProtectedRoute>
-              <W3Login />
-            </ProtectedRoute>} />
+           <Route
+              path="/"
+              element={
+              <ProtectedRoute>
+                <CheckIn />
+              </ProtectedRoute>
+              }
+            />
             <Route 
               path="/reportsmenu" 
               element={
@@ -103,14 +107,6 @@ const App = () => {
               </ProtectedRoute>
               }
               />
-            <Route
-              path="/checkIn"
-              element={
-              <ProtectedRoute>
-                <CheckIn />
-              </ProtectedRoute>
-              }
-            />
             <Route
               path="*"
               element={<ErrorPage errorName={ "404" }/>}

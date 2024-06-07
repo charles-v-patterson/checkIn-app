@@ -72,7 +72,7 @@ const Settings = ({ updateSelectedUser }) => {
       })
       .catch((error) => {
         console.error("Error: ", error);
-        // navigate("/checkin");
+        navigate("/");
       });
   }, [formData.email]);
 
@@ -103,7 +103,7 @@ const Settings = ({ updateSelectedUser }) => {
     })
     .catch((error) => {
       console.error("Error:", error);
-      navigate("/checkin");
+      navigate("/");
     });
   }
 
@@ -175,7 +175,7 @@ const Settings = ({ updateSelectedUser }) => {
       })
       .catch((error) => {
         console.error("Error:", error);
-        navigate("/checkin");
+        navigate("/");
       });
   };
 
@@ -184,7 +184,7 @@ const Settings = ({ updateSelectedUser }) => {
       .post("/api/toggleBench", { email: email })
       .catch((error) => {
         console.error("Error:", error);
-        navigate("/checkin");
+        navigate("/");
       });
 
   };
@@ -392,7 +392,7 @@ const Settings = ({ updateSelectedUser }) => {
     <hr className="settings-hr"></hr>
     <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>
       <Link
-        to="/checkin"
+        to="/"
         style={{
           textDecoration: "none",
           display: "flex",

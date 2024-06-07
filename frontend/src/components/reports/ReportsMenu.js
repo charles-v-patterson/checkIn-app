@@ -62,7 +62,7 @@ const ReportsMenu = ({ updateSelectedUser }) => {
       })
       .catch((error) => {
         console.error("Error:", error);
-        navigate("/checkin");
+        navigate("/");
       });
 
   }, [formData.email]); // Empty dependency array ensures this runs only once on mount
@@ -198,7 +198,7 @@ if (isLoading) {
             <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>
             
               <Link
-                to="/checkin"
+                to="/"
                 style={{
                   textDecoration: "none",
                   display: "flex",

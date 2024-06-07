@@ -122,7 +122,7 @@ app.get('/login', passport.authenticate('openidconnect', {}))
 
 app.get('/oidc_callback', (req,res,next) => {
   passport.authenticate('openidconnect', {
-    successRedirect: 'https://localhost:3000/checkin',
+    successRedirect: 'https://localhost:3000/',
     failureRedirect: '/failure',
   })(req,res,next)
 })
@@ -132,7 +132,7 @@ app.get("/api/authMiddle", (req, res, next) => {
   .then((response) => {
     // change redirect depending on current page
     if (response) {
-      res.redirect(`${process.env.FRONTEND_URL}/checkin`);
+      res.redirect(`${process.env.FRONTEND_URL}/`);
     }
     else {
       res.redirect(`${process.env.FRONTEND_URL}/401`);
