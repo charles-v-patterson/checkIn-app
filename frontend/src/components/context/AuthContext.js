@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         const response = await axios.get('/api/check_logged_into_w3');
-        console.log("From AuthProvider ", response.data);
         setToken(response.data);
         setAuth(jwtDecode(response.data).id);
       } catch (error) {

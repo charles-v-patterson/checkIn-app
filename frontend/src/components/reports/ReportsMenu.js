@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./ReportsPages.css";
 import ibmLogo from "../../img/IBM-Logo.jpg";
+import settingsIcon from "../../img/settings-icon-white.png";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -129,7 +130,7 @@ const closeSearch =() =>{
 }
 if (isLoading) {
   return (
-  <div className="load-div" style={{ overflowY: "auto" }}>
+    <div className="checkin-load-div" style={{ overflowY: "auto" }}>
     <div className="loader"></div>
   </div>
   )
@@ -210,6 +211,11 @@ if (isLoading) {
               </Link>
             </div>
       </div>
+      <Link to="/settings" style={{ position: "absolute", bottom: "20px", right: "20px", display: "flex", justifyContent: "center", textDecoration: "none"}}>
+      <button className="settings-button" >
+        <img height="25x" alt="" src={settingsIcon} />
+          </button>
+          </Link>
     </div>
   );
 };

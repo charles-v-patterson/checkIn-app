@@ -201,7 +201,7 @@ const downloadCSVFile = (csv_data) => {
               </h1>
             </div>
             <hr className="reports-hr"></hr>
-            <div className="load-div" style={{ overflowY: "auto" }}>
+            <div className="reports-load-div" style={{ overflowY: "auto" }}>
             <div className="loader"></div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>

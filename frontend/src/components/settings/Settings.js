@@ -189,6 +189,16 @@ const Settings = ({ updateSelectedUser }) => {
 
   };
 
+  const handleActive = ( email ) => {
+    axios
+      .post("/api/toggleActive", { email: email })
+      .catch((error) => {
+        console.error("Error:", error);
+        navigate("/");
+      });
+
+  };
+
   const searchEmployees = (bar, list) => {
     var input, filter, ul, li, a, i, txtValue;
     input = document.getElementById(bar);
@@ -238,7 +248,7 @@ const Settings = ({ updateSelectedUser }) => {
 
   if (isLoading) {
     return (
-    <div className="load-div" style={{ overflowY: "auto" }}>
+      <div className="settings-load-div" style={{ overflowY: "auto" }}>
       <div className="loader"></div>
     </div>
     )
@@ -255,7 +265,7 @@ const Settings = ({ updateSelectedUser }) => {
       {/* Add styling */}
       <div className="settings-menu-box">
         <div className="menu-header">
-        <h1 className="settings-title">{openBenchEdit ? "Edit Bench Resourses" : "Settings"}</h1>
+        <h1 className="settings-title">{openBenchEdit ? "Manage Resourses" : "Settings"}</h1>
         </div>
         <hr className="settings-hr"></hr>
         {openBenchEdit ? (
@@ -265,6 +275,7 @@ const Settings = ({ updateSelectedUser }) => {
                     <tr>
                       <th>Name</th>
                       <th>Bench Status</th>
+                      <th>Active Status</th>
                     </tr>
                   
                   {dbData.map((val, key) => {
@@ -274,6 +285,12 @@ const Settings = ({ updateSelectedUser }) => {
                         <td>
                           <label className="switch">
                             <input type="checkbox" defaultChecked={val.bench} onClick={()=>{handleBench(val._id)}}/>
+                            <span className="slider round"></span>
+                          </label>
+                        </td>
+                        <td>
+                          <label className="switch">
+                            <input type="checkbox" defaultChecked={val.bench} onClick={()=>{handleActive(val._id)}}/>
                             <span className="slider round"></span>
                           </label>
                         </td>
@@ -381,7 +398,7 @@ const Settings = ({ updateSelectedUser }) => {
             </ul>
           </div>
           <button className="view-button" onClick={()=> {setOpenBenchEdit(true)}}>
-          Edit Bench
+          Manage Resouces
           </button>
         </>
       )}
@@ -391,17 +408,7 @@ const Settings = ({ updateSelectedUser }) => {
 
     <hr className="settings-hr"></hr>
     <div style={{ display: "flex", justifyContent: "end", gap: "15px" }}>
-      <Link
-        to="/"
-        style={{
-          textDecoration: "none",
-          display: "flex",
-          justifyContent: "end",
-          width: "max-content",
-        }}
-      >
-        <button className="back-button">Back</button>
-      </Link>
+    <button className="back-button" onClick={() => navigate(-1)}>Back</button>
     </div>
             </>
           )}

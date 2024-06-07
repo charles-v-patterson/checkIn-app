@@ -194,7 +194,7 @@ const CheckInPage = () => {
   if (isLoading) {
     
     return (
-    <div className="load-div" style={{ overflowY: "auto" }}>
+    <div className="checkin-load-div" style={{ overflowY: "auto" }}>
       <div className="loader"></div>
     </div>
     )

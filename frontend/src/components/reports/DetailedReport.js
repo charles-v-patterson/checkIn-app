@@ -283,7 +283,7 @@ const downloadCSVFile = (csv_data) => {
               </div>
             </div>
             <hr className="reports-hr"></hr>
-            <div className="table-div" style={{ overflowY: "auto" }}>
+            <div className="detailed-table-div" style={{ overflowY: "auto" }}>
             {dbData.length !== 0 && (<table>
                 <tbody>
                   <tr>

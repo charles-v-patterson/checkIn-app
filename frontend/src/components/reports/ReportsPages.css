@@ -256,16 +256,25 @@
     flex-direction: row;
     justify-content: space-between;
 }
-.load-div{
+
+.table-div {
+    min-height: 45vh;
+}
+
+.detailed-table-div {
+    min-height: 22vh;
+}
+
+.reports-load-div{
     display: flex;
-    height: 100vh;
+    height: 46.2vh;
     justify-content: center;
     align-items: center;
 }
 
 .detailed-load-div{
     display: flex;
-    height: 28.7vh;
+    height: 23.2vh;
     justify-content: center;
     align-items: center;
 }
@@ -290,7 +299,7 @@
     width: 100%;
     color: #000000;
     background-color: #FFFFFF;
-    min-height: 250px;
+    
 }
 
 #four-week-row {
@@ -375,7 +384,6 @@ header .calendar-current-date {
  
 .calendar-body {
     
-    min-height: 410px;
     padding: 20px;
 }
  
